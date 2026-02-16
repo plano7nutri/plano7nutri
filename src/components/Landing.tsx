@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, ClipboardList, Calculator, MessageCircle } from "lucide-react";
+import { ArrowRight, ClipboardList, Calculator, MessageCircle, UserCheck } from "lucide-react";
 
 const steps = [
   {
@@ -21,9 +21,10 @@ const steps = [
 
 interface LandingProps {
   onStart: () => void;
+  onLogin: () => void;
 }
 
-const Landing = ({ onStart }: LandingProps) => {
+const Landing = ({ onStart, onLogin }: LandingProps) => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
@@ -33,10 +34,11 @@ const Landing = ({ onStart }: LandingProps) => {
             Plano <span className="text-primary">7</span>
           </div>
           <button
-            onClick={onStart}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            onClick={onLogin}
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
-            Começar
+            <UserCheck className="w-4 h-4" />
+            Já tenho um plano
           </button>
         </div>
       </nav>
@@ -64,15 +66,24 @@ const Landing = ({ onStart }: LandingProps) => {
             acessíveis, sem invenções. Tudo em segundos.
           </p>
 
-          <motion.button
-            onClick={onStart}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
-          >
-            Criar Meu Plano 7 Grátis
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <motion.button
+              onClick={onStart}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
+            >
+              Criar Meu Plano 7 Grátis
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+            
+            <button
+              onClick={onLogin}
+              className="text-sm font-bold text-muted-foreground hover:text-foreground transition-colors py-2"
+            >
+              Acessar meu plano existente
+            </button>
+          </div>
         </motion.div>
 
         {/* Steps */}

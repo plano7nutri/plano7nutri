@@ -5,10 +5,10 @@ import Landing from "@/components/Landing";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
-type View = "landing" | "onboarding";
+type View = "landing" | "onboarding" | "login";
 
-// Fatores de atividade baseados na tabela Harris-Benedict
 const activityFactors: Record<string, number> = {
   sedentary: 1.2,
   lightly_active: 1.375,
@@ -33,27 +33,55 @@ const goalLabels: Record<string, string> = {
 
 const Index = () => {
   const [view, setView] = useState<View>("landing");
+  const [loginWhatsapp, setLoginWhatsapp] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    if (loginWhatsapp.length < 10) {
+      toast.error("Informe um WhatsApp válido.");
+      return;
+    }
+
+    setIsLoggingIn(true);
+    try {
+      const { data, error } = await supabase
+        .from("usuarios_planogratis")
+        .select("*")
+        .eq("whatsapp", loginWhatsapp)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        toast.success(`Bem-vindo de volta, ${data.nome}!`);
+        navigate("/dashboard", { state: data });
+      } else {
+        toast.error("Plano não encontrado. Verifique o número ou crie um novo.");
+      }
+    } catch (err) {
+      toast.error("Erro ao buscar seu plano.");
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      // 1. Verificação de duplicidade por WhatsApp
-      const { data: existingUser, error: checkError } = await supabase
+      // 1. Verificação de duplicidade - Se já existe, apenas redireciona
+      const { data: existingUser } = await supabase
         .from("usuarios_planogratis")
-        .select("id")
+        .select("*")
         .eq("whatsapp", data.whatsapp)
         .maybeSingle();
 
-      if (checkError) {
-        console.error("Erro ao verificar duplicidade:", checkError);
-      }
-
       if (existingUser) {
-        toast.error("Este número de WhatsApp já possui um plano cadastrado.");
+        toast.success(`Você já possui um plano, ${existingUser.nome}! Redirecionando...`);
+        navigate("/dashboard", { state: existingUser });
         return;
       }
 
-      // 2. CÁLCULOS NUTRICIONAIS (Fórmula Mifflin-St Jeor)
+      // 2. CÁLCULOS NUTRICIONAIS
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -62,28 +90,16 @@ const Index = () => {
       const factor = activityFactors[data.activity] || 1.2;
       const get = Math.round(tmb * factor);
 
-      // Ajuste de calorias conforme objetivo
       let metaCalorias = get;
-      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8); // Déficit de 20%
-      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15); // Superávit de 15%
+      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
+      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
 
-      // Cálculo de Água (35ml por kg, arredondado para centenas)
       const metaAgua = Math.round((data.weight * 35) / 100) * 100;
 
-      // Divisão de Macronutrientes (Proporções baseadas no objetivo)
       let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
-      
-      if (data.goal === "lose_weight") { 
-        protRatio = 0.35; // Mais proteína para saciedade
-        carbRatio = 0.35; 
-        fatRatio = 0.3; 
-      } else if (data.goal === "gain_muscle") { 
-        protRatio = 0.3; 
-        carbRatio = 0.5; // Mais carbo para energia no treino
-        fatRatio = 0.2; 
-      }
+      if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
+      else if (data.goal === "gain_muscle") { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
 
-      // Conversão de calorias para gramas (Prot/Carb = 4kcal/g, Gord = 9kcal/g)
       const proteina = Math.round((metaCalorias * protRatio) / 4);
       const carbo = Math.round((metaCalorias * carbRatio) / 4);
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
@@ -109,7 +125,6 @@ const Index = () => {
         gordura_dia: gordura,
       };
 
-      // 3. Salvar no Supabase
       const { error: insertError } = await supabase
         .from("usuarios_planogratis")
         .insert([dashData]);
@@ -120,21 +135,59 @@ const Index = () => {
       navigate("/dashboard", { state: dashData });
     } catch (err) {
       console.error("Erro no processo:", err);
-      toast.error("Erro ao processar dados. Tente novamente.");
+      toast.error("Erro ao processar dados.");
     }
   };
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div 
-        key={view} 
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        exit={{ opacity: 0 }} 
-        transition={{ duration: 0.3 }}
-      >
-        {view === "landing" && <Landing onStart={() => setView("onboarding")} />}
-        {view === "onboarding" && <OnboardingWizard onComplete={handleComplete} onBack={() => setView("landing")} />}
+      <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+        {view === "landing" && (
+          <Landing onStart={() => setView("onboarding")} onLogin={() => setView("login")} />
+        )}
+        
+        {view === "onboarding" && (
+          <OnboardingWizard onComplete={handleComplete} onBack={() => setView("landing")} />
+        )}
+
+        {view === "login" && (
+          <div className="min-h-screen flex flex-col items-center justify-center px-6">
+            <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano</h2>
+              <p className="text-muted-foreground mb-8">Informe seu WhatsApp cadastrado.</p>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
+                  <input
+                    type="tel"
+                    placeholder="(11) 99999-9999"
+                    value={loginWhatsapp}
+                    onChange={(e) => setLoginWhatsapp(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleLogin}
+                  disabled={isLoggingIn}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
+                >
+                  {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano"}
+                </motion.button>
+
+                <button
+                  onClick={() => setView("landing")}
+                  className="w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Voltar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </motion.div>
     </AnimatePresence>
   );
