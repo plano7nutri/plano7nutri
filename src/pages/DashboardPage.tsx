@@ -8,10 +8,12 @@ import { Loader2 } from "lucide-react";
 const DashboardPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Dados vindos do navigate(..., { state: data })
   const initialData = location.state;
 
   // Busca os dados mais recentes do banco de dados usando o WhatsApp como chave
-  const { data: dashData, isLoading } = useQuery({
+  const { data: dashData, isLoading, isError } = useQuery({
     queryKey: ["userPlan", initialData?.whatsapp],
     queryFn: async () => {
       if (!initialData?.whatsapp) return null;
@@ -19,7 +21,7 @@ const DashboardPage = () => {
         .from("usuarios_planogratis")
         .select("*")
         .eq("whatsapp", initialData.whatsapp)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
@@ -29,41 +31,48 @@ const DashboardPage = () => {
   });
 
   useEffect(() => {
-    if (!initialData) {
-      navigate("/");
+    // Se não houver dados no estado e a busca terminou sem resultados, volta para a home
+    if (!initialData && !isLoading && !dashData) {
+      navigate("/", { replace: true });
     }
-  }, [initialData, navigate]);
+  }, [initialData, dashData, isLoading, navigate]);
 
-  if (isLoading) {
+  // Se estiver carregando e não tivermos NADA para mostrar ainda
+  if (isLoading && !initialData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
         <p className="text-muted-foreground font-medium">Carregando seu plano personalizado...</p>
       </div>
     );
   }
 
-  if (!dashData) return null;
+  // Prioriza os dados do banco (dashData), mas usa os iniciais (initialData) como fallback
+  const displayData = dashData || initialData;
+
+  if (!displayData) {
+    return null; // O useEffect cuidará do redirecionamento
+  }
 
   return (
     <Dashboard
-      name={dashData.nome}
-      whatsapp={dashData.whatsapp}
-      age={dashData.idade}
-      sex={dashData.sexo_biologico}
-      height={dashData.altura}
-      weight={dashData.peso}
-      activityLabel={dashData.nivel_atividade_fisica}
-      goalLabel={dashData.objetivo_semanal}
-      tmb={dashData.tmb}
-      get={dashData.get}
-      metaCalorias={dashData.meta_calorias}
-      metaAgua={dashData.meta_agua}
-      proteina={dashData.proteina_dia}
-      carbo={dashData.carbo_dia}
-      gordura={dashData.gordura_dia}
-      restrictions={dashData.restricoes_alimentares}
-      preferences={dashData.preferencias}
+      name={displayData.nome}
+      whatsapp={displayData.whatsapp}
+      age={displayData.idade}
+      sex={displayData.sexo_biologico}
+      height={displayData.altura}
+      weight={displayData.peso}
+      activityLabel={displayData.nivel_atividade_fisica}
+      goalLabel={displayData.objetivo_semanal}
+      tmb={displayData.tmb}
+      get={displayData.get}
+      metaCalorias={displayData.meta_calorias}
+      metaAgua={displayData.meta_agua}
+      proteina={displayData.proteina_dia}
+      carbo={displayData.carbo_dia}
+      gordura={displayData.gordura_dia}
+      restrictions={displayData.restricoes_alimentares}
+      preferences={displayData.preferencias}
     />
   );
 };
