@@ -35,63 +35,83 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handleComplete = async (data: OnboardingData) => {
-    // Mifflin-St Jeor
-    const tmb =
-      data.sex === "male"
-        ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
-        : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
+    try {
+      console.log("Iniciando cálculos com os dados:", data);
 
-    const factor = activityFactors[data.activity] || 1.2;
-    const get = Math.round(tmb * factor);
+      // Cálculo TMB (Mifflin-St Jeor)
+      const tmb =
+        data.sex === "male"
+          ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
+          : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
 
-    let metaCalorias = get;
-    if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
-    else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
+      const factor = activityFactors[data.activity] || 1.2;
+      const get = Math.round(tmb * factor);
 
-    const metaAgua = Math.round(data.weight * 35 / 100) * 100;
+      // Ajuste por objetivo
+      let metaCalorias = get;
+      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
+      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
 
-    let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
-    if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.4; fatRatio = 0.25; }
-    if (data.goal === "gain_muscle") { protRatio = 0.35; carbRatio = 0.45; fatRatio = 0.2; }
+      // Água: 35ml por kg
+      const metaAgua = Math.round((data.weight * 35) / 100) * 100;
 
-    const proteina = Math.round((metaCalorias * protRatio) / 4);
-    const carbo = Math.round((metaCalorias * carbRatio) / 4);
-    const gordura = Math.round((metaCalorias * fatRatio) / 9);
+      // Macros simplificados
+      let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
+      if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
+      if (data.goal === "gain_muscle") { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
 
-    const dashData = {
-      session_id: Math.random().toString(36).substring(7),
-      nome: data.name,
-      sexo_biologico: data.sex,
-      idade: data.age,
-      altura: data.height,
-      peso: data.weight,
-      nivel_atividade_fisica: activityLabels[data.activity] || data.activity,
-      objetivo_semanal: goalLabels[data.goal] || data.goal,
-      restricoes_alimentares: data.restrictions,
-      preferencias: data.preferences,
-      meta_calorias: metaCalorias,
-      meta_agua: metaAgua,
-      tmb: Math.round(tmb),
-      get: get,
-      proteina_dia: proteina,
-      carbo_dia: carbo,
-      gordura_dia: gordura,
-    };
+      const proteina = Math.round((metaCalorias * protRatio) / 4);
+      const carbo = Math.round((metaCalorias * carbRatio) / 4);
+      const gordura = Math.round((metaCalorias * fatRatio) / 9);
 
-    const { error } = await supabase.from("usuarios_planogratis").insert([dashData]);
+      const dashData = {
+        session_id: Math.random().toString(36).substring(7),
+        nome: data.name,
+        sexo_biologico: data.sex,
+        idade: data.age,
+        altura: data.height,
+        peso: data.weight,
+        nivel_atividade_fisica: activityLabels[data.activity] || data.activity,
+        objetivo_semanal: goalLabels[data.goal] || data.goal,
+        restricoes_alimentares: data.restrictions || "Nenhuma",
+        preferencias: data.preferences || "Nenhuma",
+        meta_calorias: metaCalorias,
+        meta_agua: metaAgua,
+        tmb: Math.round(tmb),
+        get: get,
+        proteina_dia: proteina,
+        carbo_dia: carbo,
+        gordura_dia: gordura,
+      };
 
-    if (error) {
-      toast.error("Erro ao salvar seus dados. Tente novamente.");
-      return;
+      console.log("Dados calculados para envio:", dashData);
+
+      const { error } = await supabase
+        .from("usuarios_planogratis")
+        .insert([dashData]);
+
+      if (error) {
+        console.error("Erro Supabase:", error);
+        throw new Error(error.message);
+      }
+
+      toast.success("Plano calculado com sucesso!");
+      navigate("/dashboard", { state: dashData });
+    } catch (err) {
+      console.error("Erro no processo:", err);
+      toast.error("Erro ao processar dados. Verifique se a tabela existe no Supabase.");
     }
-
-    // Passamos os dados via state para o dashboard
-    navigate("/dashboard", { state: dashData });
   };
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+      <motion.div 
+        key={view} 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }} 
+        transition={{ duration: 0.3 }}
+      >
         {view === "landing" && <Landing onStart={() => setView("onboarding")} />}
         {view === "onboarding" && <OnboardingWizard onComplete={handleComplete} onBack={() => setView("landing")} />}
       </motion.div>
