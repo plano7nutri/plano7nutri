@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 type View = "landing" | "onboarding";
 
+// Fatores de atividade baseados na tabela Harris-Benedict
 const activityFactors: Record<string, number> = {
   sedentary: 1.2,
   lightly_active: 1.375,
@@ -36,25 +37,22 @@ const Index = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      console.log("Iniciando cálculos com os dados:", data);
-
-      // 1. Verificar se o WhatsApp já existe
+      // 1. Verificação de duplicidade por WhatsApp
       const { data: existingUser, error: checkError } = await supabase
         .from("usuarios_planogratis")
         .select("id")
         .eq("whatsapp", data.whatsapp)
         .maybeSingle();
 
-      if (checkError) {
-        console.error("Erro ao verificar duplicidade:", checkError);
-      }
+      if (checkError) console.error("Erro ao verificar duplicidade:", checkError);
 
       if (existingUser) {
         toast.error("Este número de WhatsApp já possui um plano cadastrado.");
         return;
       }
 
-      // 2. Cálculos Nutricionais
+      // 2. CÁLCULOS NUTRICIONAIS (Fórmula Mifflin-St Jeor)
+      // A altura (data.height) já vem em CM do OnboardingWizard
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -63,16 +61,28 @@ const Index = () => {
       const factor = activityFactors[data.activity] || 1.2;
       const get = Math.round(tmb * factor);
 
+      // Ajuste de calorias conforme objetivo
       let metaCalorias = get;
-      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
-      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
+      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8); // Déficit de 20%
+      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15); // Superávit de 15%
 
+      // Cálculo de Água (35ml por kg, arredondado para centenas)
       const metaAgua = Math.round((data.weight * 35) / 100) * 100;
 
+      // Divisão de Macronutrientes (Proporções baseadas no objetivo)
       let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
-      if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
-      if (data.goal === "gain_muscle") { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
+      
+      if (data.goal === "lose_weight") { 
+        protRatio = 0.35; // Mais proteína para saciedade
+        carbRatio = 0.35; 
+        fatRatio = 0.3; 
+      } else if (data.goal === "gain_muscle") { 
+        protRatio = 0.3; 
+        carbRatio = 0.5; // Mais carbo para energia no treino
+        fatRatio = 0.2; 
+      }
 
+      // Conversão de calorias para gramas (Prot/Carb = 4kcal/g, Gord = 9kcal/g)
       const proteina = Math.round((metaCalorias * protRatio) / 4);
       const carbo = Math.round((metaCalorias * carbRatio) / 4);
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
@@ -103,10 +113,7 @@ const Index = () => {
         .from("usuarios_planogratis")
         .insert([dashData]);
 
-      if (insertError) {
-        console.error("Erro Supabase:", insertError);
-        throw new Error(insertError.message);
-      }
+      if (insertError) throw new Error(insertError.message);
 
       toast.success("Plano calculado com sucesso!");
       navigate("/dashboard", { state: dashData });
