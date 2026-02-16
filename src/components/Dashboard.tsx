@@ -38,7 +38,7 @@ const Dashboard = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    console.log("[Dashboard] Iniciando upload para o WhatsApp:", whatsapp);
+    console.log("[DEBUG] Iniciando processo para:", whatsapp);
 
     if (file.size > 2 * 1024 * 1024) {
       toast.error("A imagem deve ter no máximo 2MB.");
@@ -50,55 +50,47 @@ const Dashboard = ({
       const fileExt = file.name.split('.').pop();
       const fileName = `${whatsapp.replace(/\D/g, '')}-${Date.now()}.${fileExt}`;
       
-      // 1. Upload para o Storage
-      console.log("[Dashboard] Enviando arquivo para o bucket 'avatars'...");
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      // 1. Tentar Upload
+      const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, file, { 
-          upsert: true,
-          cacheControl: '3600',
-          contentType: file.type
-        });
+        .upload(fileName, file, { upsert: true });
 
       if (uploadError) {
-        console.error("[Dashboard] Erro no upload do Storage:", uploadError);
-        throw new Error(`Erro no Storage: ${uploadError.message}. Verifique se o bucket 'avatars' existe e é público.`);
+        console.error("[DEBUG] Erro no Storage:", uploadError);
+        if (uploadError.message.includes("bucket not found")) {
+          throw new Error("O bucket 'avatars' não foi criado no Supabase. Crie-o como público.");
+        }
+        throw new Error(`Erro no Storage: ${uploadError.message}`);
       }
 
-      console.log("[Dashboard] Upload concluído com sucesso:", uploadData);
-
-      // 2. Pegar URL pública
-      const { data: urlData } = supabase.storage
+      // 2. Pegar URL
+      const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
-      
-      const publicUrl = urlData.publicUrl;
-      console.log("[Dashboard] URL pública gerada:", publicUrl);
 
-      // 3. Atualizar o banco de dados
-      console.log("[Dashboard] Atualizando coluna avatar_url na tabela...");
+      console.log("[DEBUG] URL gerada:", publicUrl);
+
+      // 3. Atualizar Banco
       const { error: updateError } = await supabase
         .from('usuarios_planogratis')
         .update({ avatar_url: publicUrl })
         .eq('whatsapp', whatsapp);
 
       if (updateError) {
-        console.error("[Dashboard] Erro ao atualizar banco de dados:", updateError);
-        throw new Error(`Erro no Banco: ${updateError.message}`);
+        console.error("[DEBUG] Erro no Banco:", updateError);
+        if (updateError.message.includes("column \"avatar_url\" does not exist")) {
+          throw new Error("A coluna 'avatar_url' não existe na sua tabela. Rode o SQL que te enviei.");
+        }
+        throw new Error(`Erro ao salvar no banco: ${updateError.message}`);
       }
 
-      console.log("[Dashboard] Banco de dados atualizado com sucesso!");
-      toast.success("Foto de perfil atualizada!");
-      
-      if (onAvatarUpdate) {
-        onAvatarUpdate();
-      }
+      toast.success("Foto atualizada!");
+      if (onAvatarUpdate) onAvatarUpdate();
     } catch (error: any) {
-      console.error("[Dashboard] Erro fatal no processo:", error);
-      toast.error(error.message || "Erro ao processar foto.");
+      console.error("[DEBUG] Erro Fatal:", error);
+      toast.error(error.message || "Erro desconhecido ao subir foto.");
     } finally {
       setIsUploading(false);
-      // Limpa o input para permitir subir a mesma foto se necessário
       event.target.value = "";
     }
   };
@@ -118,7 +110,6 @@ const Dashboard = ({
   return (
     <div className="min-h-screen px-6 py-10">
       <div className="w-full max-w-2xl mx-auto">
-        {/* Profile Section */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="glass rounded-2xl p-6 shadow-card mb-6">
           
@@ -133,13 +124,7 @@ const Dashboard = ({
               
               <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-colors group-hover:scale-110 duration-200">
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  accept="image/*" 
-                  onChange={handleAvatarUpload} 
-                  disabled={isUploading} 
-                />
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
               </label>
             </div>
 
@@ -197,7 +182,6 @@ const Dashboard = ({
           )}
         </motion.div>
 
-        {/* Nutritional Planning */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
           className="mb-6">
           <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
@@ -205,7 +189,6 @@ const Dashboard = ({
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Energy & Hydration */}
             <div className="glass rounded-2xl p-5 shadow-card">
               <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Droplets className="w-4 h-4 text-primary" /> Energia & Hidratação
@@ -232,7 +215,6 @@ const Dashboard = ({
               </div>
             </div>
 
-            {/* Macros */}
             <div className="glass rounded-2xl p-5 shadow-card">
               <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-primary" /> Macronutrientes (Diário)
@@ -251,14 +233,10 @@ const Dashboard = ({
                   <p className="text-xl font-extrabold text-foreground">{gordura}g</p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-3 text-center">
-                Valores calculados com base no seu objetivo: <strong>{goalLabel}</strong>
-              </p>
             </div>
           </div>
         </motion.div>
 
-        {/* WhatsApp CTA */}
         <motion.a
           href={whatsappUrl}
           target="_blank"
