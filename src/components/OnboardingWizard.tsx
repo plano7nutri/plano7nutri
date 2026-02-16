@@ -7,10 +7,12 @@ export interface OnboardingData {
   whatsapp: string;
   age: number;
   sex: "male" | "female" | "";
-  height: number;
+  height: number; // armazenado em cm internamente
   weight: number;
   activity: string;
   goal: string;
+  restrictions: string;
+  preferences: string;
 }
 
 interface OnboardingWizardProps {
@@ -38,14 +40,24 @@ const slideVariants = {
   exit: (dir: number) => ({ x: dir < 0 ? 80 : -80, opacity: 0 }),
 };
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [heightInput, setHeightInput] = useState("1,70");
   const [data, setData] = useState<OnboardingData>({
-    name: "", whatsapp: "", age: 25, sex: "", height: 170, weight: 70, activity: "", goal: "",
+    name: "", 
+    whatsapp: "", 
+    age: 25, 
+    sex: "", 
+    height: 170, 
+    weight: 70, 
+    activity: "", 
+    goal: "",
+    restrictions: "",
+    preferences: "",
   });
 
   const next = () => { setDir(1); setStep((s) => s + 1); };
@@ -54,11 +66,25 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
     setDir(-1); setStep((s) => s - 1);
   };
 
+  const handleHeightChange = (val: string) => {
+    const formatted = val.replace(/[^0-9,]/g, "");
+    setHeightInput(formatted);
+    
+    const numericVal = parseFloat(formatted.replace(",", "."));
+    if (!isNaN(numericVal)) {
+      setData({ ...data, height: Math.round(numericVal * 100) });
+    }
+  };
+
   const canProceed = () => {
     if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 10;
-    if (step === 1) return data.age > 0 && data.sex !== "" && data.height > 0 && data.weight > 0;
+    if (step === 1) {
+      const h = data.height / 100;
+      return data.age > 0 && data.age <= 100 && data.sex !== "" && h > 0 && h <= 2.10 && data.weight > 0 && data.weight <= 250;
+    }
     if (step === 2) return data.activity !== "";
     if (step === 3) return data.goal !== "";
+    if (step === 4) return true; // Restrições e preferências são opcionais
     return false;
   };
 
@@ -70,7 +96,7 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
   const isLastStep = step === TOTAL_STEPS - 1;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-10">
       <div className="w-full max-w-md mx-auto">
         {/* Progress */}
         <div className="flex items-center gap-2 mb-10">
@@ -119,20 +145,20 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Idade</label>
-                  <input type="number" min={10} max={100} value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })}
+                  <label className="block text-sm font-medium text-foreground mb-2">Idade (máx 100)</label>
+                  <input type="number" min={1} max={100} value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })}
                     className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Altura (cm)</label>
-                  <input type="number" min={100} max={250} value={data.height} onChange={(e) => setData({ ...data, height: Number(e.target.value) })}
+                  <label className="block text-sm font-medium text-foreground mb-2">Altura (m - máx 2,10)</label>
+                  <input type="text" placeholder="1,70" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium text-foreground mb-2">Peso (kg)</label>
-                <input type="number" min={30} max={300} value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })}
+                <label className="block text-sm font-medium text-foreground mb-2">Peso (kg - máx 250)</label>
+                <input type="number" min={1} max={250} value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })}
                   className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
               </div>
 
@@ -184,6 +210,36 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
                     <div className="text-sm text-muted-foreground">{g.desc}</div>
                   </button>
                 ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 4: Restrictions & Preferences */}
+          {step === 4 && (
+            <motion.div key="step4" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Preferências</h2>
+              <p className="text-muted-foreground mb-6">Personalize ainda mais o seu cardápio.</p>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Restrições Alimentares</label>
+                  <textarea 
+                    placeholder="Ex: Intolerância a lactose, alergia a amendoim, não como carne de porco..."
+                    value={data.restrictions}
+                    onChange={(e) => setData({ ...data, restrictions: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-base focus:outline-none focus:ring-2 focus:ring-ring min-h-[100px] resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Preferências Alimentares</label>
+                  <textarea 
+                    placeholder="Ex: Gosto muito de ovos, prefiro frango a carne vermelha, amo frutas..."
+                    value={data.preferences}
+                    onChange={(e) => setData({ ...data, preferences: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-base focus:outline-none focus:ring-2 focus:ring-ring min-h-[100px] resize-none"
+                  />
+                </div>
               </div>
             </motion.div>
           )}

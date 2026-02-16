@@ -33,6 +33,8 @@ interface DashData {
   activityLabel: string; goalLabel: string;
   tmb: number; get: number; metaCalorias: number; metaAgua: number;
   proteina: number; carbo: number; gordura: number;
+  restrictions: string;
+  preferences: string;
 }
 
 const Index = () => {
@@ -72,6 +74,8 @@ const Index = () => {
       activityLabel: activityLabels[data.activity] || data.activity,
       goalLabel: goalLabels[data.goal] || data.goal,
       tmb: Math.round(tmb), get, metaCalorias, metaAgua, proteina, carbo, gordura,
+      restrictions: data.restrictions,
+      preferences: data.preferences,
     });
     setView("dashboard");
   };

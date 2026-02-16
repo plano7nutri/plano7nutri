@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, User, Activity, Target } from "lucide-react";
+import { MessageCircle, Flame, Zap, Droplets, User, Activity, Target, UtensilsCrossed } from "lucide-react";
 
 interface DashboardProps {
   name: string;
@@ -17,14 +17,24 @@ interface DashboardProps {
   proteina: number;
   carbo: number;
   gordura: number;
+  restrictions: string;
+  preferences: string;
 }
 
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
+  restrictions, preferences
 }: DashboardProps) => {
   const whatsappMessage = encodeURIComponent(
-    `Olá! Sou ${name} e quero receber meu Plano 7 🥗\n\nMeu TMB: ${tmb} kcal\nMeu GET: ${get} kcal\nMeta: ${metaCalorias} kcal\nObjetivo: ${goalLabel}\n\nPor favor, gere meu cardápio semanal e lista de compras!`
+    `Olá! Sou ${name} e quero receber meu Plano 7 🥗\n\n` +
+    `Meu TMB: ${tmb} kcal\n` +
+    `Meu GET: ${get} kcal\n` +
+    `Meta: ${metaCalorias} kcal\n` +
+    `Objetivo: ${goalLabel}\n` +
+    (restrictions ? `Restrições: ${restrictions}\n` : "") +
+    (preferences ? `Preferências: ${preferences}\n` : "") +
+    `\nPor favor, gere meu cardápio semanal e lista de compras!`
   );
   const whatsappUrl = `https://wa.me/5511999999999?text=${whatsappMessage}`;
 
@@ -59,7 +69,7 @@ const Dashboard = ({
             </div>
             <div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Altura</span>
-              <p className="font-bold text-foreground">{(height / 100).toFixed(2)} m</p>
+              <p className="font-bold text-foreground">{(height / 100).toFixed(2).replace(".", ",")} m</p>
             </div>
             <div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Peso</span>
@@ -75,6 +85,25 @@ const Dashboard = ({
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Objetivo</span>
             <p className="font-bold text-foreground flex items-center gap-1"><Target className="w-4 h-4 text-accent" /> {goalLabel}</p>
           </div>
+
+          {(restrictions || preferences) && (
+            <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {restrictions && (
+                <div>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                    <UtensilsCrossed className="w-3 h-3" /> Restrições
+                  </span>
+                  <p className="text-sm text-foreground mt-1">{restrictions}</p>
+                </div>
+              )}
+              {preferences && (
+                <div>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Preferências</span>
+                  <p className="text-sm text-foreground mt-1">{preferences}</p>
+                </div>
+              )}
+            </div>
+          )}
         </motion.div>
 
         {/* Nutritional Planning */}
