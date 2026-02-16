@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ClipboardList, Calculator, MessageCircle, UserCheck } from "lucide-react";
+import Testimonials from "./Testimonials";
 
 const steps = [
   {
@@ -112,6 +113,9 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </div>
         </motion.div>
       </main>
+
+      {/* Prova Social */}
+      <Testimonials />
     </div>
   );
 };
