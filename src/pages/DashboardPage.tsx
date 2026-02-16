@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
+import Footer from "@/components/Footer";
 import { Loader2 } from "lucide-react";
 
 const DashboardPage = () => {
@@ -48,27 +49,32 @@ const DashboardPage = () => {
   if (!displayData) return null;
 
   return (
-    <Dashboard
-      name={displayData.nome}
-      whatsapp={displayData.whatsapp}
-      age={displayData.idade}
-      sex={displayData.sexo_biologico}
-      height={displayData.altura}
-      weight={displayData.peso}
-      activityLabel={displayData.nivel_atividade_fisica}
-      goalLabel={displayData.objetivo_semanal}
-      tmb={displayData.tmb}
-      get={displayData.get}
-      metaCalorias={displayData.meta_calorias}
-      metaAgua={displayData.meta_agua}
-      proteina={displayData.proteina_dia}
-      carbo={displayData.carbo_dia}
-      gordura={displayData.gordura_dia}
-      restrictions={displayData.restricoes_alimentares}
-      preferences={displayData.preferencias}
-      avatarUrl={displayData.avatar_url}
-      onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
-    />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1">
+        <Dashboard
+          name={displayData.nome}
+          whatsapp={displayData.whatsapp}
+          age={displayData.idade}
+          sex={displayData.sexo_biologico}
+          height={displayData.altura}
+          weight={displayData.peso}
+          activityLabel={displayData.nivel_atividade_fisica}
+          goalLabel={displayData.objetivo_semanal}
+          tmb={displayData.tmb}
+          get={displayData.get}
+          metaCalorias={displayData.meta_calorias}
+          metaAgua={displayData.meta_agua}
+          proteina={displayData.proteina_dia}
+          carbo={displayData.carbo_dia}
+          gordura={displayData.gordura_dia}
+          restrictions={displayData.restricoes_alimentares}
+          preferences={displayData.preferencias}
+          avatarUrl={displayData.avatar_url}
+          onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
+        />
+      </main>
+      <Footer />
+    </div>
   );
 };
 

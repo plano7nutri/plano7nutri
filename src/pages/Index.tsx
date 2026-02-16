@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Landing from "@/components/Landing";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
+import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -109,7 +110,7 @@ const Index = () => {
         proteina_dia: proteina,
         carbo_dia: carbo,
         gordura_dia: gordura,
-        avatar_url: null, // Inicializa a coluna como nula
+        avatar_url: null,
       };
 
       const { error: insertError } = await supabase
@@ -127,60 +128,65 @@ const Index = () => {
   };
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-        {view === "landing" && (
-          <Landing onStart={() => setView("onboarding")} onLogin={() => setView("login")} />
-        )}
-        
-        {view === "onboarding" && (
-          <OnboardingWizard 
-            onComplete={handleComplete} 
-            onBack={() => setView("landing")} 
-            onGoToLogin={() => setView("login")}
-          />
-        )}
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1">
+        <AnimatePresence mode="wait">
+          <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            {view === "landing" && (
+              <Landing onStart={() => setView("onboarding")} onLogin={() => setView("login")} />
+            )}
+            
+            {view === "onboarding" && (
+              <OnboardingWizard 
+                onComplete={handleComplete} 
+                onBack={() => setView("landing")} 
+                onGoToLogin={() => setView("login")}
+              />
+            )}
 
-        {view === "login" && (
-          <div className="min-h-screen flex flex-col items-center justify-center px-6">
-            <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano</h2>
-              <p className="text-muted-foreground mb-8">Informe seu WhatsApp cadastrado.</p>
-              
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
-                  <input
-                    type="tel"
-                    placeholder="(11) 99999-9999"
-                    value={loginWhatsapp}
-                    onChange={(e) => setLoginWhatsapp(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
+            {view === "login" && (
+              <div className="min-h-screen flex flex-col items-center justify-center px-6">
+                <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano</h2>
+                  <p className="text-muted-foreground mb-8">Informe seu WhatsApp cadastrado.</p>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
+                      <input
+                        type="tel"
+                        placeholder="(11) 99999-9999"
+                        value={loginWhatsapp}
+                        onChange={(e) => setLoginWhatsapp(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                      />
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleLogin}
+                      disabled={isLoggingIn}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
+                    >
+                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano"}
+                    </motion.button>
+
+                    <button
+                      onClick={() => setView("landing")}
+                      className="w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
+                    >
+                      <ArrowLeft className="w-4 h-4" /> Voltar
+                    </button>
+                  </div>
                 </div>
-
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleLogin}
-                  disabled={isLoggingIn}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
-                >
-                  {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano"}
-                </motion.button>
-
-                <button
-                  onClick={() => setView("landing")}
-                  className="w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
-                >
-                  <ArrowLeft className="w-4 h-4" /> Voltar
-                </button>
               </div>
-            </div>
-          </div>
-        )}
-      </motion.div>
-    </AnimatePresence>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+      <Footer />
+    </div>
   );
 };
 
