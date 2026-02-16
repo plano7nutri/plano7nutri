@@ -10,6 +10,13 @@ const PrivacyPolicy = () => {
       lastUpdate={today}
     >
       <div className="space-y-8 text-foreground/90 leading-relaxed">
+        
+        <div className="bg-primary/5 border border-primary/20 p-6 rounded-2xl mb-8">
+          <p className="text-sm font-bold text-primary text-center uppercase tracking-wide">
+            O uso de qualquer produto ou serviço da marca NutriIA implica na aceitação automática desta Política de Privacidade e dos nossos Termos de Uso.
+          </p>
+        </div>
+
         <section>
           <h2 className="text-xl font-bold mb-4">1. COLETA E TRATAMENTO DE DADOS</h2>
           <p className="mb-4">

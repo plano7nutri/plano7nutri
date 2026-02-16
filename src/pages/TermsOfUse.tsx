@@ -12,6 +12,12 @@ const TermsOfUse = () => {
     >
       <div className="space-y-8 text-foreground/90 leading-relaxed">
         
+        <div className="bg-primary/5 border border-primary/20 p-6 rounded-2xl mb-8">
+          <p className="text-sm font-bold text-primary text-center uppercase tracking-wide">
+            Ao utilizar este ou qualquer outro produto da marca NutriIA, você aceita automaticamente e integralmente todos os termos e condições descritos abaixo.
+          </p>
+        </div>
+
         <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl mb-8">
           <div className="flex items-start gap-3 text-blue-800">
             <Info className="w-6 h-6 flex-shrink-0 mt-1" />
@@ -84,7 +90,7 @@ const TermsOfUse = () => {
         <section>
           <h2 className="text-xl font-bold mb-4">7. ACEITAÇÃO</h2>
           <p className="font-bold text-primary">
-            AO ACESSAR O PLANO 7, VOCÊ CONCORDA COM ESTA ESTRUTURA DE USO E RECONHECE A NATUREZA TECNOLÓGICA DA FERRAMENTA.
+            AO ACESSAR O PLANO 7 OU QUALQUER PRODUTO NUTRI-IA, VOCÊ CONCORDA COM ESTA ESTRUTURA DE USO E RECONHECE A NATUREZA TECNOLÓGICA DA FERRAMENTA.
           </p>
         </section>
       </div>
