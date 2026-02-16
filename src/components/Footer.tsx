@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Mail, Youtube } from "lucide-react";
+import { Mail, Clock } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -31,24 +31,29 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Coluna 3: Redes Sociais e Contato */}
+          {/* Coluna 3: Fale Conosco */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold text-lg">Conecte-se</h4>
-            <div className="flex items-center gap-4">
-              <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white transition-all duration-300">
-                <Instagram size={20} />
+            <h4 className="text-white font-bold text-lg">Fale Conosco</h4>
+            <div className="space-y-3">
+              <a 
+                href="mailto:contato_nutriia@inventiia.com.br" 
+                className="flex items-center gap-3 text-zinc-200/70 hover:text-white transition-colors duration-200 group"
+              >
+                <div className="p-2 rounded-full bg-white/5 group-hover:bg-white/15 transition-all">
+                  <Mail size={18} />
+                </div>
+                <span className="text-sm font-medium">contato_nutriia@inventiia.com.br</span>
               </a>
-              <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white transition-all duration-300">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white transition-all duration-300">
-                <Youtube size={20} />
-              </a>
-              <a href="mailto:contato@plano7.com.br" className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-white transition-all duration-300">
-                <Mail size={20} />
-              </a>
+              
+              <div className="flex items-center gap-3 text-zinc-200/70">
+                <div className="p-2 rounded-full bg-white/5">
+                  <Clock size={18} />
+                </div>
+                <p className="text-sm font-medium leading-tight">
+                  Atendimento 24 horas por dia,<br /> 7 dias por semana.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-zinc-200/60 font-medium">contato@plano7.com.br</p>
           </div>
         </div>
 
