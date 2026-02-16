@@ -1,5 +1,5 @@
 import LegalLayout from "@/components/LegalLayout";
-import { AlertTriangle } from "lucide-react";
+import { Info } from "lucide-react";
 
 const TermsOfUse = () => {
   const today = new Date().toLocaleDateString('pt-BR');
@@ -7,20 +7,18 @@ const TermsOfUse = () => {
   return (
     <LegalLayout 
       title="Termos de Uso" 
-      version="v1.0" 
+      version="v1.1" 
       lastUpdate={today}
     >
       <div className="space-y-8 text-foreground/90 leading-relaxed">
         
-        <div className="bg-orange-50 border border-orange-200 p-6 rounded-2xl mb-8">
-          <div className="flex items-start gap-3 text-orange-800">
-            <AlertTriangle className="w-6 h-6 flex-shrink-0 mt-1" />
+        <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl mb-8">
+          <div className="flex items-start gap-3 text-blue-800">
+            <Info className="w-6 h-6 flex-shrink-0 mt-1" />
             <div>
-              <h3 className="font-bold text-lg mb-2 uppercase">Aviso de Isenção de Responsabilidade Médica</h3>
+              <h3 className="font-bold text-lg mb-2 uppercase">Definição da Ferramenta</h3>
               <p className="text-sm font-medium leading-relaxed">
-                <strong>IMPORTANTE:</strong> O Plano 7 não é um serviço de saúde. É uma ferramenta tecnológica de sugestão alimentar. 
-                <strong> NUNCA</strong> substitua orientações médicas ou nutricionais profissionais pelo conteúdo gerado por esta ferramenta. 
-                Sempre consulte profissionais qualificados antes de iniciar qualquer mudança em sua dieta.
+                O Plano 7 é uma <strong>plataforma de organização tecnológica</strong> desenvolvida para oferecer sugestões de cardápios e cálculos nutricionais. Como facilitador digital, recomendamos que as informações aqui geradas sejam acompanhadas por profissionais de saúde qualificados para uma melhor adaptação às suas necessidades individuais.
               </p>
             </div>
           </div>
@@ -28,61 +26,61 @@ const TermsOfUse = () => {
 
         <section>
           <h2 className="text-xl font-bold mb-4">1. NATUREZA DO SERVIÇO</h2>
-          <p className="font-extrabold uppercase mb-4 text-primary">
-            O PLANO 7 É UMA FERRAMENTA TECNOLÓGICA DE SUGESTÃO ALIMENTAR E CÁLCULO METABÓLICO. NÃO É UM SERVIÇO MÉDICO, NUTRICIONAL OU DE SAÚDE.
+          <p className="font-bold mb-4">
+            O PLANO 7 É UM SOFTWARE DE APOIO À ORGANIZAÇÃO ALIMENTAR. ESTA FERRAMENTA ATUA COMO UM AUXILIAR NO PLANEJAMENTO DE REFEIÇÕES.
           </p>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Não substitui consultas com médicos ou nutricionistas.</li>
-            <li>Não somos responsáveis por diagnósticos, tratamentos ou curas de qualquer condição de saúde.</li>
-            <li>As informações geradas baseiam-se em fórmulas matemáticas padrão e dados inseridos pelo próprio usuário.</li>
+            <li>A plataforma funciona através de algoritmos matemáticos baseados nas informações fornecidas.</li>
+            <li>O Plano 7 não atua como instituição de saúde, instituto médico ou consultoria clínica.</li>
+            <li>Nossa proposta é oferecer praticidade e organização para o seu dia a dia nutricional.</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-xl font-bold mb-4">2. ISENÇÃO DE RESPONSABILIDADE MÉDICA</h2>
-          <p className="mb-4">Ao utilizar o Plano 7, você declara estar ciente e concordar que:</p>
+          <h2 className="text-xl font-bold mb-4">2. RESPONSABILIDADE E USO CONSCIENTE</h2>
+          <p className="mb-4">Ao utilizar o Plano 7, o usuário compreende que:</p>
           <ul className="list-disc pl-5 space-y-3">
-            <li>Nenhuma relação médico-paciente ou nutricionista-paciente é estabelecida entre as partes.</li>
-            <li><strong>O uso é terminantemente desaconselhado</strong>, sem supervisão médica direta, para: gestantes, lactantes, menores de 18 anos, diabéticos, hipertensos, pessoas com transtornos alimentares, doenças renais ou qualquer condição crônica pré-existente.</li>
-            <li>O Plano 7 não se responsabiliza por reações alérgicas, intolerâncias, intoxicações ou quaisquer danos diretos ou indiretos à saúde decorrentes do seguimento das sugestões apresentadas.</li>
+            <li>A ferramenta fornece sugestões baseadas em dados estatísticos e padrões nutricionais gerais.</li>
+            <li>Pessoas com condições específicas (como gestantes ou portadores de patologias) devem buscar orientação profissional para validar se as sugestões automáticas são compatíveis com seu quadro clínico atual.</li>
+            <li>O Plano 7 não realiza diagnósticos médicos ou prescrições terapêuticas.</li>
           </ul>
         </section>
 
         <section>
           <h2 className="text-xl font-bold mb-4">3. LIMITAÇÃO DE RESPONSABILIDADE</h2>
           <p className="mb-4">
-            O uso desta plataforma ocorre por sua conta e risco exclusivos. O Plano 7 não garante resultados específicos de perda de peso, ganho muscular ou performance física.
+            A plataforma trabalha para oferecer dados precisos, mas os resultados podem variar de acordo com o metabolismo individual e o rigor na execução das sugestões.
           </p>
           <p>
-            Nossa responsabilidade máxima, sob qualquer pretexto, limita-se ao valor eventualmente pago pelo serviço nos últimos 12 meses. Excluímos qualquer responsabilidade por danos indiretos, lucros cessantes ou danos punitivos.
+            Não nos responsabilizamos pelo uso inadequado das informações ou pela omissão de dados de saúde relevantes durante o cadastro que possam impactar os cálculos gerados.
           </p>
         </section>
 
         <section>
-          <h2 className="text-xl font-bold mb-4">4. ELEGIBILIDADE E USO</h2>
+          <h2 className="text-xl font-bold mb-4">4. ELEGIBILIDADE</h2>
           <p>
-            O serviço destina-se apenas a indivíduos com 18 anos ou mais, em pleno gozo de sua capacidade civil. O uso é estritamente pessoal e intransferível, sendo proibida a revenda ou uso comercial dos planos gerados.
+            O serviço destina-se a indivíduos com 18 anos ou mais. O uso do Plano 7 é pessoal e visa facilitar a rotina alimentar do usuário cadastrado através de tecnologia e inteligência de dados.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-bold mb-4">5. PROPRIEDADE INTELECTUAL</h2>
           <p>
-            Todo o conteúdo, algoritmos, design e marca "Plano 7" são de propriedade exclusiva. É proibida a cópia, reprodução ou distribuição do conteúdo sem autorização prévia por escrito.
+            Os algoritmos, design e marca Plano 7 são propriedades tecnológicas protegidas. O acesso à ferramenta concede ao usuário o direito de uso pessoal das sugestões geradas pelo sistema.
           </p>
         </section>
 
         <section>
-          <h2 className="text-xl font-bold mb-4">6. LEI APLICÁVEL E FORO</h2>
+          <h2 className="text-xl font-bold mb-4">6. LEI APLICÁVEL</h2>
           <p>
-            Estes termos são regidos pelas leis da República Federativa do Brasil. Para a resolução de quaisquer conflitos, as partes elegem o foro da comarca de São Paulo/SP, com exclusão de qualquer outro.
+            Estes termos seguem a legislação brasileira, elegendo o foro da comarca de São Paulo/SP para dirimir eventuais questões sobre o uso da tecnologia.
           </p>
         </section>
 
         <section>
-          <h2 className="text-xl font-bold mb-4">7. CONSENTIMENTO</h2>
-          <p className="font-bold">
-            AO UTILIZAR O PLANO 7, VOCÊ DECLARA QUE LEU, COMPREENDEU E ACEITA INTEGRALMENTE ESTES TERMOS DE USO E A NOSSA POLÍTICA DE PRIVACIDADE.
+          <h2 className="text-xl font-bold mb-4">7. ACEITAÇÃO</h2>
+          <p className="font-bold text-primary">
+            AO ACESSAR O PLANO 7, VOCÊ CONCORDA COM ESTA ESTRUTURA DE USO E RECONHECE A NATUREZA TECNOLÓGICA DA FERRAMENTA.
           </p>
         </section>
       </div>
