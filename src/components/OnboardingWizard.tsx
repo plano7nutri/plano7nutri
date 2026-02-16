@@ -67,28 +67,29 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
   };
 
   const handleHeightChange = (val: string) => {
-    // Remove tudo que não é número, vírgula ou ponto
-    let cleanVal = val.replace(/[^0-9,.]/g, "");
+    // Permite apenas números e a vírgula (ou ponto que vira vírgula)
+    let formatted = val.replace(/[^0-9,.]/g, "");
+    formatted = formatted.replace(".", ",");
     
-    // Substitui ponto por vírgula
-    cleanVal = cleanVal.replace(".", ",");
-    
-    // Trava: permite apenas uma vírgula
-    const parts = cleanVal.split(",");
+    // Garante que só exista uma vírgula
+    const parts = formatted.split(",");
     if (parts.length > 2) {
-      cleanVal = parts[0] + "," + parts.slice(1).join("");
+      formatted = parts[0] + "," + parts.slice(1).join("");
     }
 
-    setHeightInput(cleanVal);
+    setHeightInput(formatted);
     
-    // Converte para número para o cálculo (em cm)
-    let numericVal = parseFloat(cleanVal.replace(",", "."));
+    // Converte para número (centímetros) para o cálculo interno
+    const numericString = formatted.replace(",", ".");
+    const numericVal = parseFloat(numericString);
+    
     if (!isNaN(numericVal)) {
-      // Se o usuário digitar "170", já está em cm. Se digitar "1,70", converte para 170.
+      // Se o usuário digitar "1,70", numericVal é 1.7 -> vira 170cm
+      // Se o usuário digitar "170", numericVal é 170 -> continua 170cm
       if (numericVal > 3) {
-        setData({ ...data, height: Math.round(numericVal) });
+        setData(prev => ({ ...prev, height: Math.round(numericVal) }));
       } else {
-        setData({ ...data, height: Math.round(numericVal * 100) });
+        setData(prev => ({ ...prev, height: Math.round(numericVal * 100) }));
       }
     }
   };
@@ -176,8 +177,13 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Altura (m)</label>
-                  <input type="text" placeholder="1,70" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
+                  <input 
+                    type="text" 
+                    placeholder="1,70" 
+                    value={heightInput} 
+                    onChange={(e) => handleHeightChange(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" 
+                  />
                 </div>
               </div>
 
