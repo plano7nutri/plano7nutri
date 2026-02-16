@@ -11,7 +11,7 @@ const steps = [
   {
     icon: Calculator,
     title: "Cálculo Metabólico",
-    description: "Descobrimos seu TMB e GET con precisão científica.",
+    description: "Descobrimos seu TMB e GET com precisão científica.",
   },
   {
     icon: MessageCircle,
