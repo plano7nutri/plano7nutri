@@ -18,7 +18,11 @@ const TermsOfUse = () => {
             <div>
               <h3 className="font-bold text-lg mb-2 uppercase">Definição da Ferramenta</h3>
               <p className="text-sm font-medium leading-relaxed">
-                O Plano 7 é uma <strong>plataforma de organização tecnológica</strong> desenvolvida para oferecer sugestões de cardápios e cálculos nutricionais. Como facilitador digital, recomendamos que as informações aqui geradas sejam acompanhadas por profissionais de saúde qualificados para uma melhor adaptação às suas necessidades individuais.
+                O Plano 7 é uma ferramenta tecnológica avançada que gera sugestões personalizadas de cardápios e cálculos nutricionais precisos baseados em seus dados individuais. Utilizamos algoritmos sofisticados e fórmulas científicas validadas para criar seu planejamento alimentar semanal de forma rápida e eficiente. 
+                <br /><br />
+                <strong>IMPORTANTE:</strong> Embora nossos cálculos sejam precisos e personalizados, o Plano 7 é uma <strong>FERRAMENTA DE PLANEJAMENTO</strong>, não um serviço médico ou nutricional. <strong>NÃO</strong> somos profissionais de saúde e <strong>NÃO</strong> estabelecemos relação profissional-paciente. Recomendamos fortemente que você consulte médico e/ou nutricionista para validar e adaptar o plano às suas necessidades específicas de saúde. 
+                <br /><br />
+                O uso desta ferramenta é <strong>POR SUA CONTA E RISCO</strong>. O Plano 7 e seus desenvolvedores <strong>NÃO</strong> se responsabilizam por quaisquer danos à saúde, reações adversas, alergias ou qualquer prejuízo decorrente do uso desta ferramenta.
               </p>
             </div>
           </div>
@@ -26,13 +30,13 @@ const TermsOfUse = () => {
 
         <section>
           <h2 className="text-xl font-bold mb-4">1. NATUREZA DO SERVIÇO</h2>
-          <p className="font-bold mb-4">
+          <p className="font-bold mb-4 text-primary uppercase">
             O PLANO 7 É UM SOFTWARE DE APOIO À ORGANIZAÇÃO ALIMENTAR. ESTA FERRAMENTA ATUA COMO UM AUXILIAR NO PLANEJAMENTO DE REFEIÇÕES.
           </p>
           <ul className="list-disc pl-5 space-y-2">
-            <li>A plataforma funciona através de algoritmos matemáticos baseados nas informações fornecidas.</li>
+            <li>A plataforma funciona através de algoritmos matemáticos baseados nas informações fornecidas pelo usuário.</li>
             <li>O Plano 7 não atua como instituição de saúde, instituto médico ou consultoria clínica.</li>
-            <li>Nossa proposta é oferecer praticidade e organização para o seu dia a dia nutricional.</li>
+            <li>Nossa proposta é oferecer praticidade, velocidade e organização para o seu dia a dia nutricional.</li>
           </ul>
         </section>
 
@@ -40,9 +44,9 @@ const TermsOfUse = () => {
           <h2 className="text-xl font-bold mb-4">2. RESPONSABILIDADE E USO CONSCIENTE</h2>
           <p className="mb-4">Ao utilizar o Plano 7, o usuário compreende que:</p>
           <ul className="list-disc pl-5 space-y-3">
-            <li>A ferramenta fornece sugestões baseadas em dados estatísticos e padrões nutricionais gerais.</li>
-            <li>Pessoas com condições específicas (como gestantes ou portadores de patologias) devem buscar orientação profissional para validar se as sugestões automáticas são compatíveis com seu quadro clínico atual.</li>
+            <li>A ferramenta fornece sugestões baseadas em dados estatísticos e padrões nutricionais gerais aplicados aos seus dados.</li>
             <li>O Plano 7 não realiza diagnósticos médicos ou prescrições terapêuticas.</li>
+            <li>A responsabilidade pela veracidade dos dados inseridos (como peso, altura e restrições) é exclusiva do usuário.</li>
           </ul>
         </section>
 
