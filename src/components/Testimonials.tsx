@@ -91,16 +91,16 @@ const Testimonials = () => {
   const [showAll, setShowAll] = useState(false);
 
   return (
-    <section className="py-24 bg-zinc-50/50">
+    <section className="py-12 bg-zinc-50/50">
       <div className="container mx-auto px-6">
         {/* Header da Seção */}
-        <div className="flex flex-col items-center text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-6 border border-emerald-100">
+        <div className="flex flex-col items-center text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-3 border border-emerald-100">
             <Star className="w-3 h-3 fill-current" />
             Avaliado por 1.482 usuários
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
+          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
             O que dizem quem já recebeu
           </h2>
 
