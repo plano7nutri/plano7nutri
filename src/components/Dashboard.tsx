@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, User, Activity, Target, UtensilsCrossed } from "lucide-react";
+import { MessageCircle, Flame, Zap, Droplets, User, Activity, Target, UtensilsCrossed, Camera, Loader2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface DashboardProps {
   name: string;
@@ -19,13 +23,62 @@ interface DashboardProps {
   gordura: number;
   restrictions: string;
   preferences: string;
+  avatarUrl?: string;
+  onAvatarUpdate?: () => void;
 }
 
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences
+  restrictions, preferences, avatarUrl, onAvatarUpdate
 }: DashboardProps) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 2MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${whatsapp}-${Math.random()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      // 1. Upload para o Storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Pegar URL pública
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // 3. Atualizar no banco de dados
+      const { error: updateError } = await supabase
+        .from('usuarios_planogratis')
+        .update({ avatar_url: publicUrl })
+        .eq('whatsapp', whatsapp);
+
+      if (updateError) throw updateError;
+
+      toast.success("Foto de perfil atualizada!");
+      if (onAvatarUpdate) onAvatarUpdate();
+    } catch (error) {
+      console.error("Erro ao subir foto:", error);
+      toast.error("Erro ao atualizar foto de perfil.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const whatsappMessage = encodeURIComponent(
     `Olá! Sou ${name} e quero receber meu Plano 7 🥗\n\n` +
     `Meu TMB: ${tmb} kcal\n` +
@@ -44,21 +97,29 @@ const Dashboard = ({
         {/* Profile Section */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="glass rounded-2xl p-6 shadow-card mb-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
-              <User className="w-5 h-5 text-primary" />
+          
+          <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
+            <div className="relative group">
+              <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+                <AvatarImage src={avatarUrl} alt={name} className="object-cover" />
+                <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
+                  {name.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              
+              <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-colors group-hover:scale-110 duration-200">
+                {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
+              </label>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-foreground">Seu Perfil</h2>
-              <p className="text-sm text-muted-foreground">Dados pessoais e planejamento nutricional.</p>
+
+            <div className="text-center sm:text-left">
+              <h2 className="text-2xl font-bold text-foreground">{name}</h2>
+              <p className="text-sm text-muted-foreground">Seu planejamento nutricional personalizado.</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nome</span>
-              <p className="font-bold text-foreground">{name}</p>
-            </div>
             <div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sexo</span>
               <p className="font-bold text-foreground">{sex === "male" ? "Masculino" : "Feminino"}</p>
@@ -75,7 +136,7 @@ const Dashboard = ({
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Peso</span>
               <p className="font-bold text-foreground">{weight} kg</p>
             </div>
-            <div className="col-span-2 sm:col-span-3">
+            <div className="col-span-2 sm:col-span-4 mt-2">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nível de Atividade</span>
               <p className="font-bold text-foreground flex items-center gap-1"><Activity className="w-4 h-4 text-primary" /> {activityLabel}</p>
             </div>
