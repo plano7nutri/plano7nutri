@@ -38,7 +38,6 @@ const Dashboard = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validar tamanho (2MB)
     if (file.size > 2 * 1024 * 1024) {
       toast.error("A imagem deve ter no máximo 2MB.");
       return;
@@ -48,41 +47,32 @@ const Dashboard = ({
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${whatsapp.replace(/\D/g, '')}-${Date.now()}.${fileExt}`;
-      const filePath = fileName; // Salvando na raiz do bucket 'avatars'
-
-      // 1. Upload para o Storage
+      
+      // 1. Upload para o Storage (Bucket 'avatars')
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, {
-          upsert: true,
-          contentType: file.type
-        });
+        .upload(fileName, file, { upsert: true });
 
-      if (uploadError) {
-        console.error("Erro no Storage:", uploadError);
-        throw new Error("Erro ao enviar arquivo para o servidor.");
-      }
+      if (uploadError) throw uploadError;
 
-      // 2. Pegar URL pública
+      // 2. Pegar URL pública gerada
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
-      // 3. Atualizar no banco de dados
+      // 3. SALVAR NA COLUNA avatar_url DO BANCO
       const { error: updateError } = await supabase
         .from('usuarios_planogratis')
         .update({ avatar_url: publicUrl })
         .eq('whatsapp', whatsapp);
 
-      if (updateError) {
-        console.error("Erro no Banco:", updateError);
-        throw new Error("Erro ao salvar o link da foto no seu perfil.");
-      }
+      if (updateError) throw updateError;
 
-      toast.success("Foto de perfil atualizada com sucesso!");
+      toast.success("Foto de perfil atualizada!");
       if (onAvatarUpdate) onAvatarUpdate();
     } catch (error: any) {
-      toast.error(error.message || "Ocorreu um erro inesperado.");
+      console.error("Erro completo:", error);
+      toast.error("Erro ao salvar foto. Verifique se o bucket 'avatars' existe.");
     } finally {
       setIsUploading(false);
     }
@@ -118,13 +108,7 @@ const Dashboard = ({
               
               <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-colors group-hover:scale-110 duration-200">
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  accept="image/*" 
-                  onChange={handleAvatarUpload} 
-                  disabled={isUploading} 
-                />
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
               </label>
             </div>
 

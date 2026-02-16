@@ -68,7 +68,6 @@ const Index = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      // CÁLCULOS NUTRICIONAIS
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -110,6 +109,7 @@ const Index = () => {
         proteina_dia: proteina,
         carbo_dia: carbo,
         gordura_dia: gordura,
+        avatar_url: null, // Inicializa a coluna como nula
       };
 
       const { error: insertError } = await supabase
