@@ -18,7 +18,7 @@ const DashboardPage = () => {
   return (
     <Dashboard
       name={dashData.nome}
-      whatsapp="" // Opcional, já que não estamos usando no dash final
+      whatsapp={dashData.whatsapp}
       age={dashData.idade}
       sex={dashData.sexo_biologico}
       height={dashData.altura}
