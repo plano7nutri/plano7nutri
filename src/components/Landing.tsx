@@ -11,7 +11,7 @@ const steps = [
   {
     icon: Calculator,
     title: "Cálculo Metabólico",
-    description: "Descobrimos seu TMB e GET com precisão científica.",
+    description: "Descobrimos seu TMB e GET con precisão científica.",
   },
   {
     icon: MessageCircle,
@@ -58,13 +58,12 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight mb-6">
-            <span className="text-gradient-hero">O seu Plano Nutricional de 7 Dias,</span>{" "}
+            <span className="text-gradient-hero">O seu Plano Nutricional Personalizado de 7 Dias,</span>{" "}
             <span className="text-foreground">direto no WhatsApp.</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto mb-10 leading-relaxed">
-            Descubra seu metabolismo real e receba um cardápio semanal com alimentos brasileiros
-            acessíveis, sem invenções. Tudo em segundos.
+            Descubra seu metabolismo real e receba um cardápio semanal com alimentos brasileiros acessíveis, a lista de compras sem invenções baseados em suas restrições, preferencias e objetivo semanal. Tudo em segundos.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
