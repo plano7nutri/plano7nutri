@@ -67,11 +67,24 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
   };
 
   const handleHeightChange = (val: string) => {
-    const formatted = val.replace(/[^0-9,.]/g, "");
-    setHeightInput(formatted);
+    // Remove tudo que não é número, vírgula ou ponto
+    let cleanVal = val.replace(/[^0-9,.]/g, "");
     
-    let numericVal = parseFloat(formatted.replace(",", "."));
+    // Substitui ponto por vírgula
+    cleanVal = cleanVal.replace(".", ",");
+    
+    // Trava: permite apenas uma vírgula
+    const parts = cleanVal.split(",");
+    if (parts.length > 2) {
+      cleanVal = parts[0] + "," + parts.slice(1).join("");
+    }
+
+    setHeightInput(cleanVal);
+    
+    // Converte para número para o cálculo (em cm)
+    let numericVal = parseFloat(cleanVal.replace(",", "."));
     if (!isNaN(numericVal)) {
+      // Se o usuário digitar "170", já está em cm. Se digitar "1,70", converte para 170.
       if (numericVal > 3) {
         setData({ ...data, height: Math.round(numericVal) });
       } else {
