@@ -63,7 +63,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto mb-10 leading-relaxed">
-            Descubra seu metabolismo real e receba um cardápio semanal com alimentos brasileiros acessíveis, a lista de compras sem invenções baseados em suas restrições, preferencias e objetivo semanal. Tudo em segundos.
+            Descubra seu metabolismo real e receba um cardápio semanal com a lista de compras baseados em alimentos brasileiros acessíveis, sem invenções baseados em suas <strong>restrições</strong>, <strong>preferências</strong> e <strong>objetivo semanal</strong>. Tudo em segundos.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
