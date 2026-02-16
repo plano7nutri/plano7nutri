@@ -44,7 +44,9 @@ const Index = () => {
         .eq("whatsapp", data.whatsapp)
         .maybeSingle();
 
-      if (checkError) console.error("Erro ao verificar duplicidade:", checkError);
+      if (checkError) {
+        console.error("Erro ao verificar duplicidade:", checkError);
+      }
 
       if (existingUser) {
         toast.error("Este número de WhatsApp já possui um plano cadastrado.");
@@ -52,7 +54,6 @@ const Index = () => {
       }
 
       // 2. CÁLCULOS NUTRICIONAIS (Fórmula Mifflin-St Jeor)
-      // A altura (data.height) já vem em CM do OnboardingWizard
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
