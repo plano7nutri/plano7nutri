@@ -149,7 +149,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardP
           {step === 0 && (
             <motion.div key="step0" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
-              <p className="text-muted-foreground mb-8">Informe seu nome e WhatsApp para receber seu plano.</p>
+              <p className="text-muted-foreground mb-1">Informe seu nome e WhatsApp para receber seu plano.</p>
+              <p className="text-destructive text-sm font-semibold mb-8">As informações não poderão ser editadas, preencha com cuidado.</p>
 
               <div className="space-y-6">
                 <div>
@@ -197,9 +198,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardP
                   )}
 
                   {!duplicateFound && (
-                    <div className="mt-2 flex items-start gap-2 text-muted-foreground">
+                    <div className="mt-2 flex items-start gap-2 text-destructive">
                       <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                      <p className="text-xs leading-tight">
+                      <p className="text-xs font-semibold leading-tight">
                         O WhatsApp deve ser verdadeiro para ativação do sistema.
                       </p>
                     </div>
