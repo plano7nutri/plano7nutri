@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,12 +33,18 @@ const Dashboard = ({
   restrictions, preferences, avatarUrl, onAvatarUpdate
 }: DashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
+
+  // Sincroniza o estado local se a prop mudar vindo do banco
+  useEffect(() => {
+    if (avatarUrl) {
+      setLocalAvatarUrl(avatarUrl);
+    }
+  }, [avatarUrl]);
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    console.log("[DEBUG] Iniciando processo para:", whatsapp);
 
     if (file.size > 2 * 1024 * 1024) {
       toast.error("A imagem deve ter no máximo 2MB.");
@@ -48,47 +54,42 @@ const Dashboard = ({
     setIsUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${whatsapp.replace(/\D/g, '')}-${Date.now()}.${fileExt}`;
+      const fileName = `${whatsapp.replace(/\D/g, '')}.${fileExt}`; // Nome fixo por usuário para não encher o storage
       
-      // 1. Tentar Upload
+      // 1. Upload com overwrite (upsert: true)
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, file, { 
+          upsert: true,
+          cacheControl: '0' // Diz ao Supabase para não cachear
+        });
 
-      if (uploadError) {
-        console.error("[DEBUG] Erro no Storage:", uploadError);
-        if (uploadError.message.includes("bucket not found")) {
-          throw new Error("O bucket 'avatars' não foi criado no Supabase. Crie-o como público.");
-        }
-        throw new Error(`Erro no Storage: ${uploadError.message}`);
-      }
+      if (uploadError) throw uploadError;
 
-      // 2. Pegar URL
+      // 2. Pegar URL e adicionar um "timestamp" para enganar o cache do navegador
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
-
-      console.log("[DEBUG] URL gerada:", publicUrl);
+      
+      const timestampedUrl = `${publicUrl}?t=${Date.now()}`;
 
       // 3. Atualizar Banco
       const { error: updateError } = await supabase
         .from('usuarios_planogratis')
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: publicUrl }) // No banco salvamos a URL limpa
         .eq('whatsapp', whatsapp);
 
-      if (updateError) {
-        console.error("[DEBUG] Erro no Banco:", updateError);
-        if (updateError.message.includes("column \"avatar_url\" does not exist")) {
-          throw new Error("A coluna 'avatar_url' não existe na sua tabela. Rode o SQL que te enviei.");
-        }
-        throw new Error(`Erro ao salvar no banco: ${updateError.message}`);
-      }
+      if (updateError) throw updateError;
 
-      toast.success("Foto atualizada!");
+      // 4. Atualizar interface LOCAL imediatamente
+      setLocalAvatarUrl(timestampedUrl);
+      
+      toast.success("Foto atualizada com sucesso!");
+      
       if (onAvatarUpdate) onAvatarUpdate();
     } catch (error: any) {
-      console.error("[DEBUG] Erro Fatal:", error);
-      toast.error(error.message || "Erro desconhecido ao subir foto.");
+      console.error("Erro no upload:", error);
+      toast.error("Falha ao subir foto. Verifique se o bucket 'avatars' é público.");
     } finally {
       setIsUploading(false);
       event.target.value = "";
@@ -115,8 +116,8 @@ const Dashboard = ({
           
           <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
             <div className="relative group">
-              <Avatar key={avatarUrl} className="w-24 h-24 border-4 border-white shadow-lg overflow-hidden">
-                <AvatarImage src={avatarUrl} alt={name} className="object-cover w-full h-full" />
+              <Avatar key={localAvatarUrl} className="w-24 h-24 border-4 border-white shadow-lg overflow-hidden">
+                <AvatarImage src={localAvatarUrl} alt={name} className="object-cover w-full h-full" />
                 <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
                   {name.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
