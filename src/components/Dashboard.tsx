@@ -96,17 +96,7 @@ const Dashboard = ({
     }
   };
 
-  const whatsappMessage = encodeURIComponent(
-    `Olá! Sou ${name} e quero receber meu Plano 7 🥗\n\n` +
-    `Meu TMB: ${tmb} kcal\n` +
-    `Meu GET: ${get} kcal\n` +
-    `Meta: ${metaCalorias} kcal\n` +
-    `Objetivo: ${goalLabel}\n` +
-    (restrictions ? `Restrições: ${restrictions}\n` : "") +
-    (preferences ? `Preferências: ${preferences}\n` : "") +
-    `\nPor favor, gere meu cardápio semanal e lista de compras!`
-  );
-  const whatsappUrl = `https://wa.me/5511999999999?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Quero Meu Planejamento da Semana Agora*")}`;
 
   return (
     <div className="min-h-screen px-6 py-10">
