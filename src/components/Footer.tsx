@@ -1,8 +1,9 @@
 import { Mail, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-gradient-to-br from-[#4CAF50] to-[#2E7D32] text-zinc-100 pt-16 pb-8 px-6 border-t border-white/10">
+    <footer className="w-full bg-gradient-to-br from-[#4CAF50] to-[#2E7D32] text-zinc-100 pt-16 pb-8 px-6 border-t border-white/10 no-print">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Coluna 1: Logo e Sobre */}
@@ -20,13 +21,10 @@ const Footer = () => {
             <h4 className="text-white font-bold text-lg">Links Úteis</h4>
             <ul className="space-y-2 text-sm font-medium">
               <li>
-                <a href="#" className="text-zinc-200/70 hover:text-white transition-colors duration-200">Política de Privacidade</a>
+                <Link to="/privacidade" className="text-zinc-200/70 hover:text-white transition-colors duration-200">Política de Privacidade</Link>
               </li>
               <li>
-                <a href="#" className="text-zinc-200/70 hover:text-white transition-colors duration-200">Termos de Uso</a>
-              </li>
-              <li>
-                <a href="#" className="text-zinc-200/70 hover:text-white transition-colors duration-200">FAQ - Perguntas Frequentes</a>
+                <Link to="/termos" className="text-zinc-200/70 hover:text-white transition-colors duration-200">Termos de Uso</Link>
               </li>
             </ul>
           </div>
