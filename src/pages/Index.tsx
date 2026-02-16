@@ -68,20 +68,7 @@ const Index = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      // 1. Verificação de duplicidade - Se já existe, apenas redireciona
-      const { data: existingUser } = await supabase
-        .from("usuarios_planogratis")
-        .select("*")
-        .eq("whatsapp", data.whatsapp)
-        .maybeSingle();
-
-      if (existingUser) {
-        toast.success(`Você já possui um plano, ${existingUser.nome}! Redirecionando...`);
-        navigate("/dashboard", { state: existingUser });
-        return;
-      }
-
-      // 2. CÁLCULOS NUTRICIONAIS
+      // CÁLCULOS NUTRICIONAIS
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -147,7 +134,11 @@ const Index = () => {
         )}
         
         {view === "onboarding" && (
-          <OnboardingWizard onComplete={handleComplete} onBack={() => setView("landing")} />
+          <OnboardingWizard 
+            onComplete={handleComplete} 
+            onBack={() => setView("landing")} 
+            onGoToLogin={() => setView("login")}
+          />
         )}
 
         {view === "login" && (

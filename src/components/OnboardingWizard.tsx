@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface OnboardingData {
   name: string;
@@ -18,6 +19,7 @@ export interface OnboardingData {
 interface OnboardingWizardProps {
   onComplete: (data: OnboardingData) => void;
   onBack: () => void;
+  onGoToLogin: () => void;
 }
 
 const activityLevels = [
@@ -42,10 +44,12 @@ const slideVariants = {
 
 const TOTAL_STEPS = 5;
 
-const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
+const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardProps) => {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
+  const [duplicateFound, setDuplicateFound] = useState(false);
   const [heightInput, setHeightInput] = useState("1,70");
   const [data, setData] = useState<OnboardingData>({
     name: "", 
@@ -60,45 +64,60 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
     preferences: "",
   });
 
-  const next = () => { setDir(1); setStep((s) => s + 1); };
+  const checkDuplicate = async () => {
+    setIsCheckingDuplicate(true);
+    setDuplicateFound(false);
+    try {
+      const { data: existingUser } = await supabase
+        .from("usuarios_planogratis")
+        .select("id")
+        .eq("whatsapp", data.whatsapp)
+        .maybeSingle();
+
+      if (existingUser) {
+        setDuplicateFound(true);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Erro ao verificar duplicidade:", err);
+      return false;
+    } finally {
+      setIsCheckingDuplicate(false);
+    }
+  };
+
+  const next = async () => {
+    if (step === 0) {
+      const isDuplicate = await checkDuplicate();
+      if (isDuplicate) return;
+    }
+    setDir(1); 
+    setStep((s) => s + 1);
+  };
+
   const prev = () => {
     if (step === 0) { onBack(); return; }
     setDir(-1); setStep((s) => s - 1);
   };
 
   const handleHeightChange = (val: string) => {
-    // Permite apenas números e a vírgula (ou ponto que vira vírgula)
     let formatted = val.replace(/[^0-9,.]/g, "");
     formatted = formatted.replace(".", ",");
-    
-    // Garante que só exista uma vírgula
     const parts = formatted.split(",");
-    if (parts.length > 2) {
-      formatted = parts[0] + "," + parts.slice(1).join("");
-    }
-
+    if (parts.length > 2) formatted = parts[0] + "," + parts.slice(1).join("");
     setHeightInput(formatted);
-    
-    // Converte para número (centímetros) para o cálculo interno
     const numericString = formatted.replace(",", ".");
     const numericVal = parseFloat(numericString);
-    
     if (!isNaN(numericVal)) {
-      // Se o usuário digitar "1,70", numericVal é 1.7 -> vira 170cm
-      // Se o usuário digitar "170", numericVal é 170 -> continua 170cm
-      if (numericVal > 3) {
-        setData(prev => ({ ...prev, height: Math.round(numericVal) }));
-      } else {
-        setData(prev => ({ ...prev, height: Math.round(numericVal * 100) }));
-      }
+      if (numericVal > 3) setData(prev => ({ ...prev, height: Math.round(numericVal) }));
+      else setData(prev => ({ ...prev, height: Math.round(numericVal * 100) }));
     }
   };
 
   const canProceed = () => {
-    if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 10;
-    if (step === 1) {
-      return data.age > 0 && data.sex !== "" && data.height > 50 && data.weight > 20;
-    }
+    if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 10 && !isCheckingDuplicate;
+    if (step === 1) return data.age > 0 && data.sex !== "" && data.height > 50 && data.weight > 20;
     if (step === 2) return data.activity !== "";
     if (step === 3) return data.goal !== "";
     if (step === 4) return true;
@@ -150,15 +169,41 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
                     type="tel"
                     placeholder="(11) 99999-9999"
                     value={data.whatsapp}
-                    onChange={(e) => setData({ ...data, whatsapp: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                    onChange={(e) => {
+                      setData({ ...data, whatsapp: e.target.value });
+                      setDuplicateFound(false);
+                    }}
+                    className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
+                      duplicateFound ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
+                    }`}
                   />
-                  <div className="mt-2 flex items-start gap-2 text-red-500">
-                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <p className="text-xs font-bold leading-tight">
-                      O WhatsApp deve ser verdadeiro ou o sistema não será ativado.
-                    </p>
-                  </div>
+                  
+                  {duplicateFound && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+                      <div className="flex items-start gap-2 text-destructive mb-3">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <p className="text-sm font-bold leading-tight">
+                          Este WhatsApp já possui um plano cadastrado em nosso sistema.
+                        </p>
+                      </div>
+                      <button
+                        onClick={onGoToLogin}
+                        className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors"
+                      >
+                        <UserCheck className="w-4 h-4" />
+                        Acessar meu plano existente
+                      </button>
+                    </motion.div>
+                  )}
+
+                  {!duplicateFound && (
+                    <div className="mt-2 flex items-start gap-2 text-muted-foreground">
+                      <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                      <p className="text-xs leading-tight">
+                        O WhatsApp deve ser verdadeiro para ativação do sistema.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -279,9 +324,18 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
           </button>
 
           {!isLastStep ? (
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={!canProceed()} onClick={next}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40 disabled:pointer-events-none transition-all">
-              Próximo <ArrowRight className="w-4 h-4" />
+            <motion.button 
+              whileHover={{ scale: 1.02 }} 
+              whileTap={{ scale: 0.98 }} 
+              disabled={!canProceed()} 
+              onClick={next}
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40 disabled:pointer-events-none transition-all"
+            >
+              {isCheckingDuplicate ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Verificando...</>
+              ) : (
+                <>Próximo <ArrowRight className="w-4 h-4" /></>
+              )}
             </motion.button>
           ) : (
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={!canProceed() || loading} onClick={handleFinish}
