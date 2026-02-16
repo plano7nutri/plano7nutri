@@ -137,7 +137,7 @@ const Dashboard = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sexo</span>
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sexo(biológico)</span>
               <p className="font-bold text-foreground">{sex === "male" ? "Masculino" : "Feminino"}</p>
             </div>
             <div>
