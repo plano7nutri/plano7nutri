@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, User, Activity, Target, UtensilsCrossed, Camera, Loader2 } from "lucide-react";
+import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -38,6 +38,7 @@ const Dashboard = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validar tamanho (2MB)
     if (file.size > 2 * 1024 * 1024) {
       toast.error("A imagem deve ter no máximo 2MB.");
       return;
@@ -46,15 +47,21 @@ const Dashboard = ({
     setIsUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${whatsapp}-${Math.random()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      const fileName = `${whatsapp.replace(/\D/g, '')}-${Date.now()}.${fileExt}`;
+      const filePath = fileName; // Salvando na raiz do bucket 'avatars'
 
       // 1. Upload para o Storage
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: true,
+          contentType: file.type
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Erro no Storage:", uploadError);
+        throw new Error("Erro ao enviar arquivo para o servidor.");
+      }
 
       // 2. Pegar URL pública
       const { data: { publicUrl } } = supabase.storage
@@ -67,13 +74,15 @@ const Dashboard = ({
         .update({ avatar_url: publicUrl })
         .eq('whatsapp', whatsapp);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Erro no Banco:", updateError);
+        throw new Error("Erro ao salvar o link da foto no seu perfil.");
+      }
 
-      toast.success("Foto de perfil atualizada!");
+      toast.success("Foto de perfil atualizada com sucesso!");
       if (onAvatarUpdate) onAvatarUpdate();
-    } catch (error) {
-      console.error("Erro ao subir foto:", error);
-      toast.error("Erro ao atualizar foto de perfil.");
+    } catch (error: any) {
+      toast.error(error.message || "Ocorreu um erro inesperado.");
     } finally {
       setIsUploading(false);
     }
@@ -100,8 +109,8 @@ const Dashboard = ({
           
           <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
             <div className="relative group">
-              <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                <AvatarImage src={avatarUrl} alt={name} className="object-cover" />
+              <Avatar className="w-24 h-24 border-4 border-white shadow-lg overflow-hidden">
+                <AvatarImage src={avatarUrl} alt={name} className="object-cover w-full h-full" />
                 <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
                   {name.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
@@ -109,7 +118,13 @@ const Dashboard = ({
               
               <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-colors group-hover:scale-110 duration-200">
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleAvatarUpload} 
+                  disabled={isUploading} 
+                />
               </label>
             </div>
 
