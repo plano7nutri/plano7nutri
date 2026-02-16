@@ -80,7 +80,7 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
     if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 10;
     if (step === 1) {
       const h = data.height / 100;
-      return data.age > 0 && data.age <= 100 && data.sex !== "" && h > 0 && h <= 2.10 && data.weight > 0 && data.weight <= 250;
+      return data.age > 0 && data.age <= 100 && data.sex !== "" && h > 0 && h <= 2.50 && data.weight > 0 && data.weight <= 250;
     }
     if (step === 2) return data.activity !== "";
     if (step === 3) return data.goal !== "";
@@ -150,7 +150,7 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
                     className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Altura (m - máx 2,10)</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Altura (m - máx 2,50)</label>
                   <input type="text" placeholder="1,70" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
