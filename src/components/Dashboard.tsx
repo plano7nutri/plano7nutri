@@ -38,6 +38,8 @@ const Dashboard = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    console.log("[Dashboard] Iniciando upload para o WhatsApp:", whatsapp);
+
     if (file.size > 2 * 1024 * 1024) {
       toast.error("A imagem deve ter no máximo 2MB.");
       return;
@@ -48,33 +50,56 @@ const Dashboard = ({
       const fileExt = file.name.split('.').pop();
       const fileName = `${whatsapp.replace(/\D/g, '')}-${Date.now()}.${fileExt}`;
       
-      // 1. Upload para o Storage (Bucket 'avatars')
-      const { error: uploadError } = await supabase.storage
+      // 1. Upload para o Storage
+      console.log("[Dashboard] Enviando arquivo para o bucket 'avatars'...");
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, file, { 
+          upsert: true,
+          cacheControl: '3600',
+          contentType: file.type
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("[Dashboard] Erro no upload do Storage:", uploadError);
+        throw new Error(`Erro no Storage: ${uploadError.message}. Verifique se o bucket 'avatars' existe e é público.`);
+      }
 
-      // 2. Pegar URL pública gerada
-      const { data: { publicUrl } } = supabase.storage
+      console.log("[Dashboard] Upload concluído com sucesso:", uploadData);
+
+      // 2. Pegar URL pública
+      const { data: urlData } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
+      
+      const publicUrl = urlData.publicUrl;
+      console.log("[Dashboard] URL pública gerada:", publicUrl);
 
-      // 3. SALVAR NA COLUNA avatar_url DO BANCO
+      // 3. Atualizar o banco de dados
+      console.log("[Dashboard] Atualizando coluna avatar_url na tabela...");
       const { error: updateError } = await supabase
         .from('usuarios_planogratis')
         .update({ avatar_url: publicUrl })
         .eq('whatsapp', whatsapp);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("[Dashboard] Erro ao atualizar banco de dados:", updateError);
+        throw new Error(`Erro no Banco: ${updateError.message}`);
+      }
 
+      console.log("[Dashboard] Banco de dados atualizado com sucesso!");
       toast.success("Foto de perfil atualizada!");
-      if (onAvatarUpdate) onAvatarUpdate();
+      
+      if (onAvatarUpdate) {
+        onAvatarUpdate();
+      }
     } catch (error: any) {
-      console.error("Erro completo:", error);
-      toast.error("Erro ao salvar foto. Verifique se o bucket 'avatars' existe.");
+      console.error("[Dashboard] Erro fatal no processo:", error);
+      toast.error(error.message || "Erro ao processar foto.");
     } finally {
       setIsUploading(false);
+      // Limpa o input para permitir subir a mesma foto se necessário
+      event.target.value = "";
     }
   };
 
@@ -99,7 +124,7 @@ const Dashboard = ({
           
           <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
             <div className="relative group">
-              <Avatar className="w-24 h-24 border-4 border-white shadow-lg overflow-hidden">
+              <Avatar key={avatarUrl} className="w-24 h-24 border-4 border-white shadow-lg overflow-hidden">
                 <AvatarImage src={avatarUrl} alt={name} className="object-cover w-full h-full" />
                 <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
                   {name.substring(0, 2).toUpperCase()}
@@ -108,7 +133,13 @@ const Dashboard = ({
               
               <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-colors group-hover:scale-110 duration-200">
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleAvatarUpload} 
+                  disabled={isUploading} 
+                />
               </label>
             </div>
 
