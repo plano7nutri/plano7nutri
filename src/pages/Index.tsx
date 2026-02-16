@@ -38,7 +38,23 @@ const Index = () => {
     try {
       console.log("Iniciando cálculos com os dados:", data);
 
-      // Cálculo TMB (Mifflin-St Jeor)
+      // 1. Verificar se o WhatsApp já existe
+      const { data: existingUser, error: checkError } = await supabase
+        .from("usuarios_planogratis")
+        .select("id")
+        .eq("whatsapp", data.whatsapp)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error("Erro ao verificar duplicidade:", checkError);
+      }
+
+      if (existingUser) {
+        toast.error("Este número de WhatsApp já possui um plano cadastrado.");
+        return;
+      }
+
+      // 2. Cálculos Nutricionais
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -47,15 +63,12 @@ const Index = () => {
       const factor = activityFactors[data.activity] || 1.2;
       const get = Math.round(tmb * factor);
 
-      // Ajuste por objetivo
       let metaCalorias = get;
       if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
       else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
 
-      // Água: 35ml por kg
       const metaAgua = Math.round((data.weight * 35) / 100) * 100;
 
-      // Macros simplificados
       let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
       if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
       if (data.goal === "gain_muscle") { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
@@ -67,6 +80,7 @@ const Index = () => {
       const dashData = {
         session_id: Math.random().toString(36).substring(7),
         nome: data.name,
+        whatsapp: data.whatsapp,
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
@@ -84,22 +98,21 @@ const Index = () => {
         gordura_dia: gordura,
       };
 
-      console.log("Dados calculados para envio:", dashData);
-
-      const { error } = await supabase
+      // 3. Salvar no Supabase
+      const { error: insertError } = await supabase
         .from("usuarios_planogratis")
         .insert([dashData]);
 
-      if (error) {
-        console.error("Erro Supabase:", error);
-        throw new Error(error.message);
+      if (insertError) {
+        console.error("Erro Supabase:", insertError);
+        throw new Error(insertError.message);
       }
 
       toast.success("Plano calculado com sucesso!");
       navigate("/dashboard", { state: dashData });
     } catch (err) {
       console.error("Erro no processo:", err);
-      toast.error("Erro ao processar dados. Verifique se a tabela existe no Supabase.");
+      toast.error("Erro ao processar dados. Tente novamente.");
     }
   };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 
 export interface OnboardingData {
   name: string;
@@ -72,7 +72,6 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
     
     let numericVal = parseFloat(formatted.replace(",", "."));
     if (!isNaN(numericVal)) {
-      // Se o usuário digitar algo como "170", assumimos que já está em cm
       if (numericVal > 3) {
         setData({ ...data, height: Math.round(numericVal) });
       } else {
@@ -119,23 +118,35 @@ const OnboardingWizard = ({ onComplete, onBack }: OnboardingWizardProps) => {
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
               <p className="text-muted-foreground mb-8">Informe seu nome e WhatsApp para receber seu plano.</p>
 
-              <label className="block text-sm font-medium text-foreground mb-2">Nome Completo</label>
-              <input
-                type="text"
-                placeholder="Seu nome"
-                value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring mb-6"
-              />
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Nome Completo</label>
+                  <input
+                    type="text"
+                    placeholder="Seu nome"
+                    value={data.name}
+                    onChange={(e) => setData({ ...data, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
 
-              <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
-              <input
-                type="tel"
-                placeholder="(11) 99999-9999"
-                value={data.whatsapp}
-                onChange={(e) => setData({ ...data, whatsapp: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
+                  <input
+                    type="tel"
+                    placeholder="(11) 99999-9999"
+                    value={data.whatsapp}
+                    onChange={(e) => setData({ ...data, whatsapp: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <div className="mt-2 flex items-start gap-2 text-red-500">
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs font-bold leading-tight">
+                      O WhatsApp deve ser verdadeiro ou o sistema não será ativado.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           )}
 
