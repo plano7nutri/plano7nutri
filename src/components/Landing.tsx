@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ClipboardList, Calculator, MessageCircle, UserCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Testimonials from "./Testimonials";
 
 const steps = [
@@ -22,10 +23,11 @@ const steps = [
 
 interface LandingProps {
   onStart: () => void;
-  onLogin: () => void;
 }
 
-const Landing = ({ onStart, onLogin }: LandingProps) => {
+const Landing = ({ onStart }: LandingProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
@@ -35,7 +37,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             Plano <span className="text-primary">7</span>
           </div>
           <button
-            onClick={onLogin}
+            onClick={() => navigate('/login')}
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <UserCheck className="w-4 h-4" />
@@ -78,7 +80,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             </motion.button>
             
             <motion.button
-              onClick={onLogin}
+              onClick={() => navigate('/login')}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300"
