@@ -25,7 +25,6 @@ const AdminRegister = () => {
     plano_semanal: false,
   });
 
-  // Proteção de Rota: Redireciona se não for o admin
   useEffect(() => {
     if (!authLoading && (!user || user.email !== ADMIN_EMAIL)) {
       navigate("/", { replace: true });
@@ -62,6 +61,7 @@ const AdminRegister = () => {
           admin_secret: formData.adminSecret,
           metadata: {
             nome: formData.nome,
+            full_name: formData.nome, // Campo essencial para o Display Name no Supabase
             whatsapp: formData.whatsapp.replace(/\D/g, ""),
             tipo_assinatura: formData.tipo_assinatura,
             plano_semanal: formData.plano_semanal
@@ -89,7 +89,6 @@ const AdminRegister = () => {
     );
   }
 
-  // Se não for o admin, não renderiza nada enquanto o useEffect redireciona
   if (user?.email !== ADMIN_EMAIL) return null;
 
   return (

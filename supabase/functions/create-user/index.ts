@@ -21,7 +21,6 @@ serve(async (req) => {
 
     const { email, password, phone, metadata, admin_secret } = await req.json()
 
-    // 1. Validação da Senha Administrativa (Obrigatória para qualquer via)
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
@@ -32,13 +31,11 @@ serve(async (req) => {
       })
     }
 
-    // 2. Verificação de Segurança Adicional (Se houver token, validamos se é o Robson)
     const authHeader = req.headers.get('Authorization')
     if (authHeader) {
       const token = authHeader.replace('Bearer ', '')
       const { data: { user: requester } } = await supabaseAdmin.auth.getUser(token)
       
-      // Se houver um usuário logado tentando cadastrar, ele PRECISA ser o Robson
       if (requester && requester.email !== ADMIN_EMAIL) {
         return new Response(JSON.stringify({ error: "Acesso Negado: Apenas o administrador pode realizar esta ação via interface." }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -49,19 +46,21 @@ serve(async (req) => {
 
     console.log("[create-user] Criando usuário via API/Painel:", email);
 
-    // 3. Criar Usuário no Auth
+    // Criar Usuário no Auth com metadados completos
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       phone: phone ? (phone.startsWith('+') ? phone : "+" + phone.replace(/\D/g, "")) : undefined,
-      user_metadata: metadata,
+      user_metadata: {
+        ...metadata,
+        full_name: metadata.nome || metadata.full_name // Garante que o Supabase reconheça o Display Name
+      },
       email_confirm: true,
       phone_confirm: true
     })
 
     if (authError) throw authError
 
-    // 4. Padronizar dados na tabela clientes_pagos
     const cleanPhone = metadata.whatsapp || (phone ? phone.replace(/\D/g, "") : "");
 
     const { error: updateError } = await supabaseAdmin
