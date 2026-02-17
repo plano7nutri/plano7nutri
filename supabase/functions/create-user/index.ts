@@ -6,6 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const ADMIN_EMAIL = "robson_cruz@live.com";
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -17,22 +19,42 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
+    // 1. Verificar Autenticação do Solicitante
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Não autorizado: Token ausente." }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user: requester }, error: userError } = await supabaseAdmin.auth.getUser(token)
+
+    if (userError || !requester || requester.email !== ADMIN_EMAIL) {
+      console.error("[create-user] Tentativa de acesso por usuário não autorizado:", requester?.email);
+      return new Response(JSON.stringify({ error: "Acesso Negado: Apenas o administrador principal pode realizar esta ação." }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403,
+      })
+    }
+
     const { email, password, phone, metadata, admin_secret } = await req.json()
 
-    // Validação da Senha Administrativa
+    // 2. Validação da Senha Administrativa
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
-      console.error("[create-user] Tentativa de acesso não autorizado.");
+      console.error("[create-user] Senha mestre incorreta fornecida por:", requester.email);
       return new Response(JSON.stringify({ error: "Acesso Negado: Senha Administrativa Inválida." }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
       })
     }
 
-    console.log("[create-user] Criando usuário:", email);
+    console.log("[create-user] Robson criando usuário:", email);
 
-    // 1. Criar Usuário no Auth
+    // 3. Criar Usuário no Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
@@ -44,7 +66,7 @@ serve(async (req) => {
 
     if (authError) throw authError
 
-    // 2. Padronizar dados na tabela clientes_pagos
+    // 4. Padronizar dados na tabela clientes_pagos
     const cleanPhone = metadata.whatsapp || phone.replace(/\D/g, "");
 
     const { error: updateError } = await supabaseAdmin
@@ -66,7 +88,7 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error: any) {
-    console.error("[create-user] Erro:", error.message);
+    console.error("[create-user] Erro crítico:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,

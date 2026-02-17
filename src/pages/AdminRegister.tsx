@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Calendar } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Calendar, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
+
+const ADMIN_EMAIL = "robson_cruz@live.com";
 
 const AdminRegister = () => {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showMasterSecret, setShowMasterSecret] = useState(false);
@@ -20,6 +24,16 @@ const AdminRegister = () => {
     tipo_assinatura: "Unica",
     plano_semanal: false,
   });
+
+  // Bloqueio de acesso para não-admins
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        toast.error("Acesso restrito ao administrador principal.");
+        navigate("/");
+      }
+    }
+  }, [user, authLoading, navigate]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,10 +54,14 @@ const AdminRegister = () => {
       const authPhone = "+" + cleanDigits;
       const dbPhone = cleanDigits;
 
+      // Pegar a sessão atual para enviar o token de autorização
+      const { data: { session } } = await supabase.auth.getSession();
+
       const response = await fetch('https://aoghhoqiwjwqfjifaait.supabase.co/functions/v1/create-user', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({
           email: formData.email,
@@ -66,7 +84,7 @@ const AdminRegister = () => {
         throw new Error(result.error || "Falha na autorização administrativa.");
       }
 
-      // Atualizar campo boolean específico que a function pode não ter mapeado automaticamente
+      // Atualizar campo boolean específico
       await supabase
         .from('clientes_pagos')
         .update({ plano_semanal: formData.plano_semanal })
@@ -82,12 +100,20 @@ const AdminRegister = () => {
     }
   };
 
+  if (authLoading || (user && user.email !== ADMIN_EMAIL)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-background py-12">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass rounded-2xl p-8 shadow-card"
+        className="w-full max-w-md glass rounded-2xl p-8 shadow-card border-2 border-primary/20"
       >
         <button 
           onClick={() => navigate('/')}
@@ -98,23 +124,23 @@ const AdminRegister = () => {
 
         <div className="text-center mb-8">
           <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserPlus className="text-primary" size={24} />
+            <Lock className="text-primary" size={24} />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Cadastro Administrativo</h1>
-          <p className="text-muted-foreground">Crie novos usuários Elite confirmados.</p>
+          <h1 className="text-2xl font-bold text-foreground">Painel do Robson</h1>
+          <p className="text-muted-foreground text-sm">Controle de Acesso Administrativo</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 mb-4">
             <div className="flex items-center gap-2 text-amber-700 mb-2">
               <ShieldAlert size={18} />
-              <span className="text-xs font-bold uppercase tracking-wider">Segurança Administrativa</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Senha Mestre Requerida</span>
             </div>
             <div className="relative">
               <input
                 type={showMasterSecret ? "text" : "password"}
                 required
-                placeholder="Senha Mestre do Sistema"
+                placeholder="Digite a senha mestre"
                 value={formData.adminSecret}
                 onChange={(e) => setFormData({ ...formData, adminSecret: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-lg border bg-white text-foreground focus:ring-2 focus:ring-amber-500 outline-none text-sm"
@@ -131,7 +157,7 @@ const AdminRegister = () => {
 
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Nome</label>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Nome do Cliente</label>
               <input
                 type="text"
                 required
@@ -183,7 +209,7 @@ const AdminRegister = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">E-mail</label>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">E-mail de Acesso</label>
               <input
                 type="email"
                 required
@@ -194,7 +220,7 @@ const AdminRegister = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Senha do Usuário</label>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Senha Temporária</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -219,7 +245,7 @@ const AdminRegister = () => {
             disabled={loading}
             className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-glow hover:shadow-card-hover transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Autorizar e Cadastrar"}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><UserPlus className="w-5 h-5" /> Cadastrar Usuário Elite</>}
           </button>
         </form>
       </motion.div>
