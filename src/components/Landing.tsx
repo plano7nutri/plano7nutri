@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, ClipboardList, Calculator, MessageCircle, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Testimonials from "./Testimonials";
+import Features from "./Features";
 
 const steps = [
   {
@@ -118,6 +119,9 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </div>
         </motion.div>
       </main>
+
+      {/* Seção Como Funciona / Benefícios */}
+      <Features />
 
       {/* Prova Social */}
       <Testimonials />
