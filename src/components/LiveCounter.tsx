@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Crown, Utensils, Calendar } from "lucide-react";
+import { Users, Crown, Utensils, Calendar, Zap } from "lucide-react";
 
-const STORAGE_KEY = "plano7_live_stats_v2";
+const STORAGE_KEY = "plano7_live_stats_v3";
 
 const LiveCounter = () => {
   const [stats, setStats] = useState(() => {
@@ -20,27 +20,64 @@ const LiveCounter = () => {
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStats(prev => {
-        // Define um incremento comum para os totais para manter o "nexo"
-        const newPlans = Math.floor(Math.random() * 3) + 1; // Incrementa de 1 a 3 planos por vez
-        
-        const nextStats = {
-          // Oscilação em torno de 500
-          premiumOnline: Math.max(490, Math.min(540, prev.premiumOnline + (Math.floor(Math.random() * 9) - 4))),
-          // Oscilação em torno de 1500
-          freeOnline: Math.max(1450, Math.min(1560, prev.freeOnline + (Math.floor(Math.random() * 13) - 6))),
-          // Incrementos sincronizados
-          menusToday: prev.menusToday + newPlans,
-          menusMonth: prev.menusMonth + newPlans
-        };
-        
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextStats));
-        return nextStats;
-      });
-    }, 4000); // Atualização a cada 4 segundos para ser visível e elegante
+    const updateStats = () => {
+      const increment = Math.floor(Math.random() * 2) + 1;
+      
+      // Atualização escalonada com delays de 1 segundo
+      // 1. Premium Online (imediato no ciclo)
+      setTimeout(() => {
+        setStats(prev => {
+          const next = {
+            ...prev,
+            premiumOnline: Math.max(495, Math.min(535, prev.premiumOnline + (Math.floor(Math.random() * 5) - 2)))
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      }, 0);
 
-    return () => clearInterval(interval);
+      // 2. Usuários Grátis (1s delay)
+      setTimeout(() => {
+        setStats(prev => {
+          const next = {
+            ...prev,
+            freeOnline: Math.max(1460, Math.min(1540, prev.freeOnline + (Math.floor(Math.random() * 7) - 3)))
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      }, 1000);
+
+      // 3. Planos Hoje (2s delay)
+      setTimeout(() => {
+        setStats(prev => {
+          const next = {
+            ...prev,
+            menusToday: prev.menusToday + increment
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      }, 2000);
+
+      // 4. Este Mês (3s delay)
+      setTimeout(() => {
+        setStats(prev => {
+          const next = {
+            ...prev,
+            menusMonth: prev.menusMonth + increment
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      }, 3000);
+    };
+
+    // Ciclo completo a cada 8 segundos para dar tempo do escalonamento brilhar
+    const mainInterval = setInterval(updateStats, 8000);
+    updateStats(); // Chamada inicial
+
+    return () => clearInterval(mainInterval);
   }, []);
 
   const counterItems = [
@@ -75,29 +112,49 @@ const LiveCounter = () => {
   ];
 
   return (
-    <section className="w-full py-10 bg-white border-y border-zinc-100 shadow-sm">
+    <section className="w-full py-12 bg-white border-y border-zinc-100 shadow-sm overflow-hidden">
       <div className="container mx-auto px-6">
+        
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest mb-3 border border-primary/10">
+            <Zap size={12} className="fill-current" />
+            Atividade em Tempo Real
+          </div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
+            Nossa comunidade em movimento
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 font-medium">
+            Acompanhe o impacto do Plano 7 em todo o Brasil agora mesmo.
+          </p>
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           {counterItems.map((item, index) => (
             <div key={index} className="flex flex-col items-center text-center">
               <motion.div 
-                initial={{ scale: 1 }}
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  rotate: [0, 2, -2, 0]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity, 
+                  delay: index * 0.5 
+                }}
                 className={`w-12 h-12 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-black/5`}
               >
-                <item.icon size={24} />
+                <item.icon size={22} />
               </motion.div>
               
               <div className="relative h-9 flex items-center justify-center">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={item.value}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -15 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="text-2xl md:text-3xl font-black text-foreground tabular-nums tracking-tight"
+                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 1.1, y: -10 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="text-2xl md:text-3xl font-black text-foreground tabular-nums tracking-tighter"
                   >
                     {item.value}
                   </motion.span>
