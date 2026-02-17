@@ -153,7 +153,12 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
             <motion.div key="step0" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
               <p className="text-muted-foreground mb-1">Informe seu nome e WhatsApp para receber seu plano.</p>
-              <p className="text-destructive text-sm font-semibold mb-8">As informações não poderão ser editadas, preencha com cuidado.</p>
+              <p className="text-destructive text-sm font-semibold mb-8 uppercase">
+                {hideLoginLink 
+                  ? "AS INFORMAÇÕES SÓ PODERÃO SER EDITADAS APÓS 7 DIAS PREENCHA COM CUIDADO" 
+                  : "As informações não poderão ser editadas, preencha com cuidado."
+                }
+              </p>
 
               <div className="space-y-6">
                 <div>
