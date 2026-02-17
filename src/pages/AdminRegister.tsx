@@ -29,11 +29,19 @@ const AdminRegister = () => {
 
     setLoading(true);
     try {
-      const digits = formData.whatsapp.replace(/\D/g, "");
-      const cleanDigits = digits.startsWith("55") ? digits.substring(2) : digits;
-      const formattedPhone = `+55${cleanDigits}`;
+      // PADRONIZAÇÃO: Apenas números
+      let cleanDigits = formData.whatsapp.replace(/\D/g, "");
+      
+      // Se não começar com 55, adiciona
+      if (cleanDigits.length >= 10 && !cleanDigits.startsWith("55")) {
+        cleanDigits = "55" + cleanDigits;
+      }
 
-      // Chamada usando a URL absoluta conforme regra de desenvolvimento
+      // Supabase Auth exige o + no início para o campo phone
+      const authPhone = "+" + cleanDigits;
+      // Para o banco de dados, usamos o formato puro 5511...
+      const dbPhone = cleanDigits;
+
       const response = await fetch('https://aoghhoqiwjwqfjifaait.supabase.co/functions/v1/create-user', {
         method: 'POST',
         headers: {
@@ -43,12 +51,11 @@ const AdminRegister = () => {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          phone: formattedPhone,
+          phone: authPhone,
           admin_secret: formData.adminSecret,
           metadata: {
             nome: formData.nome,
-            full_name: formData.nome,
-            whatsapp: formattedPhone,
+            whatsapp: dbPhone, // Formato padronizado 55...
           }
         })
       });
@@ -59,7 +66,7 @@ const AdminRegister = () => {
         throw new Error(result.error || "Falha na autorização administrativa.");
       }
 
-      toast.success("Usuário cadastrado com sucesso!");
+      toast.success("Usuário Elite cadastrado com sucesso!");
       setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "" });
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
@@ -88,7 +95,7 @@ const AdminRegister = () => {
             <UserPlus className="text-primary" size={24} />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Cadastro Administrativo</h1>
-          <p className="text-muted-foreground">Crie novos usuários confirmados.</p>
+          <p className="text-muted-foreground">Crie novos usuários Elite confirmados.</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-4">

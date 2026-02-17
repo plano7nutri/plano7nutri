@@ -23,16 +23,17 @@ serve(async (req) => {
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
-      console.error("[create-user] Tentativa de acesso não autorizado com segredo inválido.");
+      console.error("[create-user] Tentativa de acesso não autorizado.");
       return new Response(JSON.stringify({ error: "Acesso Negado: Senha Administrativa Inválida." }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
       })
     }
 
-    console.log("[create-user] Autorizado. Tentando criar usuário:", email);
+    console.log("[create-user] Criando usuário:", email);
 
-    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    // 1. Criar Usuário no Auth
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       phone,
@@ -41,9 +42,27 @@ serve(async (req) => {
       phone_confirm: true
     })
 
-    if (error) throw error
+    if (authError) throw authError
 
-    return new Response(JSON.stringify(data), {
+    // 2. Padronizar dados na tabela clientes_pagos
+    // O trigger 'handle_new_paid_user' já deve ter criado a linha.
+    // Vamos garantir que whatsapp e telefone_cadastro fiquem no formato 55...
+    const cleanPhone = metadata.whatsapp || phone.replace(/\D/g, "");
+
+    const { error: updateError } = await supabaseAdmin
+      .from('clientes_pagos')
+      .update({
+        whatsapp: cleanPhone,
+        telefone_cadastro: cleanPhone,
+        nome_usuario: metadata.nome
+      })
+      .eq('id', authData.user.id);
+
+    if (updateError) {
+      console.warn("[create-user] Aviso: Erro ao atualizar campos adicionais na tabela clientes_pagos:", updateError.message);
+    }
+
+    return new Response(JSON.stringify(authData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
