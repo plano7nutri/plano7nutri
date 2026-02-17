@@ -38,19 +38,19 @@ const AdminRegister = () => {
       const digits = formData.whatsapp.replace(/\D/g, "");
       
       // Formata rigorosamente para +55XXXXXXXXXXX
-      // Se o usuário já digitou 55 no início, não duplicamos
       const cleanDigits = digits.startsWith("55") ? digits.substring(2) : digits;
       const formattedPhone = `+55${cleanDigits}`;
 
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-        phone: formattedPhone, // Campo oficial de telefone da autenticação
+        phone: formattedPhone, // Campo oficial do SDK (sempre minúsculo)
         options: {
           data: {
             nome: formData.nome,
             full_name: formData.nome,
-            whatsapp: formattedPhone, // Também enviamos no metadata para o trigger
+            Phone: formattedPhone, // Campo solicitado com P maiúsculo nos metadados
+            whatsapp: formattedPhone, // Mantido para compatibilidade com triggers existentes
           },
         },
       });
