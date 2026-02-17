@@ -4,6 +4,7 @@ import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed,
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import PricingSection from "./PricingSection";
 
 interface DashboardProps {
   name: string;
@@ -235,6 +236,15 @@ const Dashboard = ({
             </div>
           </div>
         </motion.div>
+
+        {/* Seção de Planos Pagos */}
+        <PricingSection />
+
+        <div className="text-center mb-4">
+          <p className="text-[11px] text-muted-foreground font-medium italic">
+            ou continue com o plano gratuito
+          </p>
+        </div>
 
         <motion.a
           href={whatsappUrl}
