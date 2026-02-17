@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, CreditCard } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -28,6 +28,8 @@ interface PremiumDashboardProps {
   preferences: string;
   avatarUrl?: string;
   tipo_assinatura?: string;
+  plano_semanal?: boolean;
+  ultimo_envio_plano?: string;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
   onProfileUpdate?: (data: any) => Promise<void>;
@@ -37,8 +39,8 @@ interface PremiumDashboardProps {
 const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, tipo_assinatura, onAvatarUpdate, onLogout, onProfileUpdate,
-  lastUpdateDate
+  restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, 
+  onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
 }: PremiumDashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -64,6 +66,49 @@ const PremiumDashboard = ({
     nextUpdate.setDate(nextUpdate.getDate() + 7);
     const diffTime = nextUpdate.getTime() - new Date().getTime();
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  };
+
+  // Lógica da trava semanal do botão WhatsApp
+  const canRequestPlan = () => {
+    if (!plano_semanal) return true;
+    if (!ultimo_envio_plano) return true;
+
+    const lastRequest = new Date(ultimo_envio_plano);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - lastRequest.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays >= 7;
+  };
+
+  const daysToNextPlan = () => {
+    if (!ultimo_envio_plano) return 0;
+    const lastRequest = new Date(ultimo_envio_plano);
+    const nextRequest = new Date(lastRequest);
+    nextRequest.setDate(nextRequest.getDate() + 7);
+    const diffTime = nextRequest.getTime() - new Date().getTime();
+    return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  };
+
+  const handleWhatsAppClick = async (e: React.MouseEvent) => {
+    if (!canRequestPlan()) {
+      e.preventDefault();
+      toast.error("Seu plano já foi feito e o novo só daqui a 7 dias. O Plano só funciona seguindo as regras.", {
+        icon: <AlertTriangle className="w-5 h-5 text-red-500" />,
+        duration: 5000
+      });
+      return;
+    }
+
+    // Se liberado, atualizamos a data do último envio para travar por mais 7 dias
+    try {
+      await supabase
+        .from('clientes_pagos')
+        .update({ ultimo_envio_plano: new Date().toISOString() })
+        .eq('whatsapp', whatsapp);
+    } catch (err) {
+      console.error("Erro ao registrar envio:", err);
+    }
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,8 +169,6 @@ const PremiumDashboard = ({
 
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
-  const remainingDays = daysToWait();
-
   return (
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-3xl mx-auto">
@@ -168,7 +211,7 @@ const PremiumDashboard = ({
                 <p className="text-xs text-zinc-400">
                   {canEdit() 
                     ? "Seu perfil está liberado para nova atualização." 
-                    : `Próxima edição disponível em ${remainingDays} ${remainingDays === 1 ? 'dia' : 'dias'}.`}
+                    : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
                 </p>
               </div>
             </div>
@@ -353,9 +396,10 @@ const PremiumDashboard = ({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={handleWhatsAppClick}
           whileHover={{ scale: 1.02, y: -5 }}
           whileTap={{ scale: 0.98 }}
-          className="block w-full relative group"
+          className={`block w-full relative group transition-all duration-300 ${!canRequestPlan() ? 'grayscale opacity-70' : ''}`}
         >
           <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-amber-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
           <div className="relative bg-emerald-600 text-white rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center gap-4 overflow-hidden">
@@ -365,7 +409,13 @@ const PremiumDashboard = ({
             <MessageCircle className="w-10 h-10" />
             <div>
               <h3 className="text-2xl font-black mb-2">Solicitar Cardápio de Elite</h3>
-              <p className="text-emerald-100 text-sm opacity-90">Fale agora com seu consultor e receba sua lista de compras e cardápio exclusivo.</p>
+              {plano_semanal && !canRequestPlan() ? (
+                <p className="text-amber-200 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                  <Clock className="w-4 h-4" /> Próximo plano em {daysToNextPlan()} dias
+                </p>
+              ) : (
+                <p className="text-emerald-100 text-sm opacity-90">Fale agora com seu consultor e receba sua lista de compras e cardápio exclusivo.</p>
+              )}
             </div>
           </div>
         </motion.a>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, CreditCard } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -18,6 +18,7 @@ const AdminRegister = () => {
     password: "",
     adminSecret: "",
     tipo_assinatura: "Unica",
+    plano_semanal: false,
   });
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -54,6 +55,7 @@ const AdminRegister = () => {
             full_name: formData.nome,
             whatsapp: dbPhone,
             tipo_assinatura: formData.tipo_assinatura,
+            plano_semanal: formData.plano_semanal
           }
         })
       });
@@ -64,8 +66,14 @@ const AdminRegister = () => {
         throw new Error(result.error || "Falha na autorização administrativa.");
       }
 
+      // Atualizar campo boolean específico que a function pode não ter mapeado automaticamente
+      await supabase
+        .from('clientes_pagos')
+        .update({ plano_semanal: formData.plano_semanal })
+        .eq('id', result.user.id);
+
       toast.success("Usuário Elite cadastrado com sucesso!");
-      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica" });
+      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica", plano_semanal: false });
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
       toast.error(error.message || "Erro de comunicação com o servidor.");
@@ -156,6 +164,22 @@ const AdminRegister = () => {
                   <option value="Mensal">Plano Mensal</option>
                 </select>
               </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-primary" />
+                <div>
+                  <p className="text-xs font-bold text-foreground">Plano Semanal</p>
+                  <p className="text-[10px] text-muted-foreground">Trava o botão por 7 dias</p>
+                </div>
+              </div>
+              <input 
+                type="checkbox"
+                checked={formData.plano_semanal}
+                onChange={(e) => setFormData({ ...formData, plano_semanal: e.target.checked })}
+                className="w-5 h-5 accent-primary cursor-pointer"
+              />
             </div>
 
             <div>
