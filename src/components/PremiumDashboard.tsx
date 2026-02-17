@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert, Settings } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert, Settings, CheckCircle2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -76,10 +76,16 @@ const PremiumDashboard = ({
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
+  // Lógica inteligente de solicitação
   const canRequestPlan = () => {
-    if (!plano_semanal) return true;
     if (!ultimo_envio_plano) return true;
 
+    // Se for Cardápio Único, só pode pedir uma vez na vida (ou até o admin resetar)
+    if (tipo_assinatura === "Unica") {
+      return false;
+    }
+
+    // Se for Mensal, aplica a trava de 7 dias
     const lastRequest = new Date(ultimo_envio_plano);
     const now = new Date();
     const diffTime = now.getTime() - lastRequest.getTime();
@@ -99,7 +105,11 @@ const PremiumDashboard = ({
   const handleWhatsAppClick = async (e: React.MouseEvent) => {
     if (!canRequestPlan()) {
       e.preventDefault();
-      toast.error("Seu plano já foi feito e o novo só daqui a 7 dias.", {
+      const msg = tipo_assinatura === "Unica" 
+        ? "Seu cardápio único já foi solicitado e entregue." 
+        : "Seu novo plano semanal estará disponível em breve.";
+      
+      toast.error(msg, {
         icon: <AlertTriangle className="w-5 h-5 text-red-500" />,
         duration: 5000
       });
@@ -114,7 +124,7 @@ const PremiumDashboard = ({
       
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["premiumUser"] });
-      toast.success("Solicitando seu novo cardápio semanal...");
+      toast.success("Solicitando seu planejamento de elite...");
     } catch (err) {
       console.error("Erro ao registrar envio:", err);
     }
@@ -410,19 +420,28 @@ const PremiumDashboard = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
-          whileHover={{ scale: 1.02, y: -5 }}
-          whileTap={{ scale: 0.98 }}
-          className={`block w-full relative group transition-all duration-300 ${!canRequestPlan() ? 'grayscale opacity-70' : ''}`}
+          whileHover={canRequestPlan() ? { scale: 1.02, y: -5 } : {}}
+          whileTap={canRequestPlan() ? { scale: 0.98 } : {}}
+          className={`block w-full relative group transition-all duration-300 ${!canRequestPlan() ? 'opacity-80' : ''}`}
         >
-          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-amber-500 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-          <div className="relative bg-emerald-600 text-white rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center gap-4 overflow-hidden">
+          <div className={`absolute -inset-1 rounded-3xl blur opacity-25 transition duration-1000 ${canRequestPlan() ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center gap-4 overflow-hidden ${canRequestPlan() ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:rotate-12 transition-transform">
-              <MessageCircle className="w-24 h-24" />
+              {canRequestPlan() ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
             </div>
-            <MessageCircle className="w-10 h-10" />
+            
+            {canRequestPlan() ? <MessageCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
+            
             <div>
-              <h3 className="text-2xl font-black mb-2">Solicitar Cardápio de Elite</h3>
-              {plano_semanal && !canRequestPlan() ? (
+              <h3 className="text-2xl font-black mb-2">
+                {tipo_assinatura === "Unica" && ultimo_envio_plano ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
+              </h3>
+              
+              {tipo_assinatura === "Unica" && ultimo_envio_plano ? (
+                <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" /> Plano já enviado para seu WhatsApp
+                </p>
+              ) : tipo_assinatura === "Mensal" && !canRequestPlan() ? (
                 <p className="text-amber-200 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <Clock className="w-4 h-4" /> Próximo plano em {daysToNextPlan()} dias
                 </p>
