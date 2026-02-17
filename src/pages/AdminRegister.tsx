@@ -5,6 +5,7 @@ import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Lock, Settings 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
+import { formatWhatsApp } from "@/lib/utils";
 
 const ADMIN_EMAIL = "robson_cruz@live.com";
 
@@ -44,6 +45,12 @@ const AdminRegister = () => {
       return;
     }
 
+    const cleanWhatsapp = formatWhatsApp(formData.whatsapp);
+    if (cleanWhatsapp.length < 12) {
+      toast.error("Informe um WhatsApp válido com DDD.");
+      return;
+    }
+
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -57,12 +64,12 @@ const AdminRegister = () => {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          phone: "+" + formData.whatsapp.replace(/\D/g, ""),
+          phone: cleanWhatsapp,
           admin_secret: formData.adminSecret,
           metadata: {
             nome: formData.nome,
-            full_name: formData.nome, // Campo essencial para o Display Name no Supabase
-            whatsapp: formData.whatsapp.replace(/\D/g, ""),
+            full_name: formData.nome,
+            whatsapp: cleanWhatsapp,
             tipo_assinatura: formData.tipo_assinatura,
             plano_semanal: formData.plano_semanal
           }

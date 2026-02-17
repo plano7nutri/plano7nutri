@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { formatWhatsApp } from "@/lib/utils";
 
 export interface OnboardingData {
   name: string;
@@ -66,15 +67,16 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   });
 
   const checkDuplicate = async () => {
-    if (hideLoginLink) return false; // No fluxo premium não bloqueamos por duplicidade aqui
+    if (hideLoginLink) return false; 
     
     setIsCheckingDuplicate(true);
     setDuplicateFound(false);
     try {
+      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       const { data: existingUser } = await supabase
         .from("usuarios_planogratis")
         .select("id")
-        .eq("whatsapp", data.whatsapp)
+        .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
       if (existingUser) {
@@ -129,7 +131,10 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const handleFinish = () => {
     setLoading(true);
-    onComplete(data);
+    onComplete({
+      ...data,
+      whatsapp: formatWhatsApp(data.whatsapp)
+    });
   };
 
   const isLastStep = step === TOTAL_STEPS - 1;

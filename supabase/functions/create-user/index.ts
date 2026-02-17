@@ -29,13 +29,20 @@ serve(async (req) => {
       })
     }
 
-    // Pega o nome de qualquer lugar que venha no JSON
+    // Pega o nome
     const fullName = body.nome || metadata?.nome || body.full_name || metadata?.full_name || "Usuário Elite";
-    const cleanPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
+    
+    // Padronização rigorosa de WhatsApp: 55 + DDD + Número
+    let rawPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
+    if ((rawPhone.length === 10 || rawPhone.length === 11) && !rawPhone.startsWith("55")) {
+      rawPhone = "55" + rawPhone;
+    }
+    const cleanPhone = rawPhone;
+
     const tipoAssinatura = metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica';
     const planoSemanal = metadata?.plano_semanal || body.plano_semanal || false;
 
-    console.log(`[create-user] Processando nome: ${fullName} para o email: ${email}`);
+    console.log(`[create-user] Processando WhatsApp: ${cleanPhone} para: ${email}`);
 
     // 1. Verificar se o usuário já existe no Auth
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
@@ -46,7 +53,6 @@ serve(async (req) => {
 
     if (existingUser) {
       userId = existingUser.id;
-      // Atualiza metadados para garantir que o 'Display Name' apareça no painel
       const { error: updateAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
         user_metadata: {
           full_name: fullName,
@@ -58,15 +64,14 @@ serve(async (req) => {
       });
       if (updateAuthError) throw updateAuthError;
     } else {
-      // Criar Novo Usuário
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
-        phone: cleanPhone ? "+" + cleanPhone : undefined,
+        phone: cleanPhone ? "+" + cleanPhone : undefined, // Supabase Auth ainda exige + para campo nativo phone
         user_metadata: {
           full_name: fullName,
           nome: fullName,
-          whatsapp: cleanPhone,
+          whatsapp: cleanPhone, // Mas no metadata salvamos limpo
           tipo_assinatura: tipoAssinatura,
           plano_semanal: planoSemanal
         },
@@ -78,7 +83,7 @@ serve(async (req) => {
     }
 
     // 2. Gravação forçada na tabela clientes_pagos usando UPSERT
-    // Isso resolve o problema de o nome não "ir" para o banco de dados
+    // Aqui gravamos o WhatsApp exatamente como '55DDDNÚMERO'
     const { error: dbError } = await supabaseAdmin
       .from('clientes_pagos')
       .upsert({
@@ -96,7 +101,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       status: "success", 
       userId, 
-      nome_gravado: fullName 
+      whatsapp_gravado: cleanPhone 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,

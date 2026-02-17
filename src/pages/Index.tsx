@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, AlertCircle, PlusCircle } from "lucide-react";
+import { formatWhatsApp } from "@/lib/utils";
 
 type View = "landing" | "onboarding" | "check-free-plan";
 
@@ -39,18 +40,10 @@ const Index = () => {
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
-  const sanitizePhone = (phone: string) => {
-    let clean = phone.replace(/\D/g, "");
-    if (clean.length >= 10 && !clean.startsWith("55")) {
-      clean = "55" + clean;
-    }
-    return clean;
-  };
-
   const handleLoginFree = async () => {
-    const cleanWhatsapp = sanitizePhone(loginWhatsapp);
+    const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
     if (cleanWhatsapp.length < 12) {
-      toast.error("Informe um WhatsApp válido.");
+      toast.error("Informe um WhatsApp válido com DDD.");
       return;
     }
 
@@ -81,7 +74,7 @@ const Index = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      const cleanWhatsapp = sanitizePhone(data.whatsapp);
+      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
       const tmb =
         data.sex === "male"
