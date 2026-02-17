@@ -18,7 +18,7 @@ const steps = [
   },
   {
     icon: MessageCircle,
-    title: "Receba no Chat",
+    title: "Receba no WhatsApp",
     description: "Seu plano de 7 dias chega direto no WhatsApp.",
   },
 ];
