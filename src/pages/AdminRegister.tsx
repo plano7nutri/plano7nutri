@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -9,26 +9,26 @@ const AdminRegister = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showMasterSecret, setShowMasterSecret] = useState(false);
   
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
     whatsapp: "",
     password: "",
-    confirmPassword: "",
+    adminSecret: "", // Senha Mestre solicitada
   });
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("As senhas não coincidem.");
+    if (formData.password.length < 6) {
+      toast.error("A senha do novo usuário deve ter pelo menos 6 caracteres.");
       return;
     }
 
-    if (formData.password.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres.");
+    if (!formData.adminSecret) {
+      toast.error("A senha mestre administrativa é obrigatória.");
       return;
     }
 
@@ -38,16 +38,15 @@ const AdminRegister = () => {
       const cleanDigits = digits.startsWith("55") ? digits.substring(2) : digits;
       const formattedPhone = `+55${cleanDigits}`;
 
-      // Chamando a Edge Function em vez do signUp direto
       const { data, error } = await supabase.functions.invoke('create-user', {
         body: {
           email: formData.email,
           password: formData.password,
           phone: formattedPhone,
+          admin_secret: formData.adminSecret, // Enviado para validação no servidor
           metadata: {
             nome: formData.nome,
             full_name: formData.nome,
-            Phone: formattedPhone,
             whatsapp: formattedPhone,
           }
         }
@@ -55,10 +54,10 @@ const AdminRegister = () => {
 
       if (error || data?.error) throw new Error(error?.message || data?.error);
 
-      toast.success("Usuário cadastrado e confirmado com sucesso!");
-      setFormData({ nome: "", email: "", whatsapp: "", password: "", confirmPassword: "" });
+      toast.success("Usuário cadastrado com sucesso!");
+      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "" });
     } catch (error: any) {
-      toast.error(error.message || "Erro ao cadastrar usuário.");
+      toast.error(error.message || "Erro ao cadastrar.");
     } finally {
       setLoading(false);
     }
@@ -75,7 +74,7 @@ const AdminRegister = () => {
           onClick={() => navigate('/')}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 transition-colors"
         >
-          <ArrowLeft size={16} /> Voltar para o início
+          <ArrowLeft size={16} /> Voltar
         </button>
 
         <div className="text-center mb-8">
@@ -83,94 +82,96 @@ const AdminRegister = () => {
             <UserPlus className="text-primary" size={24} />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Cadastro Administrativo</h1>
-          <p className="text-muted-foreground">Crie novos usuários (confirmação automática).</p>
+          <p className="text-muted-foreground">Crie novos usuários confirmados.</p>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Nome Completo</label>
-            <input
-              type="text"
-              required
-              placeholder="Nome do usuário"
-              value={formData.nome}
-              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">E-mail</label>
-            <input
-              type="email"
-              required
-              placeholder="email@exemplo.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">WhatsApp</label>
-            <input
-              type="tel"
-              required
-              placeholder="(11) 99999-9999"
-              value={formData.whatsapp}
-              onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-
-          <div className="relative">
-            <label className="block text-sm font-medium text-foreground mb-1.5">Senha</label>
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 mb-4">
+            <div className="flex items-center gap-2 text-amber-700 mb-2">
+              <ShieldAlert size={18} />
+              <span className="text-xs font-bold uppercase tracking-wider">Segurança Administrativa</span>
+            </div>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showMasterSecret ? "text" : "password"}
                 required
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring pr-10"
+                placeholder="Senha Mestre do Sistema"
+                value={formData.adminSecret}
+                onChange={(e) => setFormData({ ...formData, adminSecret: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-lg border bg-white text-foreground focus:ring-2 focus:ring-amber-500 outline-none text-sm"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                onClick={() => setShowMasterSecret(!showMasterSecret)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showMasterSecret ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
-          <div className="relative">
-            <label className="block text-sm font-medium text-foreground mb-1.5">Confirmar Senha</label>
-            <div className="relative">
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Nome</label>
               <input
-                type={showConfirmPassword ? "text" : "password"}
+                type="text"
                 required
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring pr-10"
+                value={formData.nome}
+                onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary"
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">E-mail</label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">WhatsApp</label>
+              <input
+                type="tel"
+                required
+                placeholder="(11) 99999-9999"
+                value={formData.whatsapp}
+                onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Senha do Usuário</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold shadow-glow hover:shadow-card-hover transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+            className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-glow hover:shadow-card-hover transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Cadastrar Usuário"}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Autorizar e Cadastrar"}
           </button>
         </form>
       </motion.div>
