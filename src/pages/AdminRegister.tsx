@@ -55,7 +55,8 @@ const AdminRegister = () => {
           admin_secret: formData.adminSecret,
           metadata: {
             nome: formData.nome,
-            whatsapp: dbPhone, // Formato padronizado 55...
+            full_name: formData.nome, // Garante o Display Name no Supabase Auth
+            whatsapp: dbPhone,
           }
         })
       });
