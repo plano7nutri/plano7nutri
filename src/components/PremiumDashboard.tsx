@@ -77,14 +77,11 @@ const PremiumDashboard = ({
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  // Lógica inteligente de solicitação baseada na nova coluna
   const canRequestPlan = () => {
-    // Se for Cardápio Único, a trava é o valor 1 na coluna limite_cardapio_unico
     if (tipo_assinatura === "Unica") {
       return limite_cardapio_unico !== 1;
     }
 
-    // Se for Mensal, aplica a trava de 7 dias baseada na data
     if (!ultimo_envio_plano) return true;
     const lastRequest = new Date(ultimo_envio_plano);
     const now = new Date();
@@ -102,7 +99,7 @@ const PremiumDashboard = ({
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  const handleWhatsAppClick = async (e: React.MouseEvent) => {
+  const handleWhatsAppClick = (e: React.MouseEvent) => {
     if (!canRequestPlan()) {
       e.preventDefault();
       const msg = tipo_assinatura === "Unica" 
@@ -116,24 +113,8 @@ const PremiumDashboard = ({
       return;
     }
 
-    try {
-      // Ao clicar, atualizamos a data e, se for Único, marcamos o limite como 1
-      const updateData: any = { ultimo_envio_plano: new Date().toISOString() };
-      if (tipo_assinatura === "Unica") {
-        updateData.limite_cardapio_unico = 1;
-      }
-
-      const { error } = await supabase
-        .from('clientes_pagos')
-        .update(updateData)
-        .eq('whatsapp', whatsapp);
-      
-      if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ["premiumUser"] });
-      toast.success("Solicitando seu planejamento de elite...");
-    } catch (err) {
-      console.error("Erro ao registrar envio:", err);
-    }
+    // Apenas informa o usuário, a atualização do banco será feita pelo n8n
+    toast.success("Abrindo WhatsApp para solicitar seu plano...");
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
