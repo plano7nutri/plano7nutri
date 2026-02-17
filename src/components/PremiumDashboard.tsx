@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, ShieldCheck, LogOut, Edit3, Clock } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -125,7 +125,6 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-3xl mx-auto">
         
-        {/* Header Premium */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -157,7 +156,6 @@ const PremiumDashboard = ({
           </div>
         </motion.div>
 
-        {/* Card de Perfil Premium */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -187,6 +185,10 @@ const PremiumDashboard = ({
               <p className="text-emerald-400/80 font-medium mb-6">Seu Plano de Elite Personalizado</p>
               
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
+                <div className="flex flex-col">
+                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Sexo</span>
+                  <span className="font-bold text-zinc-200">{sex === "male" ? "Masculino" : "Feminino"}</span>
+                </div>
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Idade</span>
                   <span className="font-bold text-zinc-200">{age || 0} anos</span>
@@ -221,7 +223,6 @@ const PremiumDashboard = ({
           </div>
         </motion.div>
 
-        {/* Metas Nutricionais Premium */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
@@ -294,7 +295,6 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        {/* CTA Premium WhatsApp */}
         <motion.a
           href={whatsappUrl}
           target="_blank"

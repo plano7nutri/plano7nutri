@@ -80,6 +80,18 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
           </div>
 
           <div>
+            <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Sexo Biológico</label>
+            <select 
+              value={formData.sex}
+              onChange={(e) => setFormData({...formData, sex: e.target.value})}
+              className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+            >
+              <option value="male">Masculino</option>
+              <option value="female">Feminino</option>
+            </select>
+          </div>
+
+          <div>
             <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Atividade Física</label>
             <select 
               value={formData.activity}
