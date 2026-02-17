@@ -14,7 +14,6 @@ const activityFactors: Record<string, number> = {
   "Moderadamente ativo": 1.55,
   "Muito ativo": 1.725,
   "Extremamente ativo": 1.9,
-  // Fallbacks for IDs from wizard
   sedentary: 1.2,
   lightly_active: 1.375,
   moderately_active: 1.55,
@@ -111,8 +110,6 @@ const DashboardPago = () => {
         proteina_dia: nutrition.proteina,
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
-        // Usamos uma string de timestamp para controle simples de 7 dias se a coluna updated_at não existir
-        // Mas o Supabase por padrão gerencia campos de data se configurados
       };
 
       const { error } = await supabase
@@ -220,10 +217,16 @@ const DashboardPago = () => {
     <div className="flex flex-col min-h-screen bg-[#051c14]">
       <main className="flex-1">
         <PremiumDashboard
-          {...userData}
           name={userData.nome}
+          whatsapp={userData.whatsapp}
+          age={userData.idade}
+          sex={userData.sexo_biologico}
+          height={userData.altura}
+          weight={userData.peso}
           activityLabel={userData.nivel_atividade_fisica}
           goalLabel={userData.objetivo_semanal}
+          tmb={userData.tmb}
+          get={userData.get}
           metaCalorias={userData.meta_calorias}
           metaAgua={userData.meta_agua}
           proteina={userData.proteina_dia}
@@ -231,10 +234,10 @@ const DashboardPago = () => {
           gordura={userData.gordura_dia}
           restrictions={userData.restricoes_alimentares}
           preferences={userData.preferencias}
+          avatarUrl={userData.avatar_url}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}
-          // Usamos o created_at ou uma data mockada se não tivermos updated_at
           lastUpdateDate={userData.created_at} 
         />
       </main>
