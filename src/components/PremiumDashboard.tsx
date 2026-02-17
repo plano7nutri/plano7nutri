@@ -55,7 +55,7 @@ const PremiumDashboard = ({
     const lastUpdate = new Date(lastUpdateDate);
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - lastUpdate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
     return diffDays >= 7;
   };
 
@@ -68,24 +68,23 @@ const PremiumDashboard = ({
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  // Lógica da trava semanal do botão WhatsApp
+  // Lógica da trava semanal do botão WhatsApp (Precisão de 7 dias)
   const canRequestPlan = () => {
     if (!plano_semanal) return true;
     if (!ultimo_envio_plano) return true;
 
     const lastRequest = new Date(ultimo_envio_plano);
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - lastRequest.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = now.getTime() - lastRequest.getTime();
+    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
     
-    return diffDays >= 7;
+    return diffTime >= sevenDaysInMs;
   };
 
   const daysToNextPlan = () => {
     if (!ultimo_envio_plano) return 0;
     const lastRequest = new Date(ultimo_envio_plano);
-    const nextRequest = new Date(lastRequest);
-    nextRequest.setDate(nextRequest.getDate() + 7);
+    const nextRequest = new Date(lastRequest.getTime() + (7 * 24 * 60 * 60 * 1000));
     const diffTime = nextRequest.getTime() - new Date().getTime();
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
@@ -100,12 +99,15 @@ const PremiumDashboard = ({
       return;
     }
 
-    // Se liberado, atualizamos a data do último envio para travar por mais 7 dias
+    // Se liberado, atualizamos a data do último envio no banco de dados
     try {
       await supabase
         .from('clientes_pagos')
         .update({ ultimo_envio_plano: new Date().toISOString() })
         .eq('whatsapp', whatsapp);
+      
+      // Pequeno delay para garantir que o usuário veja o feedback antes de ir para o WhatsApp
+      toast.success("Solicitando seu novo cardápio semanal...");
     } catch (err) {
       console.error("Erro ao registrar envio:", err);
     }
