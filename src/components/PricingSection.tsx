@@ -19,7 +19,7 @@ const PricingSection = () => {
       ],
       buttonText: "Quero meu Cardápio — R$ 9,90",
       highlight: false,
-      url: "https://pay.hotmart.com/example_unico", // Placeholder para o plano único
+      url: "https://pay.hotmart.com/X104499776T?checkoutMode=10",
     },
     {
       title: "Plano Mensal",
