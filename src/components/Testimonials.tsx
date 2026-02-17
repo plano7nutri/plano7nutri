@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, ThumbsUp, ChevronDown, ChevronUp } from "lucide-react";
+import { Star, ThumbsUp, ChevronDown, ChevronUp, ArrowRight, UserCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const initialTestimonials = [
@@ -87,12 +87,41 @@ const generateExtraTestimonials = () => {
 
 const extraTestimonials = generateExtraTestimonials();
 
-const Testimonials = () => {
+interface TestimonialsProps {
+  onStart?: () => void;
+  onLogin?: () => void;
+}
+
+const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
   const [showAll, setShowAll] = useState(false);
 
   return (
     <section className="py-12 bg-zinc-50/50">
       <div className="container mx-auto px-6">
+        
+        {/* CTAs de Reforço */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <motion.button
+            onClick={onStart}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
+          >
+            Criar Meu Plano 7 Grátis
+            <ArrowRight className="w-5 h-5" />
+          </motion.button>
+          
+          <motion.button
+            onClick={onLogin}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300"
+          >
+            <UserCheck className="w-5 h-5" />
+            Acessar Meu Plano
+          </motion.button>
+        </div>
+
         {/* Header da Seção */}
         <div className="flex flex-col items-center text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-3 border border-emerald-100">

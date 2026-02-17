@@ -124,7 +124,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
       <Features />
 
       {/* Prova Social */}
-      <Testimonials />
+      <Testimonials onStart={onStart} onLogin={onLogin} />
     </div>
   );
 };
