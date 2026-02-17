@@ -34,30 +34,28 @@ const AdminRegister = () => {
 
     setLoading(true);
     try {
-      // Remove tudo que não é número
       const digits = formData.whatsapp.replace(/\D/g, "");
-      
-      // Formata rigorosamente para +55XXXXXXXXXXX
       const cleanDigits = digits.startsWith("55") ? digits.substring(2) : digits;
       const formattedPhone = `+55${cleanDigits}`;
 
-      const { error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        phone: formattedPhone, // Campo oficial do SDK (sempre minúsculo)
-        options: {
-          data: {
+      // Chamando a Edge Function em vez do signUp direto
+      const { data, error } = await supabase.functions.invoke('create-user', {
+        body: {
+          email: formData.email,
+          password: formData.password,
+          phone: formattedPhone,
+          metadata: {
             nome: formData.nome,
             full_name: formData.nome,
-            Phone: formattedPhone, // Campo solicitado com P maiúsculo nos metadados
-            whatsapp: formattedPhone, // Mantido para compatibilidade com triggers existentes
-          },
-        },
+            Phone: formattedPhone,
+            whatsapp: formattedPhone,
+          }
+        }
       });
 
-      if (error) throw error;
+      if (error || data?.error) throw new Error(error?.message || data?.error);
 
-      toast.success("Usuário cadastrado com sucesso! Verifique o e-mail para confirmação.");
+      toast.success("Usuário cadastrado e confirmado com sucesso!");
       setFormData({ nome: "", email: "", whatsapp: "", password: "", confirmPassword: "" });
     } catch (error: any) {
       toast.error(error.message || "Erro ao cadastrar usuário.");
@@ -85,7 +83,7 @@ const AdminRegister = () => {
             <UserPlus className="text-primary" size={24} />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Cadastro Administrativo</h1>
-          <p className="text-muted-foreground">Crie novos usuários para o sistema.</p>
+          <p className="text-muted-foreground">Crie novos usuários (confirmação automática).</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-5">
