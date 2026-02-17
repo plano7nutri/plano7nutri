@@ -29,48 +29,80 @@ serve(async (req) => {
       })
     }
 
-    const fullName = body.full_name || metadata?.full_name || metadata?.nome || body.nome || "Usuário Elite";
+    // Pega o nome de qualquer lugar que venha no JSON
+    const fullName = body.nome || metadata?.nome || body.full_name || metadata?.full_name || "Usuário Elite";
     const cleanPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
+    const tipoAssinatura = metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica';
+    const planoSemanal = metadata?.plano_semanal || body.plano_semanal || false;
 
-    console.log(`[create-user] Cadastrando: ${email} | Nome: ${fullName}`);
+    console.log(`[create-user] Processando nome: ${fullName} para o email: ${email}`);
 
-    // Criar Usuário no Auth com confirmação automática
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      phone: cleanPhone ? "+" + cleanPhone : undefined,
-      user_metadata: {
-        full_name: fullName,
-        nome: fullName,
-        whatsapp: cleanPhone,
-        tipo_assinatura: metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica',
-        plano_semanal: metadata?.plano_semanal || body.plano_semanal || false
-      },
-      email_confirm: true, // Marca o e-mail como verificado automaticamente
-      phone_confirm: true  // Marca o telefone como verificado automaticamente
-    })
+    // 1. Verificar se o usuário já existe no Auth
+    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    if (listError) throw listError;
+    
+    const existingUser = users.find(u => u.email === email);
+    let userId;
 
-    if (authError) throw authError
+    if (existingUser) {
+      userId = existingUser.id;
+      // Atualiza metadados para garantir que o 'Display Name' apareça no painel
+      const { error: updateAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+        user_metadata: {
+          full_name: fullName,
+          nome: fullName,
+          whatsapp: cleanPhone,
+          tipo_assinatura: tipoAssinatura,
+          plano_semanal: planoSemanal
+        }
+      });
+      if (updateAuthError) throw updateAuthError;
+    } else {
+      // Criar Novo Usuário
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password,
+        phone: cleanPhone ? "+" + cleanPhone : undefined,
+        user_metadata: {
+          full_name: fullName,
+          nome: fullName,
+          whatsapp: cleanPhone,
+          tipo_assinatura: tipoAssinatura,
+          plano_semanal: planoSemanal
+        },
+        email_confirm: true,
+        phone_confirm: true
+      });
+      if (authError) throw authError;
+      userId = authData.user.id;
+    }
 
-    // Atualiza a tabela de clientes_pagos
-    const { error: updateError } = await supabaseAdmin
+    // 2. Gravação forçada na tabela clientes_pagos usando UPSERT
+    // Isso resolve o problema de o nome não "ir" para o banco de dados
+    const { error: dbError } = await supabaseAdmin
       .from('clientes_pagos')
-      .update({
+      .upsert({
+        id: userId,
+        nome: fullName,
+        nome_usuario: fullName,
         whatsapp: cleanPhone,
         telefone_cadastro: cleanPhone,
-        nome_usuario: fullName,
-        nome: fullName,
-        tipo_assinatura: metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica',
-        plano_semanal: metadata?.plano_semanal || body.plano_semanal || false
-      })
-      .eq('id', authData.user.id);
+        tipo_assinatura: tipoAssinatura,
+        plano_semanal: planoSemanal
+      }, { onConflict: 'id' });
 
-    return new Response(JSON.stringify(authData), {
+    if (dbError) throw dbError;
+
+    return new Response(JSON.stringify({ 
+      status: "success", 
+      userId, 
+      nome_gravado: fullName 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error: any) {
-    console.error("[create-user] Erro:", error.message);
+    console.error("[create-user] Erro fatal:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
