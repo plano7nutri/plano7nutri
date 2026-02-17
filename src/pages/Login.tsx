@@ -56,20 +56,43 @@ const Login = () => {
           localization={{
             variables: {
               sign_in: {
-                email_label: 'E-mail',
+                email_label: 'Endereço de e-mail',
                 password_label: 'Senha',
+                email_input_placeholder: 'Seu endereço de e-mail',
+                password_input_placeholder: 'Sua senha',
                 button_label: 'Entrar',
                 loading_button_label: 'Entrando...',
+                social_provider_text: 'Entrar com {{provider}}',
                 link_text: 'Já tem uma conta? Entre aqui',
               },
               sign_up: {
-                email_label: 'E-mail',
+                email_label: 'Endereço de e-mail',
                 password_label: 'Senha',
-                button_label: 'Criar Conta',
-                loading_button_label: 'Criando...',
+                email_input_placeholder: 'Seu endereço de e-mail',
+                password_input_placeholder: 'Sua senha',
+                button_label: 'Criar conta',
+                loading_button_label: 'Criando conta...',
+                social_provider_text: 'Cadastrar com {{provider}}',
                 link_text: 'Não tem uma conta? Cadastre-se',
-              }
-            }
+                confirmation_text: 'Verifique seu e-mail para o link de confirmação',
+              },
+              forgotten_password: {
+                email_label: 'Endereço de e-mail',
+                password_label: 'Senha',
+                email_input_placeholder: 'Seu endereço de e-mail',
+                button_label: 'Enviar instruções de recuperação',
+                loading_button_label: 'Enviando instruções...',
+                link_text: 'Esqueceu sua senha?',
+                confirmation_text: 'Verifique seu e-mail para o link de recuperação de senha',
+              },
+              update_password: {
+                password_label: 'Nova senha',
+                password_input_placeholder: 'Sua nova senha',
+                button_label: 'Atualizar senha',
+                loading_button_label: 'Atualizando senha...',
+                confirmation_text: 'Sua senha foi atualizada',
+              },
+            },
           }}
           providers={[]}
           theme="light"
