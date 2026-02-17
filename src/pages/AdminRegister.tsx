@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, CreditCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -17,6 +17,7 @@ const AdminRegister = () => {
     whatsapp: "",
     password: "",
     adminSecret: "",
+    tipo_assinatura: "Unica",
   });
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -29,24 +30,19 @@ const AdminRegister = () => {
 
     setLoading(true);
     try {
-      // PADRONIZAÇÃO: Apenas números
       let cleanDigits = formData.whatsapp.replace(/\D/g, "");
       
-      // Se não começar com 55, adiciona
       if (cleanDigits.length >= 10 && !cleanDigits.startsWith("55")) {
         cleanDigits = "55" + cleanDigits;
       }
 
-      // Supabase Auth exige o + no início para o campo phone
       const authPhone = "+" + cleanDigits;
-      // Para o banco de dados, usamos o formato puro 5511...
       const dbPhone = cleanDigits;
 
       const response = await fetch('https://aoghhoqiwjwqfjifaait.supabase.co/functions/v1/create-user', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabase.auth.getSession().then(({data}) => data.session?.access_token || '')}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           email: formData.email,
@@ -55,8 +51,9 @@ const AdminRegister = () => {
           admin_secret: formData.adminSecret,
           metadata: {
             nome: formData.nome,
-            full_name: formData.nome, // Garante o Display Name no Supabase Auth
+            full_name: formData.nome,
             whatsapp: dbPhone,
+            tipo_assinatura: formData.tipo_assinatura,
           }
         })
       });
@@ -68,7 +65,7 @@ const AdminRegister = () => {
       }
 
       toast.success("Usuário Elite cadastrado com sucesso!");
-      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "" });
+      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica" });
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
       toast.error(error.message || "Erro de comunicação com o servidor.");
@@ -136,6 +133,31 @@ const AdminRegister = () => {
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">WhatsApp</label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="(11) 99999-9999"
+                  value={formData.whatsapp}
+                  onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">Assinatura</label>
+                <select
+                  value={formData.tipo_assinatura}
+                  onChange={(e) => setFormData({ ...formData, tipo_assinatura: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary text-sm h-[46px]"
+                >
+                  <option value="Unica">Cardápio Único</option>
+                  <option value="Mensal">Plano Mensal</option>
+                </select>
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">E-mail</label>
               <input
@@ -143,18 +165,6 @@ const AdminRegister = () => {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-muted-foreground uppercase mb-1">WhatsApp</label>
-              <input
-                type="tel"
-                required
-                placeholder="(11) 99999-9999"
-                value={formData.whatsapp}
-                onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground outline-none focus:ring-2 focus:ring-primary"
               />
             </div>

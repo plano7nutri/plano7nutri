@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertCircle } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, CreditCard } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ interface PremiumDashboardProps {
   restrictions: string;
   preferences: string;
   avatarUrl?: string;
+  tipo_assinatura?: string;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
   onProfileUpdate?: (data: any) => Promise<void>;
@@ -36,7 +37,7 @@ interface PremiumDashboardProps {
 const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, onAvatarUpdate, onLogout, onProfileUpdate,
+  restrictions, preferences, avatarUrl, tipo_assinatura, onAvatarUpdate, onLogout, onProfileUpdate,
   lastUpdateDate
 }: PremiumDashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -135,9 +136,14 @@ const PremiumDashboard = ({
           className="flex flex-col gap-4 mb-8"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-amber-400 font-bold tracking-widest uppercase text-xs">
-              <Crown className="w-4 h-4" />
-              Membro Premium
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-amber-400 font-bold tracking-widest uppercase text-xs">
+                <Crown className="w-4 h-4" />
+                Membro Premium
+              </div>
+              <div className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                {tipo_assinatura === "Mensal" ? "Plano Mensal" : "Cardápio Único"}
+              </div>
             </div>
             <div className="flex items-center gap-4">
               {onLogout && (

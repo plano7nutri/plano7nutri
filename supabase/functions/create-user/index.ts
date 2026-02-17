@@ -19,7 +19,7 @@ serve(async (req) => {
 
     const { email, password, phone, metadata, admin_secret } = await req.json()
 
-    // Validação da Senha Administrativa (Escondida no Servidor)
+    // Validação da Senha Administrativa
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
@@ -45,8 +45,6 @@ serve(async (req) => {
     if (authError) throw authError
 
     // 2. Padronizar dados na tabela clientes_pagos
-    // O trigger 'handle_new_paid_user' já deve ter criado a linha.
-    // Vamos garantir que whatsapp e telefone_cadastro fiquem no formato 55...
     const cleanPhone = metadata.whatsapp || phone.replace(/\D/g, "");
 
     const { error: updateError } = await supabaseAdmin
@@ -54,12 +52,13 @@ serve(async (req) => {
       .update({
         whatsapp: cleanPhone,
         telefone_cadastro: cleanPhone,
-        nome_usuario: metadata.nome
+        nome_usuario: metadata.nome,
+        tipo_assinatura: metadata.tipo_assinatura || 'Unica'
       })
       .eq('id', authData.user.id);
 
     if (updateError) {
-      console.warn("[create-user] Aviso: Erro ao atualizar campos adicionais na tabela clientes_pagos:", updateError.message);
+      console.warn("[create-user] Aviso: Erro ao atualizar campos adicionais:", updateError.message);
     }
 
     return new Response(JSON.stringify(authData), {

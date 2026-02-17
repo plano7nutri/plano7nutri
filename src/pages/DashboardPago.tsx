@@ -235,6 +235,7 @@ const DashboardPago = () => {
           restrictions={userData.restricoes_alimentares}
           preferences={userData.preferencias}
           avatarUrl={userData.avatar_url}
+          tipo_assinatura={userData.tipo_assinatura}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}
