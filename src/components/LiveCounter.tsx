@@ -5,22 +5,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, Crown, Utensils, Calendar } from "lucide-react";
 
 const LiveCounter = () => {
+  // Valores iniciais mais altos conforme solicitado
   const [stats, setStats] = useState({
-    premiumOnline: 47,
-    freeOnline: 142,
-    menusToday: 894,
-    menusMonth: 27412
+    premiumOnline: 512,
+    freeOnline: 1487,
+    menusToday: 2431,
+    menusMonth: 82145
   });
 
   useEffect(() => {
     const interval = setInterval(() => {
       setStats(prev => ({
-        premiumOnline: Math.max(30, prev.premiumOnline + (Math.random() > 0.5 ? 1 : -1)),
-        freeOnline: Math.max(100, prev.freeOnline + (Math.random() > 0.5 ? 2 : -2)),
-        menusToday: prev.menusToday + (Math.random() > 0.7 ? 1 : 0),
-        menusMonth: prev.menusMonth + (Math.random() > 0.9 ? 1 : 0)
+        // Oscilação mais agressiva em torno de 500
+        premiumOnline: Math.max(480, prev.premiumOnline + (Math.floor(Math.random() * 7) - 3)),
+        // Oscilação mais agressiva em torno de 1500
+        freeOnline: Math.max(1400, prev.freeOnline + (Math.floor(Math.random() * 15) - 7)),
+        // Incremento constante para planos feitos hoje
+        menusToday: prev.menusToday + (Math.random() > 0.4 ? 1 : 0),
+        // Incremento constante para planos no mês
+        menusMonth: prev.menusMonth + (Math.random() > 0.8 ? 1 : 0)
       }));
-    }, 3000);
+    }, 2500); // Intervalo levemente mais rápido para mais dinamismo
 
     return () => clearInterval(interval);
   }, []);
@@ -42,7 +47,7 @@ const LiveCounter = () => {
     },
     { 
       label: "Planos Hoje", 
-      value: stats.menusToday, 
+      value: stats.menusToday.toLocaleString("pt-BR"), 
       icon: Utensils, 
       color: "text-accent", 
       bg: "bg-orange-50" 
