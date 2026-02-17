@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2 } from "lucide-react";
+import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -25,17 +25,17 @@ interface DashboardProps {
   preferences: string;
   avatarUrl?: string;
   onAvatarUpdate?: () => void;
+  onLogout?: () => void;
 }
 
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, onAvatarUpdate
+  restrictions, preferences, avatarUrl, onAvatarUpdate, onLogout
 }: DashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
 
-  // Sincroniza o estado local se a prop mudar vindo do banco
   useEffect(() => {
     if (avatarUrl) {
       setLocalAvatarUrl(avatarUrl);
@@ -54,42 +54,36 @@ const Dashboard = ({
     setIsUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${whatsapp.replace(/\D/g, '')}.${fileExt}`; // Nome fixo por usuário para não encher o storage
+      const fileName = `${whatsapp.replace(/\D/g, '')}.${fileExt}`;
       
-      // 1. Upload com overwrite (upsert: true)
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { 
           upsert: true,
-          cacheControl: '0' // Diz ao Supabase para não cachear
+          cacheControl: '0'
         });
 
       if (uploadError) throw uploadError;
 
-      // 2. Pegar URL e adicionar um "timestamp" para enganar o cache do navegador
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
       
       const timestampedUrl = `${publicUrl}?t=${Date.now()}`;
 
-      // 3. Atualizar Banco
       const { error: updateError } = await supabase
         .from('usuarios_planogratis')
-        .update({ avatar_url: publicUrl }) // No banco salvamos a URL limpa
+        .update({ avatar_url: publicUrl })
         .eq('whatsapp', whatsapp);
 
       if (updateError) throw updateError;
 
-      // 4. Atualizar interface LOCAL imediatamente
       setLocalAvatarUrl(timestampedUrl);
-      
       toast.success("Foto atualizada com sucesso!");
-      
       if (onAvatarUpdate) onAvatarUpdate();
     } catch (error: any) {
       console.error("Erro no upload:", error);
-      toast.error("Falha ao subir foto. Verifique se o bucket 'avatars' é público.");
+      toast.error("Falha ao subir foto.");
     } finally {
       setIsUploading(false);
       event.target.value = "";
@@ -101,6 +95,20 @@ const Dashboard = ({
   return (
     <div className="min-h-screen px-6 py-10">
       <div className="w-full max-w-2xl mx-auto">
+        
+        {/* Header com Logout */}
+        <div className="flex justify-end mb-4">
+          {onLogout && (
+            <button 
+              onClick={onLogout}
+              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair do Plano
+            </button>
+          )}
+        </div>
+
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="glass rounded-2xl p-6 shadow-card mb-6">
           

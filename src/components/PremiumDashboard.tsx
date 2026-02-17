@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, ShieldCheck } from "lucide-react";
+import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, ShieldCheck, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -25,12 +25,13 @@ interface PremiumDashboardProps {
   preferences: string;
   avatarUrl?: string;
   onAvatarUpdate?: () => void;
+  onLogout?: () => void;
 }
 
 const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, onAvatarUpdate
+  restrictions, preferences, avatarUrl, onAvatarUpdate, onLogout
 }: PremiumDashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
@@ -80,7 +81,6 @@ const PremiumDashboard = ({
 
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
-  // Garantir que valores numéricos não sejam nulos para evitar erros de renderização
   const safeMetaCalorias = metaCalorias || 0;
   const safeTmb = tmb || 0;
   const safeGet = get || 0;
@@ -103,9 +103,20 @@ const PremiumDashboard = ({
             <Crown className="w-4 h-4" />
             Membro Premium
           </div>
-          <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium">
-            <ShieldCheck className="w-4 h-4" />
-            Acesso Vitalício
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium">
+              <ShieldCheck className="w-4 h-4" />
+              Acesso Vitalício
+            </div>
+            {onLogout && (
+              <button 
+                onClick={onLogout}
+                className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
+              >
+                <LogOut className="w-4 h-4" />
+                Sair
+              </button>
+            )}
           </div>
         </motion.div>
 

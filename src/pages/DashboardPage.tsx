@@ -34,6 +34,10 @@ const DashboardPage = () => {
     }
   }, [initialData, dashData, isLoading, navigate]);
 
+  const handleLogout = () => {
+    navigate("/", { replace: true });
+  };
+
   if (isLoading && !initialData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background">
@@ -70,6 +74,7 @@ const DashboardPage = () => {
           preferences={displayData.preferencias}
           avatarUrl={displayData.avatar_url}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
+          onLogout={handleLogout}
         />
       </main>
     </div>

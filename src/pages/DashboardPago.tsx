@@ -125,6 +125,11 @@ const DashboardPago = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
   if (authLoading || dataLoading || isCompletingOnboarding) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14]">
@@ -190,6 +195,7 @@ const DashboardPago = () => {
           preferences={userData.preferencias}
           avatarUrl={userData.avatar_url}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
+          onLogout={handleLogout}
         />
       </main>
     </div>
