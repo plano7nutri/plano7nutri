@@ -10,35 +10,40 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
+  // Tenta pegar do state ou do localStorage se o state sumir no refresh
+  const storedWhatsapp = localStorage.getItem("plano7_free_whatsapp");
   const initialData = location.state;
+  const whatsappToFetch = initialData?.whatsapp || storedWhatsapp;
 
   const { data: dashData, isLoading } = useQuery({
-    queryKey: ["userPlan", initialData?.whatsapp],
+    queryKey: ["userPlan", whatsappToFetch],
     queryFn: async () => {
-      if (!initialData?.whatsapp) return null;
+      if (!whatsappToFetch) return null;
       const { data, error } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .eq("whatsapp", initialData.whatsapp)
+        .eq("whatsapp", whatsappToFetch)
         .maybeSingle();
       
       if (error) throw error;
       return data;
     },
-    enabled: !!initialData?.whatsapp,
+    enabled: !!whatsappToFetch,
   });
 
   useEffect(() => {
-    if (!initialData && !isLoading && !dashData) {
+    // Só redireciona se realmente não tiver nada e o carregamento terminou
+    if (!whatsappToFetch && !isLoading) {
       navigate("/", { replace: true });
     }
-  }, [initialData, dashData, isLoading, navigate]);
+  }, [whatsappToFetch, isLoading, navigate]);
 
   const handleLogout = () => {
+    localStorage.removeItem("plano7_free_whatsapp");
     navigate("/", { replace: true });
   };
 
-  if (isLoading && !initialData) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />

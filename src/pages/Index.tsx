@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Landing from "@/components/Landing";
@@ -58,6 +58,8 @@ const Index = () => {
 
       if (data) {
         toast.success(`Bem-vindo de volta, ${data.nome}!`);
+        // Salva no localStorage para persistência simples
+        localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
         navigate("/dashboard", { state: data });
       } else {
         setUserNotFound(true);
@@ -122,6 +124,7 @@ const Index = () => {
       if (insertError) throw new Error(insertError.message);
 
       toast.success("Plano calculado com sucesso!");
+      localStorage.setItem("plano7_free_whatsapp", dashData.whatsapp);
       navigate("/dashboard", { state: dashData });
     } catch (err) {
       console.error("Erro no processo:", err);
@@ -147,16 +150,17 @@ const Index = () => {
             )}
 
             {view === "check-free-plan" && (
-              <div className="min-h-screen flex flex-col items-center justify-center px-6">
+              <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
                 <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
                   <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano grátis</h2>
                   <p className="text-muted-foreground mb-8">Informe seu WhatsApp para ver seu planejamento.</p>
                   
-                  <div className="space-y-6">
+                  <form onSubmit={(e) => { e.preventDefault(); handleLoginFree(); }} className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
                       <input
                         type="tel"
+                        required
                         placeholder="(11) 99999-9999"
                         value={loginWhatsapp}
                         onChange={(e) => {
@@ -178,10 +182,11 @@ const Index = () => {
                         <div className="flex items-start gap-2 text-destructive mb-4">
                           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                           <p className="text-sm font-bold leading-tight">
-                            Não encontramos nenhum plano gratuito com este número.
+                            Número não encontrado em nosso sistema.
                           </p>
                         </div>
                         <button
+                          type="button"
                           onClick={() => setView("onboarding")}
                           className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
                         >
@@ -192,9 +197,9 @@ const Index = () => {
                     )}
 
                     <motion.button
+                      type="submit"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={handleLoginFree}
                       disabled={isLoggingIn}
                       className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
                     >
@@ -202,12 +207,13 @@ const Index = () => {
                     </motion.button>
 
                     <button
+                      type="button"
                       onClick={() => setView("landing")}
                       className="w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
                     >
                       <ArrowLeft className="w-4 h-4" /> Voltar
                     </button>
-                  </div>
+                  </form>
                 </div>
               </div>
             )}
