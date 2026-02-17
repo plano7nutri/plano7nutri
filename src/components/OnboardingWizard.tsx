@@ -19,7 +19,8 @@ export interface OnboardingData {
 interface OnboardingWizardProps {
   onComplete: (data: OnboardingData) => void;
   onBack: () => void;
-  onGoToLogin: () => void;
+  onGoToLogin?: () => void;
+  hideLoginLink?: boolean;
 }
 
 const activityLevels = [
@@ -44,7 +45,7 @@ const slideVariants = {
 
 const TOTAL_STEPS = 5;
 
-const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardProps) => {
+const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = false }: OnboardingWizardProps) => {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardP
   });
 
   const checkDuplicate = async () => {
+    if (hideLoginLink) return false; // No fluxo premium não bloqueamos por duplicidade aqui
+    
     setIsCheckingDuplicate(true);
     setDuplicateFound(false);
     try {
@@ -179,7 +182,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardP
                     }`}
                   />
                   
-                  {duplicateFound && (
+                  {duplicateFound && !hideLoginLink && (
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
                       <div className="flex items-start gap-2 text-destructive mb-3">
                         <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -187,13 +190,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin }: OnboardingWizardP
                           Este WhatsApp já possui um plano cadastrado em nosso sistema.
                         </p>
                       </div>
-                      <button
-                        onClick={onGoToLogin}
-                        className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors"
-                      >
-                        <UserCheck className="w-4 h-4" />
-                        Acessar meu plano existente
-                      </button>
+                      {onGoToLogin && (
+                        <button
+                          onClick={onGoToLogin}
+                          className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors"
+                        >
+                          <UserCheck className="w-4 h-4" />
+                          Acessar meu plano existente
+                        </button>
+                      )}
                     </motion.div>
                   )}
 

@@ -64,7 +64,7 @@ const DashboardPago = () => {
     
     setIsCompletingOnboarding(true);
     try {
-      // Cálculos (Mesma lógica do Index.tsx para consistência)
+      // Cálculos
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -90,6 +90,8 @@ const DashboardPago = () => {
       const updateData = {
         nome: data.name,
         whatsapp: data.whatsapp,
+        nome_usuario: data.name, // Nova coluna
+        telefone_cadastro: data.whatsapp, // Nova coluna
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
@@ -148,7 +150,6 @@ const DashboardPago = () => {
     );
   }
 
-  // Se não tiver idade ou peso, significa que é o primeiro acesso e precisa do wizard
   const isFirstAccess = !userData.idade || !userData.peso;
 
   if (isFirstAccess) {
@@ -161,7 +162,7 @@ const DashboardPago = () => {
         <OnboardingWizard 
           onComplete={handleCompleteOnboarding}
           onBack={() => signOut()}
-          onGoToLogin={() => {}} // Já está logado
+          hideLoginLink={true} // Esconde o botão de login/duplicidade
         />
         <Footer />
       </div>
