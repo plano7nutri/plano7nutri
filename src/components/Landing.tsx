@@ -3,6 +3,7 @@ import { ArrowRight, ClipboardList, Calculator, MessageCircle, UserCheck } from 
 import { useNavigate } from "react-router-dom";
 import Testimonials from "./Testimonials";
 import Features from "./Features";
+import LiveCounter from "./LiveCounter";
 
 const steps = [
   {
@@ -119,6 +120,9 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </div>
         </motion.div>
       </main>
+
+      {/* Prova Social em Tempo Real */}
+      <LiveCounter />
 
       {/* Seção Como Funciona / Benefícios */}
       <Features />
