@@ -13,7 +13,7 @@ const Login = () => {
 
   useEffect(() => {
     if (session) {
-      navigate('/dashboard');
+      navigate('/dashboardpago');
     }
   }, [session, navigate]);
 
