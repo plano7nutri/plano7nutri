@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import PremiumDashboard from "@/components/PremiumDashboard";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
-import Footer from "@/components/Footer";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -90,8 +89,8 @@ const DashboardPago = () => {
       const updateData = {
         nome: data.name,
         whatsapp: data.whatsapp,
-        nome_usuario: data.name, // Nova coluna
-        telefone_cadastro: data.whatsapp, // Nova coluna
+        nome_usuario: data.name,
+        telefone_cadastro: data.whatsapp,
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
@@ -162,9 +161,8 @@ const DashboardPago = () => {
         <OnboardingWizard 
           onComplete={handleCompleteOnboarding}
           onBack={() => signOut()}
-          hideLoginLink={true} // Esconde o botão de login/duplicidade
+          hideLoginLink={true}
         />
-        <Footer />
       </div>
     );
   }
@@ -194,7 +192,6 @@ const DashboardPago = () => {
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
         />
       </main>
-      <Footer />
     </div>
   );
 };

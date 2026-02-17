@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
-import Footer from "@/components/Footer";
 import { Loader2 } from "lucide-react";
 
 const DashboardPage = () => {
@@ -73,7 +72,6 @@ const DashboardPage = () => {
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
         />
       </main>
-      <Footer />
     </div>
   );
 };
