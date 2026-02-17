@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import PremiumEditForm from "./PremiumEditForm";
+import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
   name: string;
@@ -37,12 +39,16 @@ interface PremiumDashboardProps {
   lastUpdateDate?: string;
 }
 
+const ADMIN_EMAIL = "robson_cruz@live.com";
+
 const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
   restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, 
   onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
 }: PremiumDashboardProps) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
@@ -93,7 +99,7 @@ const PremiumDashboard = ({
   const handleWhatsAppClick = async (e: React.MouseEvent) => {
     if (!canRequestPlan()) {
       e.preventDefault();
-      toast.error("Seu plano já foi feito e o novo só daqui a 7 dias. O Plano só funciona seguindo as regras.", {
+      toast.error("Seu plano já foi feito e o novo só daqui a 7 dias.", {
         icon: <AlertTriangle className="w-5 h-5 text-red-500" />,
         duration: 5000
       });
@@ -203,6 +209,15 @@ const PremiumDashboard = ({
               </div>
             </div>
             <div className="flex items-center gap-4">
+              {user?.email === ADMIN_EMAIL && (
+                <button 
+                  onClick={() => navigate('/cadastroadmin')}
+                  className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors text-xs font-bold uppercase tracking-wider"
+                >
+                  <Settings className="w-4 h-4" />
+                  Painel Admin
+                </button>
+              )}
               {onLogout && (
                 <button 
                   onClick={onLogout}
