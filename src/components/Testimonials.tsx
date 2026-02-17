@@ -96,7 +96,7 @@ const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
   const [showAll, setShowAll] = useState(false);
 
   return (
-    <section className="py-12 bg-zinc-50/50">
+    <section className="pt-8 pb-12 bg-zinc-50/50">
       <div className="container mx-auto px-6">
         
         {/* CTAs de Reforço */}
