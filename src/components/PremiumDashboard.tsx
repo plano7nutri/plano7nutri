@@ -80,6 +80,15 @@ const PremiumDashboard = ({
 
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
+  // Garantir que valores numéricos não sejam nulos para evitar erros de renderização
+  const safeMetaCalorias = metaCalorias || 0;
+  const safeTmb = tmb || 0;
+  const safeGet = get || 0;
+  const safeMetaAgua = metaAgua || 0;
+  const safeProteina = proteina || 0;
+  const safeCarbo = carbo || 0;
+  const safeGordura = gordura || 0;
+
   return (
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-3xl mx-auto">
@@ -116,7 +125,7 @@ const PremiumDashboard = ({
               <Avatar className="w-32 h-32 border-2 border-emerald-500/30 shadow-2xl">
                 <AvatarImage src={localAvatarUrl} className="object-cover" />
                 <AvatarFallback className="bg-emerald-950 text-emerald-400 text-3xl font-bold">
-                  {name.substring(0, 2).toUpperCase()}
+                  {name ? name.substring(0, 2).toUpperCase() : "??"}
                 </AvatarFallback>
               </Avatar>
               <label className="absolute bottom-1 right-1 p-2.5 bg-amber-500 text-emerald-950 rounded-full cursor-pointer shadow-lg hover:bg-amber-400 transition-all hover:scale-110">
@@ -126,21 +135,21 @@ const PremiumDashboard = ({
             </div>
 
             <div className="text-center md:text-left">
-              <h2 className="text-3xl font-black text-white mb-1 tracking-tight">{name}</h2>
+              <h2 className="text-3xl font-black text-white mb-1 tracking-tight">{name || "Usuário"}</h2>
               <p className="text-emerald-400/80 font-medium mb-6">Seu Plano de Elite Personalizado</p>
               
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Idade</span>
-                  <span className="font-bold text-zinc-200">{age} anos</span>
+                  <span className="font-bold text-zinc-200">{age || 0} anos</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Altura</span>
-                  <span className="font-bold text-zinc-200">{(height/100).toFixed(2)}m</span>
+                  <span className="font-bold text-zinc-200">{(height ? height/100 : 0).toFixed(2)}m</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Peso</span>
-                  <span className="font-bold text-zinc-200">{weight}kg</span>
+                  <span className="font-bold text-zinc-200">{weight || 0}kg</span>
                 </div>
               </div>
             </div>
@@ -151,14 +160,14 @@ const PremiumDashboard = ({
               <Activity className="w-5 h-5 text-emerald-400" />
               <div>
                 <p className="text-[10px] text-zinc-500 uppercase font-bold">Atividade</p>
-                <p className="text-sm font-bold text-zinc-200">{activityLabel}</p>
+                <p className="text-sm font-bold text-zinc-200">{activityLabel || "Não informado"}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-emerald-950/30 p-4 rounded-2xl border border-emerald-500/5">
               <Target className="w-5 h-5 text-amber-400" />
               <div>
                 <p className="text-[10px] text-zinc-500 uppercase font-bold">Objetivo</p>
-                <p className="text-sm font-bold text-zinc-200">{goalLabel}</p>
+                <p className="text-sm font-bold text-zinc-200">{goalLabel || "Não informado"}</p>
               </div>
             </div>
           </div>
@@ -182,22 +191,22 @@ const PremiumDashboard = ({
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-xs text-zinc-500 font-bold uppercase mb-1">Meta Diária</p>
-                  <p className="text-3xl font-black text-emerald-400">{metaCalorias.toLocaleString()} <span className="text-sm font-normal text-zinc-500">kcal</span></p>
+                  <p className="text-3xl font-black text-emerald-400">{safeMetaCalorias.toLocaleString()} <span className="text-sm font-normal text-zinc-500">kcal</span></p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-zinc-500 font-bold uppercase mb-1">Água</p>
-                  <p className="text-2xl font-black text-blue-400">{metaAgua} <span className="text-sm font-normal text-zinc-500">ml</span></p>
+                  <p className="text-2xl font-black text-blue-400">{safeMetaAgua} <span className="text-sm font-normal text-zinc-500">ml</span></p>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
                 <div>
                   <p className="text-[10px] text-zinc-500 font-bold uppercase">TMB</p>
-                  <p className="font-bold text-zinc-300">{tmb.toLocaleString()} kcal</p>
+                  <p className="font-bold text-zinc-300">{safeTmb.toLocaleString()} kcal</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-zinc-500 font-bold uppercase">GET</p>
-                  <p className="font-bold text-zinc-300">{get.toLocaleString()} kcal</p>
+                  <p className="font-bold text-zinc-300">{safeGet.toLocaleString()} kcal</p>
                 </div>
               </div>
             </div>
@@ -218,15 +227,15 @@ const PremiumDashboard = ({
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
                 <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Proteína</p>
-                <p className="text-2xl font-black text-zinc-100">{proteina}g</p>
+                <p className="text-2xl font-black text-zinc-100">{safeProteina}g</p>
               </div>
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
                 <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Carbo</p>
-                <p className="text-2xl font-black text-zinc-100">{carbo}g</p>
+                <p className="text-2xl font-black text-zinc-100">{safeCarbo}g</p>
               </div>
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
                 <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Gordura</p>
-                <p className="text-2xl font-black text-zinc-100">{gordura}g</p>
+                <p className="text-2xl font-black text-zinc-100">{safeGordura}g</p>
               </div>
             </div>
 
