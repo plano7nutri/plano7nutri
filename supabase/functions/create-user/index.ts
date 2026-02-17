@@ -29,22 +29,24 @@ serve(async (req) => {
       })
     }
 
-    // Lógica "Coringa" para pegar o nome de qualquer lugar do JSON
+    // Captura o nome de qualquer lugar possível no JSON
     const fullName = body.full_name || metadata?.full_name || metadata?.nome || body.nome || "Usuário Elite";
     const cleanPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
 
-    console.log("[create-user] Processando cadastro:", email, "| Nome Identificado:", fullName);
+    console.log(`[create-user] Cadastrando: ${email} | Nome: ${fullName}`);
 
     // Criar Usuário no Auth
+    // O segredo é garantir que full_name esteja no primeiro nível do user_metadata
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       phone: cleanPhone ? "+" + cleanPhone : undefined,
       user_metadata: {
-        ...metadata,
-        full_name: fullName, // Garante que apareça no Dashboard do Supabase
+        full_name: fullName, // O Supabase Auth usa este campo para o Display Name
         nome: fullName,
-        whatsapp: cleanPhone
+        whatsapp: cleanPhone,
+        tipo_assinatura: metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica',
+        plano_semanal: metadata?.plano_semanal || body.plano_semanal || false
       },
       email_confirm: true,
       phone_confirm: true
@@ -65,12 +67,14 @@ serve(async (req) => {
       })
       .eq('id', authData.user.id);
 
+    if (updateError) console.error("[create-user] Erro ao atualizar tabela:", updateError.message);
+
     return new Response(JSON.stringify(authData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error: any) {
-    console.error("[create-user] Erro:", error.message);
+    console.error("[create-user] Erro crítico:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
