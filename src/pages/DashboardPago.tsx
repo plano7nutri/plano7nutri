@@ -159,6 +159,7 @@ const DashboardPago = () => {
         proteina_dia: nutrition.proteina,
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
+        limite_cardapio_unico: 0
       };
 
       const { error } = await supabase
@@ -233,11 +234,12 @@ const DashboardPago = () => {
           carbo={userData.carbo_dia}
           gordura={userData.gordura_dia}
           restrictions={userData.restricoes_alimentares}
-          preferences={userData.preferencias}
+          preferences={userData.preferences}
           avatarUrl={userData.avatar_url}
           tipo_assinatura={userData.tipo_assinatura}
           plano_semanal={userData.plano_semanal}
           ultimo_envio_plano={userData.ultimo_envio_plano}
+          limite_cardapio_unico={userData.limite_cardapio_unico}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}

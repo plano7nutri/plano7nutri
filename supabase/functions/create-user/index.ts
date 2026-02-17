@@ -29,10 +29,8 @@ serve(async (req) => {
       })
     }
 
-    // Pega o nome
     const fullName = body.nome || metadata?.nome || body.full_name || metadata?.full_name || "Usuário Elite";
     
-    // Padronização rigorosa de WhatsApp: 55 + DDD + Número
     let rawPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
     if ((rawPhone.length === 10 || rawPhone.length === 11) && !rawPhone.startsWith("55")) {
       rawPhone = "55" + rawPhone;
@@ -42,9 +40,6 @@ serve(async (req) => {
     const tipoAssinatura = metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica';
     const planoSemanal = metadata?.plano_semanal || body.plano_semanal || false;
 
-    console.log(`[create-user] Processando WhatsApp: ${cleanPhone} para: ${email}`);
-
-    // 1. Verificar se o usuário já existe no Auth
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) throw listError;
     
@@ -67,11 +62,11 @@ serve(async (req) => {
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
-        phone: cleanPhone ? "+" + cleanPhone : undefined, // Supabase Auth ainda exige + para campo nativo phone
+        phone: cleanPhone ? "+" + cleanPhone : undefined,
         user_metadata: {
           full_name: fullName,
           nome: fullName,
-          whatsapp: cleanPhone, // Mas no metadata salvamos limpo
+          whatsapp: cleanPhone,
           tipo_assinatura: tipoAssinatura,
           plano_semanal: planoSemanal
         },
@@ -82,8 +77,6 @@ serve(async (req) => {
       userId = authData.user.id;
     }
 
-    // 2. Gravação forçada na tabela clientes_pagos usando UPSERT
-    // Aqui gravamos o WhatsApp exatamente como '55DDDNÚMERO'
     const { error: dbError } = await supabaseAdmin
       .from('clientes_pagos')
       .upsert({
@@ -93,7 +86,8 @@ serve(async (req) => {
         whatsapp: cleanPhone,
         telefone_cadastro: cleanPhone,
         tipo_assinatura: tipoAssinatura,
-        plano_semanal: planoSemanal
+        plano_semanal: planoSemanal,
+        limite_cardapio_unico: 0 // Padrão zero para novos usuários
       }, { onConflict: 'id' });
 
     if (dbError) throw dbError;
@@ -107,7 +101,6 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error: any) {
-    console.error("[create-user] Erro fatal:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,

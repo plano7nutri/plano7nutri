@@ -33,6 +33,7 @@ interface PremiumDashboardProps {
   tipo_assinatura?: string;
   plano_semanal?: boolean;
   ultimo_envio_plano?: string;
+  limite_cardapio_unico?: number;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
   onProfileUpdate?: (data: any) => Promise<void>;
@@ -44,7 +45,7 @@ const ADMIN_EMAIL = "robson_cruz@live.com";
 const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, 
+  restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, limite_cardapio_unico,
   onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
 }: PremiumDashboardProps) => {
   const { user } = useAuth();
@@ -76,16 +77,15 @@ const PremiumDashboard = ({
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  // Lógica inteligente de solicitação
+  // Lógica inteligente de solicitação baseada na nova coluna
   const canRequestPlan = () => {
-    if (!ultimo_envio_plano) return true;
-
-    // Se for Cardápio Único, só pode pedir uma vez na vida (ou até o admin resetar)
+    // Se for Cardápio Único, a trava é o valor 1 na coluna limite_cardapio_unico
     if (tipo_assinatura === "Unica") {
-      return false;
+      return limite_cardapio_unico !== 1;
     }
 
-    // Se for Mensal, aplica a trava de 7 dias
+    // Se for Mensal, aplica a trava de 7 dias baseada na data
+    if (!ultimo_envio_plano) return true;
     const lastRequest = new Date(ultimo_envio_plano);
     const now = new Date();
     const diffTime = now.getTime() - lastRequest.getTime();
@@ -117,9 +117,15 @@ const PremiumDashboard = ({
     }
 
     try {
+      // Ao clicar, atualizamos a data e, se for Único, marcamos o limite como 1
+      const updateData: any = { ultimo_envio_plano: new Date().toISOString() };
+      if (tipo_assinatura === "Unica") {
+        updateData.limite_cardapio_unico = 1;
+      }
+
       const { error } = await supabase
         .from('clientes_pagos')
-        .update({ ultimo_envio_plano: new Date().toISOString() })
+        .update(updateData)
         .eq('whatsapp', whatsapp);
       
       if (error) throw error;
@@ -434,10 +440,10 @@ const PremiumDashboard = ({
             
             <div>
               <h3 className="text-2xl font-black mb-2">
-                {tipo_assinatura === "Unica" && ultimo_envio_plano ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
+                {tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
               
-              {tipo_assinatura === "Unica" && ultimo_envio_plano ? (
+              {tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? (
                 <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Plano já enviado para seu WhatsApp
                 </p>
