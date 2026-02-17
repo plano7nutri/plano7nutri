@@ -4,28 +4,37 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Crown, Utensils, Calendar } from "lucide-react";
 
+const STORAGE_KEY = "plano7_live_stats";
+
 const LiveCounter = () => {
-  // Valores iniciais mais altos conforme solicitado
-  const [stats, setStats] = useState({
-    premiumOnline: 512,
-    freeOnline: 1487,
-    menusToday: 2431,
-    menusMonth: 82145
+  // Inicializa com valores base ou recupera do localStorage
+  const [stats, setStats] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+    
+    return {
+      premiumOnline: 512,
+      freeOnline: 1487,
+      menusToday: 2431,
+      menusMonth: 27412 // Valor mensal ajustado para a casa dos 27k
+    };
   });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setStats(prev => ({
-        // Oscilação mais agressiva em torno de 500
-        premiumOnline: Math.max(480, prev.premiumOnline + (Math.floor(Math.random() * 7) - 3)),
-        // Oscilação mais agressiva em torno de 1500
-        freeOnline: Math.max(1400, prev.freeOnline + (Math.floor(Math.random() * 15) - 7)),
-        // Incremento constante para planos feitos hoje
-        menusToday: prev.menusToday + (Math.random() > 0.4 ? 1 : 0),
-        // Incremento constante para planos no mês
-        menusMonth: prev.menusMonth + (Math.random() > 0.8 ? 1 : 0)
-      }));
-    }, 2500); // Intervalo levemente mais rápido para mais dinamismo
+      setStats(prev => {
+        const nextStats = {
+          premiumOnline: Math.max(490, Math.min(540, prev.premiumOnline + (Math.floor(Math.random() * 5) - 2))),
+          freeOnline: Math.max(1450, Math.min(1550, prev.freeOnline + (Math.floor(Math.random() * 9) - 4))),
+          menusToday: prev.menusToday + (Math.random() > 0.6 ? 1 : 0),
+          menusMonth: prev.menusMonth + (Math.random() > 0.95 ? 1 : 0)
+        };
+        
+        // Persiste os novos valores
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextStats));
+        return nextStats;
+      });
+    }, 3500);
 
     return () => clearInterval(interval);
   }, []);
