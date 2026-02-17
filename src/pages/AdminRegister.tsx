@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Calendar, Lock } from "lucide-react";
@@ -25,19 +25,14 @@ const AdminRegister = () => {
     plano_semanal: false,
   });
 
-  useEffect(() => {
-    // Se terminou de carregar e não é o admin, expulsa
-    if (!authLoading) {
-      if (!user || user.email !== ADMIN_EMAIL) {
-        console.log("Acesso negado para:", user?.email);
-        navigate("/");
-      }
-    }
-  }, [user, authLoading, navigate]);
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!user || user.email !== ADMIN_EMAIL) {
+      toast.error("Erro: Apenas o administrador Robson pode realizar cadastros.");
+      return;
+    }
+
     if (formData.password.length < 6) {
       toast.error("A senha deve ter pelo menos 6 caracteres.");
       return;
@@ -68,9 +63,9 @@ const AdminRegister = () => {
       });
 
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Erro no servidor.");
+      if (!response.ok) throw new Error(result.error || "Erro na autorização.");
 
-      toast.success("Usuário Elite cadastrado!");
+      toast.success("Usuário Elite cadastrado com sucesso!");
       setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica", plano_semanal: false });
     } catch (error: any) {
       toast.error(error.message);
@@ -79,17 +74,12 @@ const AdminRegister = () => {
     }
   };
 
-  // Enquanto carrega ou se não for o admin, mostra o loader ou nada (o useEffect redireciona)
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
-  }
-
-  if (!user || user.email !== ADMIN_EMAIL) {
-    return null;
   }
 
   return (
@@ -99,17 +89,26 @@ const AdminRegister = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md glass rounded-2xl p-8 shadow-card border-2 border-primary/20"
       >
-        <button onClick={() => navigate('/dashboardpago')} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8">
-          <ArrowLeft size={16} /> Voltar ao Painel
+        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8">
+          <ArrowLeft size={16} /> Voltar ao Início
         </button>
 
         <div className="text-center mb-8">
           <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="text-primary" size={24} />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Painel do Robson</h1>
+          <h1 className="text-2xl font-bold text-foreground">Painel Administrativo</h1>
           <p className="text-muted-foreground text-sm">Cadastro de Clientes Elite</p>
         </div>
+
+        {user?.email !== ADMIN_EMAIL && (
+          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-xl flex items-start gap-3">
+            <ShieldAlert className="text-destructive shrink-0 mt-0.5" size={18} />
+            <p className="text-xs font-bold text-destructive leading-tight">
+              MODO DE VISUALIZAÇÃO: Você não está logado como Robson. O botão de cadastro não funcionará.
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 mb-4">
@@ -152,7 +151,11 @@ const AdminRegister = () => {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-glow disabled:opacity-50 flex items-center justify-center gap-2">
+          <button 
+            type="submit" 
+            disabled={loading || (user?.email !== ADMIN_EMAIL)} 
+            className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-glow disabled:opacity-50 flex items-center justify-center gap-2"
+          >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><UserPlus size={20} /> Cadastrar Cliente</>}
           </button>
         </form>
