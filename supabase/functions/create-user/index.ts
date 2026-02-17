@@ -6,8 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const ADMIN_EMAIL = "robson_cruz@live.com";
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -20,35 +18,33 @@ serve(async (req) => {
     )
 
     const body = await req.json()
-    
-    // Captura os dados exatamente como no seu JSON
-    const email = body.email;
-    const password = body.password;
-    const admin_secret = body.admin_secret;
-    const fullName = body.full_name; // Captura o nome do seu JSON
-    const rawPhone = body.Phone;    // Captura o Phone com P maiúsculo do seu JSON
+    const { email, password, phone, admin_secret, metadata } = body
 
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
-      console.error("[create-user] Senha mestre inválida.");
       return new Response(JSON.stringify({ error: "Senha Administrativa Inválida." }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
       })
     }
 
+    // Captura o nome de dentro do metadata ou da raiz
+    const fullName = metadata?.nome || body.full_name || body.nome;
+    const cleanPhone = (phone || body.Phone || "").replace(/\D/g, "");
+
     console.log("[create-user] Criando usuário:", email, "| Nome:", fullName);
 
-    // Criar Usuário no Auth do Supabase
+    // Criar Usuário no Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      phone: rawPhone ? (rawPhone.startsWith('+') ? rawPhone : "+" + rawPhone.replace(/\D/g, "")) : undefined,
+      phone: cleanPhone ? "+" + cleanPhone : undefined,
       user_metadata: {
-        full_name: fullName, // Isso preenche o "Display Name" na lista de usuários
+        ...metadata,
+        full_name: fullName, // Essencial para o Display Name
         nome: fullName,
-        whatsapp: rawPhone ? rawPhone.replace(/\D/g, "") : undefined
+        whatsapp: cleanPhone
       },
       email_confirm: true,
       phone_confirm: true
@@ -56,9 +52,7 @@ serve(async (req) => {
 
     if (authError) throw authError
 
-    const cleanPhone = rawPhone ? rawPhone.replace(/\D/g, "") : "";
-
-    // Atualiza a tabela de clientes_pagos com o nome e telefone
+    // Atualiza a tabela de clientes_pagos
     const { error: updateError } = await supabaseAdmin
       .from('clientes_pagos')
       .update({
@@ -66,21 +60,16 @@ serve(async (req) => {
         telefone_cadastro: cleanPhone,
         nome_usuario: fullName,
         nome: fullName,
-        tipo_assinatura: body.tipo_assinatura || 'Unica',
-        plano_semanal: body.plano_semanal || false
+        tipo_assinatura: metadata?.tipo_assinatura || 'Unica',
+        plano_semanal: metadata?.plano_semanal || false
       })
       .eq('id', authData.user.id);
-
-    if (updateError) {
-      console.warn("[create-user] Erro ao atualizar tabela:", updateError.message);
-    }
 
     return new Response(JSON.stringify(authData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error: any) {
-    console.error("[create-user] Erro:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
