@@ -6,6 +6,7 @@ import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, L
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import PremiumEditForm from "./PremiumEditForm";
 
 interface PremiumDashboardProps {
@@ -45,6 +46,7 @@ const PremiumDashboard = ({
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
@@ -99,14 +101,17 @@ const PremiumDashboard = ({
       return;
     }
 
-    // Se liberado, atualizamos a data do último envio no banco de dados
     try {
-      await supabase
+      const { error } = await supabase
         .from('clientes_pagos')
         .update({ ultimo_envio_plano: new Date().toISOString() })
         .eq('whatsapp', whatsapp);
       
-      // Pequeno delay para garantir que o usuário veja o feedback antes de ir para o WhatsApp
+      if (error) throw error;
+
+      // Força a atualização dos dados na tela para travar o botão imediatamente
+      queryClient.invalidateQueries({ queryKey: ["premiumUser"] });
+      
       toast.success("Solicitando seu novo cardápio semanal...");
     } catch (err) {
       console.error("Erro ao registrar envio:", err);
