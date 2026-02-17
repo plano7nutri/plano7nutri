@@ -26,7 +26,7 @@ const PricingSection = () => {
       price: "19,90",
       period: "por mês",
       features: [
-        "Tudo do Cardápio Único",
+        "Tudo do Cardápio Único +",
         "Cardápios novos toda semana",
         "Lista de compras semanal",
         "Ajustes conforme seu progresso",
@@ -85,7 +85,11 @@ const PricingSection = () => {
                     <Check size={14} strokeWidth={3} />
                   </div>
                   <span className="text-sm font-medium leading-tight text-zinc-600">
-                    {feature}
+                    {feature === "Tudo do Cardápio Único +" ? (
+                      <><strong>Tudo do Cardápio Único</strong> +</>
+                    ) : (
+                      feature
+                    )}
                   </span>
                 </li>
               ))}
