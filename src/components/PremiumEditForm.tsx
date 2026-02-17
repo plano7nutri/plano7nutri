@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Loader2, Save } from "lucide-react";
@@ -80,7 +82,7 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
           </div>
 
           <div>
-            <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Sexo Biológico</label>
+            <label className="block text-[10px] font-bold text-emerald-500 mb-1.5">SEXO(Biológico)</label>
             <select 
               value={formData.sex}
               onChange={(e) => setFormData({...formData, sex: e.target.value})}

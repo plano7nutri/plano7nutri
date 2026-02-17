@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart } from "lucide-react";
@@ -186,7 +188,7 @@ const PremiumDashboard = ({
               
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Sexo</span>
+                  <span className="text-zinc-500 text-[10px] font-bold tracking-tighter">SEXO(Biológico)</span>
                   <span className="font-bold text-zinc-200">{sex === "male" ? "Masculino" : "Feminino"}</span>
                 </div>
                 <div className="flex flex-col">
