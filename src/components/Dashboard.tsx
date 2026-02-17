@@ -259,7 +259,7 @@ const Dashboard = ({
         >
           <div className="flex items-center justify-center gap-3 mb-2">
             <MessageCircle className="w-7 h-7" />
-            <span className="text-xl font-bold">Receber Meu Plano 7 no WhatsApp</span>
+            <span className="text-xl font-bold uppercase">Receber Meu Plano 7 GRÁTIS AGORA</span>
           </div>
           <p className="text-sm opacity-90 text-center">
             Clique para gerar sua lista de compras e cardápio semanal instantaneamente.
