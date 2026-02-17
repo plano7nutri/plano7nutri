@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -123,6 +123,8 @@ const PremiumDashboard = ({
 
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
+  const remainingDays = daysToWait();
+
   return (
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-3xl mx-auto">
@@ -130,31 +132,52 @@ const PremiumDashboard = ({
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-8"
+          className="flex flex-col gap-4 mb-8"
         >
-          <div className="flex items-center gap-2 text-amber-400 font-bold tracking-widest uppercase text-xs">
-            <Crown className="w-4 h-4" />
-            Membro Premium
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-amber-400 font-bold tracking-widest uppercase text-xs">
+              <Crown className="w-4 h-4" />
+              Membro Premium
+            </div>
+            <div className="flex items-center gap-4">
+              {onLogout && (
+                <button 
+                  onClick={onLogout}
+                  className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sair
+                </button>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-zinc-900/50 border border-emerald-500/10 backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-lg ${canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
+                {canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-zinc-100">Controle de Atualização</h4>
+                <p className="text-xs text-zinc-400">
+                  {canEdit() 
+                    ? "Seu perfil está liberado para nova atualização." 
+                    : `Próxima edição disponível em ${remainingDays} ${remainingDays === 1 ? 'dia' : 'dias'}.`}
+                </p>
+              </div>
+            </div>
             <button 
               onClick={handleEditClick}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
-                canEdit() ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20" : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+              disabled={!canEdit()}
+              className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                canEdit() 
+                  ? "bg-emerald-500 text-emerald-950 hover:bg-emerald-400 shadow-glow" 
+                  : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700"
               }`}
             >
               <Edit3 className="w-4 h-4" />
               Editar Perfil
             </button>
-            {onLogout && (
-              <button 
-                onClick={onLogout}
-                className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
-              >
-                <LogOut className="w-4 h-4" />
-                Sair
-              </button>
-            )}
           </div>
         </motion.div>
 
@@ -188,7 +211,7 @@ const PremiumDashboard = ({
               
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] font-bold tracking-tighter">SEXO(Biológico)</span>
+                  <span className="text-zinc-500 text-[10px] font-bold tracking-tighter uppercase">SEXO(Biológico)</span>
                   <span className="font-bold text-zinc-200">{sex === "male" ? "Masculino" : "Feminino"}</span>
                 </div>
                 <div className="flex flex-col">
