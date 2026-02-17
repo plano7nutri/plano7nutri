@@ -6,7 +6,7 @@ import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWi
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, Crown } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle } from "lucide-react";
 
 type View = "landing" | "onboarding" | "check-free-plan";
 
@@ -162,7 +162,7 @@ const Index = () => {
             {view === "check-free-plan" && (
               <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
                 <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
-                  <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano grátis</h2>
                   <p className="text-muted-foreground mb-8">Informe seu WhatsApp para ver seu planejamento.</p>
                   
                   <form onSubmit={(e) => { e.preventDefault(); handleLoginFree(); }} className="space-y-6">
@@ -213,26 +213,15 @@ const Index = () => {
                       disabled={isLoggingIn}
                       className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
                     >
-                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano"}
+                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano Grátis"}
                     </motion.button>
-
-                    <div className="pt-4 border-t border-border mt-2">
-                      <button
-                        type="button"
-                        onClick={() => navigate('/login')}
-                        className="w-full flex items-center justify-center gap-2 text-sm font-bold text-amber-600 hover:text-amber-700 transition-colors py-2"
-                      >
-                        <Crown className="w-4 h-4" />
-                        Sou Cliente Premium (Login com E-mail)
-                      </button>
-                    </div>
 
                     <button
                       type="button"
                       onClick={() => setView("landing")}
                       className="w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
                     >
-                      <ArrowLeft className="w-4 h-4" /> Voltar ao início
+                      <ArrowLeft className="w-4 h-4" /> Voltar
                     </button>
                   </form>
                 </div>

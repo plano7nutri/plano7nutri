@@ -27,6 +27,8 @@ interface LandingProps {
 }
 
 const Landing = ({ onStart, onLogin }: LandingProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
@@ -36,7 +38,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             Plano <span className="text-primary">7</span>
           </div>
           <button
-            onClick={onLogin}
+            onClick={() => navigate('/login')}
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <UserCheck className="w-4 h-4" />
