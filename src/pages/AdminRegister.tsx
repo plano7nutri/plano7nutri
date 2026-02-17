@@ -34,13 +34,19 @@ const AdminRegister = () => {
 
     setLoading(true);
     try {
+      // Formata o WhatsApp para o padrão E.164 (+55...)
+      const cleanPhone = formData.whatsapp.replace(/\D/g, "");
+      const formattedPhone = cleanPhone.startsWith("55") ? `+${cleanPhone}` : `+55${cleanPhone}`;
+
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        phone: formattedPhone, // Envia para o campo Phone da autenticação
         options: {
           data: {
             nome: formData.nome,
-            whatsapp: formData.whatsapp,
+            full_name: formData.nome, // Padrão do Supabase para Display Name
+            whatsapp: formData.whatsapp, // Mantém no metadado para o trigger
           },
         },
       });
@@ -108,7 +114,7 @@ const AdminRegister = () => {
             <input
               type="tel"
               required
-              placeholder="(00) 00000-0000"
+              placeholder="(11) 99999-9999"
               value={formData.whatsapp}
               onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
               className="w-full px-4 py-2.5 rounded-xl border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
