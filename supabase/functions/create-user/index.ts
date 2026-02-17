@@ -29,27 +29,25 @@ serve(async (req) => {
       })
     }
 
-    // Captura o nome de qualquer lugar possível no JSON
     const fullName = body.full_name || metadata?.full_name || metadata?.nome || body.nome || "Usuário Elite";
     const cleanPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
 
     console.log(`[create-user] Cadastrando: ${email} | Nome: ${fullName}`);
 
-    // Criar Usuário no Auth
-    // O segredo é garantir que full_name esteja no primeiro nível do user_metadata
+    // Criar Usuário no Auth com confirmação automática
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       phone: cleanPhone ? "+" + cleanPhone : undefined,
       user_metadata: {
-        full_name: fullName, // O Supabase Auth usa este campo para o Display Name
+        full_name: fullName,
         nome: fullName,
         whatsapp: cleanPhone,
         tipo_assinatura: metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica',
         plano_semanal: metadata?.plano_semanal || body.plano_semanal || false
       },
-      email_confirm: true,
-      phone_confirm: true
+      email_confirm: true, // Marca o e-mail como verificado automaticamente
+      phone_confirm: true  // Marca o telefone como verificado automaticamente
     })
 
     if (authError) throw authError
@@ -67,14 +65,12 @@ serve(async (req) => {
       })
       .eq('id', authData.user.id);
 
-    if (updateError) console.error("[create-user] Erro ao atualizar tabela:", updateError.message);
-
     return new Response(JSON.stringify(authData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error: any) {
-    console.error("[create-user] Erro crítico:", error.message);
+    console.error("[create-user] Erro:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
