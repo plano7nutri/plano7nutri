@@ -81,7 +81,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             </motion.button>
             
             <motion.button
-              onClick={() => navigate('/login')}
+              onClick={onLogin}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300"
