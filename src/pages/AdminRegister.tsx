@@ -16,7 +16,7 @@ const AdminRegister = () => {
     email: "",
     whatsapp: "",
     password: "",
-    adminSecret: "", // Senha Mestre solicitada
+    adminSecret: "",
   });
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -27,37 +27,43 @@ const AdminRegister = () => {
       return;
     }
 
-    if (!formData.adminSecret) {
-      toast.error("A senha mestre administrativa é obrigatória.");
-      return;
-    }
-
     setLoading(true);
     try {
       const digits = formData.whatsapp.replace(/\D/g, "");
       const cleanDigits = digits.startsWith("55") ? digits.substring(2) : digits;
       const formattedPhone = `+55${cleanDigits}`;
 
-      const { data, error } = await supabase.functions.invoke('create-user', {
-        body: {
+      // Chamada usando a URL absoluta conforme regra de desenvolvimento
+      const response = await fetch('https://aoghhoqiwjwqfjifaait.supabase.co/functions/v1/create-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabase.auth.getSession().then(({data}) => data.session?.access_token || '')}`
+        },
+        body: JSON.stringify({
           email: formData.email,
           password: formData.password,
           phone: formattedPhone,
-          admin_secret: formData.adminSecret, // Enviado para validação no servidor
+          admin_secret: formData.adminSecret,
           metadata: {
             nome: formData.nome,
             full_name: formData.nome,
             whatsapp: formattedPhone,
           }
-        }
+        })
       });
 
-      if (error || data?.error) throw new Error(error?.message || data?.error);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Falha na autorização administrativa.");
+      }
 
       toast.success("Usuário cadastrado com sucesso!");
       setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "" });
     } catch (error: any) {
-      toast.error(error.message || "Erro ao cadastrar.");
+      console.error("Erro no cadastro:", error);
+      toast.error(error.message || "Erro de comunicação com o servidor.");
     } finally {
       setLoading(false);
     }
