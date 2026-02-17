@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -221,6 +221,29 @@ const PremiumDashboard = ({
               </div>
             </div>
           </div>
+
+          {(restrictions || preferences) && (
+            <div className="mt-6 pt-6 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {restrictions && (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-red-400">
+                    <UtensilsCrossed className="w-3 h-3" />
+                    <span className="text-[10px] uppercase font-bold tracking-tighter">Restrições</span>
+                  </div>
+                  <p className="text-sm text-zinc-300 font-medium leading-relaxed">{restrictions}</p>
+                </div>
+              )}
+              {preferences && (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-emerald-400">
+                    <Heart className="w-3 h-3" />
+                    <span className="text-[10px] uppercase font-bold tracking-tighter">Preferências</span>
+                  </div>
+                  <p className="text-sm text-zinc-300 font-medium leading-relaxed">{preferences}</p>
+                </div>
+              )}
+            </div>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
