@@ -6,7 +6,7 @@ import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWi
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle } from "lucide-react";
 
 type View = "landing" | "onboarding" | "login";
 
@@ -36,6 +36,7 @@ const Index = () => {
   const [view, setView] = useState<View>("landing");
   const [loginWhatsapp, setLoginWhatsapp] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -45,6 +46,7 @@ const Index = () => {
     }
 
     setIsLoggingIn(true);
+    setUserNotFound(false);
     try {
       const { data, error } = await supabase
         .from("usuarios_planogratis")
@@ -58,7 +60,7 @@ const Index = () => {
         toast.success(`Bem-vindo de volta, ${data.nome}!`);
         navigate("/dashboard", { state: data });
       } else {
-        toast.error("Plano não encontrado. Verifique o número ou crie um novo.");
+        setUserNotFound(true);
       }
     } catch (err) {
       toast.error("Erro ao buscar seu plano.");
@@ -157,10 +159,37 @@ const Index = () => {
                         type="tel"
                         placeholder="(11) 99999-9999"
                         value={loginWhatsapp}
-                        onChange={(e) => setLoginWhatsapp(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                        onChange={(e) => {
+                          setLoginWhatsapp(e.target.value);
+                          setUserNotFound(false);
+                        }}
+                        className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
+                          userNotFound ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
+                        }`}
                       />
                     </div>
+
+                    {userNotFound && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        className="p-4 rounded-xl bg-destructive/10 border border-destructive/20"
+                      >
+                        <div className="flex items-start gap-2 text-destructive mb-4">
+                          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm font-bold leading-tight">
+                            Não encontramos nenhum plano vinculado a este número.
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setView("onboarding")}
+                          className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
+                        >
+                          <PlusCircle className="w-4 h-4" />
+                          Criar meu plano 7 grátis agora
+                        </button>
+                      </motion.div>
+                    )}
 
                     <motion.button
                       whileHover={{ scale: 1.02 }}
