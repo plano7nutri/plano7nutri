@@ -39,8 +39,17 @@ const Index = () => {
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
+  const sanitizePhone = (phone: string) => {
+    let clean = phone.replace(/\D/g, "");
+    if (clean.length >= 10 && !clean.startsWith("55")) {
+      clean = "55" + clean;
+    }
+    return clean;
+  };
+
   const handleLoginFree = async () => {
-    if (loginWhatsapp.length < 10) {
+    const cleanWhatsapp = sanitizePhone(loginWhatsapp);
+    if (cleanWhatsapp.length < 12) {
       toast.error("Informe um WhatsApp válido.");
       return;
     }
@@ -51,14 +60,13 @@ const Index = () => {
       const { data, error } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .eq("whatsapp", loginWhatsapp)
+        .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
       if (error) throw error;
 
       if (data) {
         toast.success(`Bem-vindo de volta, ${data.nome}!`);
-        // Salva no localStorage para persistência simples
         localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
         navigate("/dashboard", { state: data });
       } else {
@@ -73,6 +81,8 @@ const Index = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
+      const cleanWhatsapp = sanitizePhone(data.whatsapp);
+      
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
@@ -98,7 +108,7 @@ const Index = () => {
       const dashData = {
         session_id: Math.random().toString(36).substring(7),
         nome: data.name,
-        whatsapp: data.whatsapp,
+        whatsapp: cleanWhatsapp,
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
