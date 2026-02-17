@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, ShieldCheck, LogOut } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, ShieldCheck, LogOut, Edit3, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import PremiumEditForm from "./PremiumEditForm";
 
 interface PremiumDashboardProps {
   name: string;
@@ -26,19 +27,41 @@ interface PremiumDashboardProps {
   avatarUrl?: string;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
+  onProfileUpdate?: (data: any) => Promise<void>;
+  lastUpdateDate?: string;
 }
 
 const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, onAvatarUpdate, onLogout
+  restrictions, preferences, avatarUrl, onAvatarUpdate, onLogout, onProfileUpdate,
+  lastUpdateDate
 }: PremiumDashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
 
   useEffect(() => {
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
+
+  const canEdit = () => {
+    if (!lastUpdateDate) return true;
+    const lastUpdate = new Date(lastUpdateDate);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - lastUpdate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays >= 7;
+  };
+
+  const daysToWait = () => {
+    if (!lastUpdateDate) return 0;
+    const lastUpdate = new Date(lastUpdateDate);
+    const nextUpdate = new Date(lastUpdate);
+    nextUpdate.setDate(nextUpdate.getDate() + 7);
+    const diffTime = nextUpdate.getTime() - new Date().getTime();
+    return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -79,15 +102,24 @@ const PremiumDashboard = ({
     }
   };
 
-  const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
+  const handleEditClick = () => {
+    if (!canEdit()) {
+      toast.info(`Você poderá atualizar seu perfil novamente em ${daysToWait()} dias.`, {
+        icon: <Clock className="w-5 h-5 text-amber-500" />
+      });
+      return;
+    }
+    setIsEditing(true);
+  };
 
-  const safeMetaCalorias = metaCalorias || 0;
-  const safeTmb = tmb || 0;
-  const safeGet = get || 0;
-  const safeMetaAgua = metaAgua || 0;
-  const safeProteina = proteina || 0;
-  const safeCarbo = carbo || 0;
-  const safeGordura = gordura || 0;
+  const handleProfileSave = async (data: any) => {
+    if (onProfileUpdate) {
+      await onProfileUpdate(data);
+      setIsEditing(false);
+    }
+  };
+
+  const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
   return (
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
@@ -104,10 +136,15 @@ const PremiumDashboard = ({
             Membro Premium
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium">
-              <ShieldCheck className="w-4 h-4" />
-              Acesso Vitalício
-            </div>
+            <button 
+              onClick={handleEditClick}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                canEdit() ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20" : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+              }`}
+            >
+              <Edit3 className="w-4 h-4" />
+              Editar Perfil
+            </button>
             {onLogout && (
               <button 
                 onClick={onLogout}
@@ -202,22 +239,22 @@ const PremiumDashboard = ({
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-xs text-zinc-500 font-bold uppercase mb-1">Meta Diária</p>
-                  <p className="text-3xl font-black text-emerald-400">{safeMetaCalorias.toLocaleString()} <span className="text-sm font-normal text-zinc-500">kcal</span></p>
+                  <p className="text-3xl font-black text-emerald-400">{(metaCalorias || 0).toLocaleString()} <span className="text-sm font-normal text-zinc-500">kcal</span></p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-zinc-500 font-bold uppercase mb-1">Água</p>
-                  <p className="text-2xl font-black text-blue-400">{safeMetaAgua} <span className="text-sm font-normal text-zinc-500">ml</span></p>
+                  <p className="text-2xl font-black text-blue-400">{metaAgua || 0} <span className="text-sm font-normal text-zinc-500">ml</span></p>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
                 <div>
                   <p className="text-[10px] text-zinc-500 font-bold uppercase">TMB</p>
-                  <p className="font-bold text-zinc-300">{safeTmb.toLocaleString()} kcal</p>
+                  <p className="font-bold text-zinc-300">{(tmb || 0).toLocaleString()} kcal</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-zinc-500 font-bold uppercase">GET</p>
-                  <p className="font-bold text-zinc-300">{safeGet.toLocaleString()} kcal</p>
+                  <p className="font-bold text-zinc-300">{(get || 0).toLocaleString()} kcal</p>
                 </div>
               </div>
             </div>
@@ -238,15 +275,15 @@ const PremiumDashboard = ({
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
                 <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Proteína</p>
-                <p className="text-2xl font-black text-zinc-100">{safeProteina}g</p>
+                <p className="text-2xl font-black text-zinc-100">{proteina || 0}g</p>
               </div>
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
                 <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Carbo</p>
-                <p className="text-2xl font-black text-zinc-100">{safeCarbo}g</p>
+                <p className="text-2xl font-black text-zinc-100">{carbo || 0}g</p>
               </div>
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
                 <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Gordura</p>
-                <p className="text-2xl font-black text-zinc-100">{safeGordura}g</p>
+                <p className="text-2xl font-black text-zinc-100">{gordura || 0}g</p>
               </div>
             </div>
 
@@ -256,36 +293,6 @@ const PremiumDashboard = ({
             </div>
           </motion.div>
         </div>
-
-        {/* Preferências e Restrições */}
-        {(restrictions || preferences) && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-900/30 border border-emerald-500/5 rounded-3xl p-8 mb-8"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {restrictions && (
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <UtensilsCrossed className="w-4 h-4 text-red-400" />
-                    <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Restrições</h4>
-                  </div>
-                  <p className="text-sm text-zinc-300 leading-relaxed">{restrictions}</p>
-                </div>
-              )}
-              {preferences && (
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Star className="w-4 h-4 text-amber-400" />
-                    <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Preferências</h4>
-                  </div>
-                  <p className="text-sm text-zinc-300 leading-relaxed">{preferences}</p>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
 
         {/* CTA Premium WhatsApp */}
         <motion.a
@@ -308,6 +315,21 @@ const PremiumDashboard = ({
             </div>
           </div>
         </motion.a>
+
+        <AnimatePresence>
+          {isEditing && (
+            <PremiumEditForm 
+              initialData={{
+                name, age, sex, height, weight, 
+                activity: activityLabel, 
+                goal: goalLabel, 
+                restrictions, preferences
+              }}
+              onClose={() => setIsEditing(false)}
+              onSave={handleProfileSave}
+            />
+          )}
+        </AnimatePresence>
 
       </div>
     </div>

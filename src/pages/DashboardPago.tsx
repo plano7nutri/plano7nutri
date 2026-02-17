@@ -9,6 +9,12 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const activityFactors: Record<string, number> = {
+  "Sedentário": 1.2,
+  "Levemente ativo": 1.375,
+  "Moderadamente ativo": 1.55,
+  "Muito ativo": 1.725,
+  "Extremamente ativo": 1.9,
+  // Fallbacks for IDs from wizard
   sedentary: 1.2,
   lightly_active: 1.375,
   moderately_active: 1.55,
@@ -34,7 +40,7 @@ const DashboardPago = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [isCompletingOnboarding, setIsCompletingOnboarding] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { data: userData, isLoading: dataLoading } = useQuery({
     queryKey: ["premiumUser", user?.id],
@@ -58,33 +64,83 @@ const DashboardPago = () => {
     }
   }, [user, authLoading, navigate]);
 
-  const handleCompleteOnboarding = async (data: OnboardingData) => {
+  const calculateNutrition = (data: any) => {
+    const tmb =
+      data.sex === "male"
+        ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
+        : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
+
+    const factor = activityFactors[data.activity] || 1.2;
+    const get = Math.round(tmb * factor);
+
+    let metaCalorias = get;
+    if (data.goal.includes("Perder") || data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
+    else if (data.goal.includes("Ganhar") || data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
+
+    const metaAgua = Math.round((data.weight * 35) / 100) * 100;
+
+    let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
+    if (metaCalorias < get) { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
+    else if (metaCalorias > get) { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
+
+    const proteina = Math.round((metaCalorias * protRatio) / 4);
+    const carbo = Math.round((metaCalorias * carbRatio) / 4);
+    const gordura = Math.round((metaCalorias * fatRatio) / 9);
+
+    return { tmb: Math.round(tmb), get, metaCalorias, metaAgua, proteina, carbo, gordura };
+  };
+
+  const handleUpdateProfile = async (data: any) => {
     if (!user?.id) return;
     
-    setIsCompletingOnboarding(true);
+    setIsProcessing(true);
     try {
-      // Cálculos
-      const tmb =
-        data.sex === "male"
-          ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
-          : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
+      const nutrition = calculateNutrition(data);
 
-      const factor = activityFactors[data.activity] || 1.2;
-      const get = Math.round(tmb * factor);
+      const updateData = {
+        idade: data.age,
+        peso: data.weight,
+        nivel_atividade_fisica: data.activity,
+        objetivo_semanal: data.goal,
+        restricoes_alimentares: data.restrictions,
+        preferencias: data.preferences,
+        meta_calorias: nutrition.metaCalorias,
+        meta_agua: nutrition.metaAgua,
+        tmb: nutrition.tmb,
+        get: nutrition.get,
+        proteina_dia: nutrition.proteina,
+        carbo_dia: nutrition.carbo,
+        gordura_dia: nutrition.gordura,
+        // Usamos uma string de timestamp para controle simples de 7 dias se a coluna updated_at não existir
+        // Mas o Supabase por padrão gerencia campos de data se configurados
+      };
 
-      let metaCalorias = get;
-      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
-      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
+      const { error } = await supabase
+        .from("clientes_pagos")
+        .update(updateData)
+        .eq("id", user.id);
 
-      const metaAgua = Math.round((data.weight * 35) / 100) * 100;
+      if (error) throw error;
 
-      let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
-      if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
-      else if (data.goal === "gain_muscle") { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
+      toast.success("Perfil e cálculos atualizados com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
+    } catch (err) {
+      toast.error("Erro ao atualizar dados.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
-      const proteina = Math.round((metaCalorias * protRatio) / 4);
-      const carbo = Math.round((metaCalorias * carbRatio) / 4);
-      const gordura = Math.round((metaCalorias * fatRatio) / 9);
+  const handleInitialOnboarding = async (data: OnboardingData) => {
+    if (!user?.id) return;
+    
+    setIsProcessing(true);
+    try {
+      const nutrition = calculateNutrition({
+        ...data,
+        activity: activityLabels[data.activity] || data.activity,
+        goal: goalLabels[data.goal] || data.goal
+      });
 
       const updateData = {
         nome: data.name,
@@ -99,13 +155,13 @@ const DashboardPago = () => {
         objetivo_semanal: goalLabels[data.goal] || data.goal,
         restricoes_alimentares: data.restrictions || "Nenhuma",
         preferencias: data.preferences || "Nenhuma",
-        meta_calorias: metaCalorias,
-        meta_agua: metaAgua,
-        tmb: Math.round(tmb),
-        get: get,
-        proteina_dia: proteina,
-        carbo_dia: carbo,
-        gordura_dia: gordura,
+        meta_calorias: nutrition.metaCalorias,
+        meta_agua: nutrition.metaAgua,
+        tmb: nutrition.tmb,
+        get: nutrition.get,
+        proteina_dia: nutrition.proteina,
+        carbo_dia: nutrition.carbo,
+        gordura_dia: nutrition.gordura,
       };
 
       const { error } = await supabase
@@ -118,10 +174,9 @@ const DashboardPago = () => {
       toast.success("Perfil premium configurado com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
     } catch (err) {
-      console.error(err);
       toast.error("Erro ao salvar seus dados.");
     } finally {
-      setIsCompletingOnboarding(false);
+      setIsProcessing(false);
     }
   };
 
@@ -130,11 +185,11 @@ const DashboardPago = () => {
     navigate("/login");
   };
 
-  if (authLoading || dataLoading || isCompletingOnboarding) {
+  if (authLoading || dataLoading || isProcessing) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14]">
         <Loader2 className="w-10 h-10 animate-spin text-emerald-500 mb-4" />
-        <p className="text-emerald-400/60 font-medium">Processando seus dados premium...</p>
+        <p className="text-emerald-400/60 font-medium">Sincronizando dados de elite...</p>
       </div>
     );
   }
@@ -143,13 +198,7 @@ const DashboardPago = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Plano não encontrado</h2>
-        <p className="text-zinc-400 mb-8">Não conseguimos localizar seus dados premium. Entre em contato com o suporte.</p>
-        <button 
-          onClick={() => navigate("/")}
-          className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold"
-        >
-          Voltar ao Início
-        </button>
+        <button onClick={() => navigate("/")} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold">Voltar ao Início</button>
       </div>
     );
   }
@@ -161,13 +210,8 @@ const DashboardPago = () => {
       <div className="min-h-screen bg-background">
         <div className="pt-10 px-6 text-center">
           <h1 className="text-2xl font-bold text-foreground">Bem-vindo ao Plano 7 Premium</h1>
-          <p className="text-muted-foreground">Vamos personalizar sua experiência de elite.</p>
         </div>
-        <OnboardingWizard 
-          onComplete={handleCompleteOnboarding}
-          onBack={() => signOut()}
-          hideLoginLink={true}
-        />
+        <OnboardingWizard onComplete={handleInitialOnboarding} onBack={() => signOut()} hideLoginLink={true} />
       </div>
     );
   }
@@ -176,16 +220,10 @@ const DashboardPago = () => {
     <div className="flex flex-col min-h-screen bg-[#051c14]">
       <main className="flex-1">
         <PremiumDashboard
+          {...userData}
           name={userData.nome}
-          whatsapp={userData.whatsapp}
-          age={userData.idade}
-          sex={userData.sexo_biologico}
-          height={userData.altura}
-          weight={userData.peso}
           activityLabel={userData.nivel_atividade_fisica}
           goalLabel={userData.objetivo_semanal}
-          tmb={userData.tmb}
-          get={userData.get}
           metaCalorias={userData.meta_calorias}
           metaAgua={userData.meta_agua}
           proteina={userData.proteina_dia}
@@ -193,9 +231,11 @@ const DashboardPago = () => {
           gordura={userData.gordura_dia}
           restrictions={userData.restricoes_alimentares}
           preferences={userData.preferencias}
-          avatarUrl={userData.avatar_url}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
           onLogout={handleLogout}
+          onProfileUpdate={handleUpdateProfile}
+          // Usamos o created_at ou uma data mockada se não tivermos updated_at
+          lastUpdateDate={userData.created_at} 
         />
       </main>
     </div>
