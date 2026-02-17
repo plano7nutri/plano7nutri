@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, Star, ShieldCheck, Plus } from "lucide-react";
+import { Check, Star, ShieldCheck } from "lucide-react";
 
 const PricingSection = () => {
   const plans = [
@@ -26,7 +26,7 @@ const PricingSection = () => {
       price: "19,90",
       period: "por mês",
       features: [
-        "Tudo do Cardápio Único +",
+        "Tudo do Cardápio Único",
         "Cardápios novos toda semana",
         "Lista de compras semanal",
         "Ajustes conforme seu progresso",
@@ -81,10 +81,10 @@ const PricingSection = () => {
             <ul className="space-y-4 mb-8 flex-1">
               {plan.features.map((feature, fIndex) => (
                 <li key={fIndex} className="flex items-start gap-3">
-                  <div className={`mt-0.5 p-0.5 rounded-full ${feature.includes('+') ? 'bg-amber-100 text-amber-600' : 'bg-emerald-50 text-primary'}`}>
-                    {feature.includes('+') ? <Plus size={14} strokeWidth={3} /> : <Check size={14} strokeWidth={3} />}
+                  <div className="mt-0.5 p-0.5 rounded-full bg-emerald-50 text-primary">
+                    <Check size={14} strokeWidth={3} />
                   </div>
-                  <span className={`text-sm font-medium leading-tight ${feature.includes('+') ? 'text-amber-700 font-bold' : 'text-zinc-600'}`}>
+                  <span className="text-sm font-medium leading-tight text-zinc-600">
                     {feature}
                   </span>
                 </li>
