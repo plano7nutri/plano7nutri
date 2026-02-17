@@ -19,6 +19,7 @@ const PricingSection = () => {
       ],
       buttonText: "Quero meu Cardápio — R$ 9,90",
       highlight: false,
+      url: "https://pay.hotmart.com/example_unico", // Placeholder para o plano único
     },
     {
       title: "Plano Mensal",
@@ -34,10 +35,9 @@ const PricingSection = () => {
       buttonText: "Assinar Agora — R$ 19,90/mês",
       highlight: true,
       badge: "Mais Popular",
+      url: "https://pay.hotmart.com/R104498424U?checkoutMode=10",
     },
   ];
-
-  const checkoutUrl = "https://pay.hotmart.com/example"; // Placeholder para o link de checkout
 
   return (
     <section className="mt-12 mb-8">
@@ -89,7 +89,7 @@ const PricingSection = () => {
             </ul>
 
             <a
-              href={checkoutUrl}
+              href={plan.url}
               target="_blank"
               rel="noopener noreferrer"
               className={`w-full py-4 rounded-2xl font-bold text-sm text-center transition-all ${
