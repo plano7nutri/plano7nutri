@@ -181,8 +181,8 @@ const PremiumDashboard = ({
           
           <div className="space-y-1">
             <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs">Aviso Importante</h3>
-            <p className="text-sm sm:text-base font-bold text-zinc-100 leading-tight">
-              O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA ALCANÇAR OS RESULTADO ENTÃO SIGA AS INSTRUÇÕES A RISCA.
+            <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
+              O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-400">ALCANÇAR RESULTADOS REAIS</strong> ENTÃO SIGA AS INSTRUÇÕES A RISCA.
             </p>
           </div>
         </motion.div>
