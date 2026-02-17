@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, AlertCircle, PlusCircle } from "lucide-react";
 
-type View = "landing" | "onboarding" | "login";
+type View = "landing" | "onboarding" | "check-free-plan";
 
 const activityFactors: Record<string, number> = {
   sedentary: 1.2,
@@ -39,7 +39,7 @@ const Index = () => {
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLoginFree = async () => {
     if (loginWhatsapp.length < 10) {
       toast.error("Informe um WhatsApp válido.");
       return;
@@ -135,22 +135,22 @@ const Index = () => {
         <AnimatePresence mode="wait">
           <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             {view === "landing" && (
-              <Landing onStart={() => setView("onboarding")} onLogin={() => setView("login")} />
+              <Landing onStart={() => setView("onboarding")} onLogin={() => setView("check-free-plan")} />
             )}
             
             {view === "onboarding" && (
               <OnboardingWizard 
                 onComplete={handleComplete} 
                 onBack={() => setView("landing")} 
-                onGoToLogin={() => setView("login")}
+                onGoToLogin={() => setView("check-free-plan")}
               />
             )}
 
-            {view === "login" && (
+            {view === "check-free-plan" && (
               <div className="min-h-screen flex flex-col items-center justify-center px-6">
                 <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
-                  <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano</h2>
-                  <p className="text-muted-foreground mb-8">Informe seu WhatsApp cadastrado.</p>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">Acessar meu plano grátis</h2>
+                  <p className="text-muted-foreground mb-8">Informe seu WhatsApp para ver seu planejamento.</p>
                   
                   <div className="space-y-6">
                     <div>
@@ -178,7 +178,7 @@ const Index = () => {
                         <div className="flex items-start gap-2 text-destructive mb-4">
                           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                           <p className="text-sm font-bold leading-tight">
-                            Não encontramos nenhum plano vinculado a este número.
+                            Não encontramos nenhum plano gratuito com este número.
                           </p>
                         </div>
                         <button
@@ -186,7 +186,7 @@ const Index = () => {
                           className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
                         >
                           <PlusCircle className="w-4 h-4" />
-                          Criar meu plano 7 grátis agora
+                          Criar meu plano grátis agora
                         </button>
                       </motion.div>
                     )}
@@ -194,11 +194,11 @@ const Index = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={handleLogin}
+                      onClick={handleLoginFree}
                       disabled={isLoggingIn}
                       className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
                     >
-                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano"}
+                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano Grátis"}
                     </motion.button>
 
                     <button
