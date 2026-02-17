@@ -49,7 +49,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
       </nav>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pb-16">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 pb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,7 +98,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-24 w-full max-w-3xl mx-auto"
+          className="mt-20 w-full max-w-3xl mx-auto"
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {steps.map((step, i) => (

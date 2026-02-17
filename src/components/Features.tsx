@@ -37,7 +37,7 @@ const items = [
 
 const Features = () => {
   return (
-    <section className="py-24 bg-[#F8F9FA]">
+    <section className="pt-12 pb-24 bg-[#F8F9FA]">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.h2 
