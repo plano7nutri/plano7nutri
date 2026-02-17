@@ -29,11 +29,11 @@ serve(async (req) => {
       })
     }
 
-    // Captura o nome de dentro do metadata ou da raiz
-    const fullName = metadata?.nome || body.full_name || body.nome;
-    const cleanPhone = (phone || body.Phone || "").replace(/\D/g, "");
+    // Lógica "Coringa" para pegar o nome de qualquer lugar do JSON
+    const fullName = body.full_name || metadata?.full_name || metadata?.nome || body.nome || "Usuário Elite";
+    const cleanPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
 
-    console.log("[create-user] Criando usuário:", email, "| Nome:", fullName);
+    console.log("[create-user] Processando cadastro:", email, "| Nome Identificado:", fullName);
 
     // Criar Usuário no Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -42,7 +42,7 @@ serve(async (req) => {
       phone: cleanPhone ? "+" + cleanPhone : undefined,
       user_metadata: {
         ...metadata,
-        full_name: fullName, // Essencial para o Display Name
+        full_name: fullName, // Garante que apareça no Dashboard do Supabase
         nome: fullName,
         whatsapp: cleanPhone
       },
@@ -60,8 +60,8 @@ serve(async (req) => {
         telefone_cadastro: cleanPhone,
         nome_usuario: fullName,
         nome: fullName,
-        tipo_assinatura: metadata?.tipo_assinatura || 'Unica',
-        plano_semanal: metadata?.plano_semanal || false
+        tipo_assinatura: metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica',
+        plano_semanal: metadata?.plano_semanal || body.plano_semanal || false
       })
       .eq('id', authData.user.id);
 
@@ -70,6 +70,7 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error: any) {
+    console.error("[create-user] Erro:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
