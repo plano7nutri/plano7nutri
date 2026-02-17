@@ -13,8 +13,8 @@ const LiveCounter = () => {
     
     return {
       premiumOnline: 508,
-      freeOnline: 1492,
-      menusToday: 2431,
+      freeOnline: 1342,
+      menusToday: 1587,
       menusMonth: 27412
     };
   });
@@ -23,8 +23,8 @@ const LiveCounter = () => {
     const updateStats = () => {
       const increment = Math.floor(Math.random() * 2) + 1;
       
-      // Atualização escalonada com delays de 1 segundo
-      // 1. Premium Online (imediato no ciclo)
+      // Atualização escalonada com delays
+      // 1. Premium Online
       setTimeout(() => {
         setStats(prev => {
           const next = {
@@ -36,31 +36,31 @@ const LiveCounter = () => {
         });
       }, 0);
 
-      // 2. Usuários Grátis (1s delay)
+      // 2. Usuários Grátis (Mantendo em torno de 1300-1400)
       setTimeout(() => {
         setStats(prev => {
           const next = {
             ...prev,
-            freeOnline: Math.max(1460, Math.min(1540, prev.freeOnline + (Math.floor(Math.random() * 7) - 3)))
+            freeOnline: Math.max(1310, Math.min(1390, prev.freeOnline + (Math.floor(Math.random() * 7) - 3)))
           };
           localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
           return next;
         });
       }, 1000);
 
-      // 3. Planos Hoje (2s delay)
+      // 3. Planos Hoje (Gira em torno de 1500-1600, sempre acima dos usuários online)
       setTimeout(() => {
         setStats(prev => {
           const next = {
             ...prev,
-            menusToday: prev.menusToday + increment
+            menusToday: Math.max(1520, Math.min(1650, prev.menusToday + (Math.floor(Math.random() * 3) - 1)))
           };
           localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
           return next;
         });
       }, 2000);
 
-      // 4. Este Mês (3s delay)
+      // 4. Este Mês
       setTimeout(() => {
         setStats(prev => {
           const next = {
@@ -73,9 +73,8 @@ const LiveCounter = () => {
       }, 3000);
     };
 
-    // Ciclo completo a cada 8 segundos para dar tempo do escalonamento brilhar
     const mainInterval = setInterval(updateStats, 8000);
-    updateStats(); // Chamada inicial
+    updateStats();
 
     return () => clearInterval(mainInterval);
   }, []);
