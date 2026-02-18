@@ -118,7 +118,7 @@ const PremiumDashboard = ({
   const handleWhatsAppClick = (e: React.MouseEvent) => {
     if (isSubscriptionInactive) {
       e.preventDefault();
-      toast.error("Sua assinatura está inativa. Renove para continuar.");
+      toast.error("Seu acesso está inativo. Renove para continuar.");
       return;
     }
     if (isUnicaDelivered) {
@@ -209,8 +209,10 @@ const PremiumDashboard = ({
               <h3 className="text-red-500 font-black uppercase tracking-widest text-xs">Acesso Restrito</h3>
               <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
                 {isSubscriptionInactive 
-                  ? "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."
-                  : "Seu cardápio único já foi entregue. Para receber novos planos semanais, assine o Plano Mensal abaixo."}
+                  ? (tipo_assinatura === "Mensal" 
+                      ? "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."
+                      : "Seu acesso está inativo. Renove seu plano para continuar recebendo seus planejamentos.")
+                  : "Seu cardápio único já foi entregue com sucesso. Confira as opções abaixo para continuar evoluindo com novos planos."}
               </p>
             </div>
           </motion.div>
@@ -290,7 +292,7 @@ const PremiumDashboard = ({
                 <h4 className="text-sm font-bold text-zinc-100">Controle de Atualização</h4>
                 <p className="text-xs text-zinc-400">
                   {isBlocked 
-                    ? "Atualização bloqueada. Renove sua assinatura."
+                    ? "Atualização bloqueada. Renove seu acesso."
                     : canEdit() 
                       ? "Seu perfil está liberado para nova atualização." 
                       : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
@@ -479,7 +481,7 @@ const PremiumDashboard = ({
               </h3>
               {isSubscriptionInactive ? (
                 <p className="text-red-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                  <Lock className="w-4 h-4" /> Renove sua assinatura para solicitar
+                  <Lock className="w-4 h-4" /> Renove seu plano para solicitar
                 </p>
               ) : isUnicaDelivered ? (
                 <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
