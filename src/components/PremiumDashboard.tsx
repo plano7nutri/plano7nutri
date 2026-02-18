@@ -374,7 +374,7 @@ const PremiumDashboard = ({
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-6 backdrop-blur-sm">
             <div className="flex items-center gap-2 mb-6">
               <div className="p-2 bg-amber-500/10 rounded-lg"><Zap className="w-5 h-5 text-amber-400" /></div>
-              <h3 className="font-bold text-zinc-200">Macronutrientes</h3>
+              <h3 className="font-bold text-zinc-200">Macronutrientes (Diário)</h3>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
