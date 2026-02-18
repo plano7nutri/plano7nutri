@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Lock, Settings } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Lock, Settings, CheckCircle2, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ const AdminRegister = () => {
     adminSecret: "",
     tipo_assinatura: "Unica",
     plano_semanal: false,
+    assinatura_ativa: true,
   });
 
   useEffect(() => {
@@ -71,7 +72,8 @@ const AdminRegister = () => {
             full_name: formData.nome,
             whatsapp: cleanWhatsapp,
             tipo_assinatura: formData.tipo_assinatura,
-            plano_semanal: formData.plano_semanal
+            plano_semanal: formData.plano_semanal,
+            assinatura_ativa: formData.assinatura_ativa
           }
         })
       });
@@ -80,7 +82,7 @@ const AdminRegister = () => {
       if (!response.ok) throw new Error(result.error || "Erro na autorização.");
 
       toast.success("Usuário Elite cadastrado com sucesso!");
-      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica", plano_semanal: false });
+      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica", plano_semanal: false, assinatura_ativa: true });
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -143,9 +145,15 @@ const AdminRegister = () => {
               <option value="Mensal">Plano Mensal</option>
             </select>
 
-            <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border">
-              <span className="text-xs font-bold">Trava de 7 dias (Plano Semanal)</span>
-              <input type="checkbox" checked={formData.plano_semanal} onChange={(e) => setFormData({ ...formData, plano_semanal: e.target.checked })} className="w-5 h-5 accent-primary" />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border">
+                <span className="text-[10px] font-bold uppercase">Trava 7 dias</span>
+                <input type="checkbox" checked={formData.plano_semanal} onChange={(e) => setFormData({ ...formData, plano_semanal: e.target.checked })} className="w-5 h-5 accent-primary" />
+              </div>
+              <div className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${formData.assinatura_ativa ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
+                <span className="text-[10px] font-bold uppercase">Ativa</span>
+                <input type="checkbox" checked={formData.assinatura_ativa} onChange={(e) => setFormData({ ...formData, assinatura_ativa: e.target.checked })} className="w-5 h-5 accent-emerald-600" />
+              </div>
             </div>
 
             <input type="email" placeholder="E-mail de Acesso" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border bg-card outline-none" />

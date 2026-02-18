@@ -39,6 +39,7 @@ serve(async (req) => {
 
     const tipoAssinatura = metadata?.tipo_assinatura || body.tipo_assinatura || 'Unica';
     const planoSemanal = metadata?.plano_semanal || body.plano_semanal || false;
+    const assinaturaAtiva = metadata?.assinatura_ativa !== undefined ? metadata.assinatura_ativa : true;
 
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) throw listError;
@@ -54,7 +55,8 @@ serve(async (req) => {
           nome: fullName,
           whatsapp: cleanPhone,
           tipo_assinatura: tipoAssinatura,
-          plano_semanal: planoSemanal
+          plano_semanal: planoSemanal,
+          assinatura_ativa: assinaturaAtiva
         }
       });
       if (updateAuthError) throw updateAuthError;
@@ -68,7 +70,8 @@ serve(async (req) => {
           nome: fullName,
           whatsapp: cleanPhone,
           tipo_assinatura: tipoAssinatura,
-          plano_semanal: planoSemanal
+          plano_semanal: planoSemanal,
+          assinatura_ativa: assinaturaAtiva
         },
         email_confirm: true,
         phone_confirm: true
@@ -87,7 +90,8 @@ serve(async (req) => {
         telefone_cadastro: cleanPhone,
         tipo_assinatura: tipoAssinatura,
         plano_semanal: planoSemanal,
-        limite_cardapio_unico: 0 // Padrão zero para novos usuários
+        assinatura_ativa: assinaturaAtiva,
+        limite_cardapio_unico: 0
       }, { onConflict: 'id' });
 
     if (dbError) throw dbError;

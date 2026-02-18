@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import PremiumDashboard from "@/components/PremiumDashboard";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldAlert, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 const activityFactors: Record<string, number> = {
@@ -197,6 +197,37 @@ const DashboardPago = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Plano não encontrado</h2>
         <button onClick={() => navigate("/")} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold">Voltar ao Início</button>
+      </div>
+    );
+  }
+
+  // Verificação de Assinatura Ativa
+  if (userData.assinatura_ativa === false) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
+        <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 border border-red-500/20">
+          <ShieldAlert className="text-red-500 w-10 h-10" />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-2">Assinatura Inativa</h2>
+        <p className="text-zinc-400 max-w-md mb-8">
+          Identificamos que sua assinatura do Plano 7 não está ativa no momento. Entre em contato com o suporte para regularizar seu acesso.
+        </p>
+        <div className="flex flex-col gap-4 w-full max-w-xs">
+          <a 
+            href="https://wa.me/5511910183401" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-500 transition-colors"
+          >
+            Falar com Suporte
+          </a>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 text-zinc-500 hover:text-white transition-colors font-bold text-sm"
+          >
+            <LogOut size={18} /> Sair da Conta
+          </button>
+        </div>
       </div>
     );
   }
