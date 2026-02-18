@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import PremiumEditForm from "./PremiumEditForm";
 import PricingSection from "./PricingSection";
+import FAQSection from "./FAQSection";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -500,6 +501,9 @@ const PremiumDashboard = ({
             <PricingSection isDark={true} />
           </motion.div>
         )}
+
+        {/* FAQ Section */}
+        <FAQSection isDark={true} />
 
         <AnimatePresence>
           {isEditing && (

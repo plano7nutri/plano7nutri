@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import PricingSection from "./PricingSection";
+import FAQSection from "./FAQSection";
 
 interface DashboardProps {
   name: string;
@@ -265,6 +266,9 @@ const Dashboard = ({
             Clique para gerar sua lista de compras e cardápio semanal instantaneamente.
           </p>
         </motion.a>
+
+        {/* FAQ Section */}
+        <FAQSection />
       </div>
     </div>
   );
