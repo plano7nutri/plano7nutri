@@ -285,14 +285,14 @@ const Dashboard = ({
             rel="noopener noreferrer"
             whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
-            className="block w-full bg-whatsapp text-whatsapp-foreground rounded-3xl p-8 shadow-whatsapp animate-pulse-glow transition-all duration-300"
+            className="block w-full bg-whatsapp text-whatsapp-foreground rounded-3xl p-6 shadow-whatsapp animate-pulse-glow transition-all duration-300"
           >
             <div className="flex flex-col items-center gap-4">
               <div className="flex items-center justify-center gap-3">
-                <MessageCircle className="w-8 h-8" />
-                <span className="text-2xl font-black uppercase tracking-tight">Receber Meu Plano Grátis Agora</span>
+                <MessageCircle className="w-6 h-6" />
+                <span className="text-xl font-black uppercase tracking-tight">Receber Meu Plano Grátis Agora</span>
               </div>
-              <p className="text-sm font-medium opacity-90 text-center max-w-lg">
+              <p className="text-xs font-medium opacity-90 text-center max-w-lg">
                 Seu cardápio de 7 dias e lista de compras serão gerados instantaneamente e enviados para seu celular.
               </p>
             </div>

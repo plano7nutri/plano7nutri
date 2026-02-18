@@ -455,13 +455,13 @@ const PremiumDashboard = ({
           className={`block w-full relative group transition-all duration-300 ${(!canRequestPlan() || isBlocked) ? 'opacity-80' : ''}`}
         >
           <div className={`absolute -inset-1 rounded-[2.5rem] blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center gap-6 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+          <div className={`relative rounded-[2.5rem] p-8 shadow-2xl flex flex-col items-center text-center gap-6 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:rotate-12 transition-transform">
               {canRequestPlan() && !isBlocked ? <MessageCircle className="w-32 h-32" /> : <CheckCircle2 className="w-32 h-32" />}
             </div>
-            {canRequestPlan() && !isBlocked ? <MessageCircle className="w-12 h-12" /> : <CheckCircle2 className="w-12 h-12 text-emerald-500" />}
+            {canRequestPlan() && !isBlocked ? <MessageCircle className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8 text-emerald-500" />}
             <div className="space-y-3">
-              <h3 className="text-3xl font-black uppercase tracking-tight">
+              <h3 className="text-2xl font-black uppercase tracking-tight">
                 {isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
               {isSubscriptionInactive ? (
@@ -477,7 +477,7 @@ const PremiumDashboard = ({
                   <Clock className="w-4 h-4" /> Próximo plano disponível em {daysToNextPlan()} dias
                 </p>
               ) : (
-                <p className="text-emerald-100 text-base font-medium opacity-90 max-w-lg">Receba agora sua lista de compras inteligente e o cardápio completo da semana direto no seu WhatsApp.</p>
+                <p className="text-emerald-100 text-sm font-medium opacity-90 max-w-lg">Receba agora sua lista de compras inteligente e o cardápio completo da semana direto no seu WhatsApp.</p>
               )}
             </div>
           </div>
