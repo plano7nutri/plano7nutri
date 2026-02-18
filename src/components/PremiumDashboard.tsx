@@ -61,8 +61,10 @@ const PremiumDashboard = ({
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
-  // Lógica de Bloqueio
-  const isBlocked = assinatura_ativa === false || (tipo_assinatura === "Unica" && limite_cardapio_unico === 1);
+  // Lógica de Bloqueio Mestre
+  const isSubscriptionInactive = assinatura_ativa === false;
+  const isUnicaDelivered = tipo_assinatura === "Unica" && limite_cardapio_unico === 1;
+  const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
   const canEdit = () => {
     if (isBlocked) return false;
@@ -85,17 +87,23 @@ const PremiumDashboard = ({
 
   const canRequestPlan = () => {
     if (isBlocked) return false;
+    
+    // Se for Unica, só pode se não tiver limite 1
     if (tipo_assinatura === "Unica") {
       return limite_cardapio_unico !== 1;
     }
 
-    if (!ultimo_envio_plano) return true;
-    const lastRequest = new Date(ultimo_envio_plano);
-    const now = new Date();
-    const diffTime = now.getTime() - lastRequest.getTime();
-    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-    
-    return diffTime >= sevenDaysInMs;
+    // Se for Mensal (plano_semanal true), verifica os 7 dias
+    if (tipo_assinatura === "Mensal" || plano_semanal === true) {
+      if (!ultimo_envio_plano) return true;
+      const lastRequest = new Date(ultimo_envio_plano);
+      const now = new Date();
+      const diffTime = now.getTime() - lastRequest.getTime();
+      const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+      return diffTime >= sevenDaysInMs;
+    }
+
+    return true;
   };
 
   const daysToNextPlan = () => {
@@ -107,20 +115,20 @@ const PremiumDashboard = ({
   };
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
-    if (isBlocked) {
+    if (isSubscriptionInactive) {
       e.preventDefault();
-      toast.error("Sua assinatura está inativa ou seu plano único já foi entregue. Renove para continuar.");
+      toast.error("Sua assinatura está inativa. Renove para continuar.");
+      return;
+    }
+    if (isUnicaDelivered) {
+      e.preventDefault();
+      toast.error("Seu cardápio único já foi entregue.");
       return;
     }
     if (!canRequestPlan()) {
       e.preventDefault();
-      const msg = tipo_assinatura === "Unica" 
-        ? "Seu cardápio único já foi solicitado e entregue." 
-        : "Seu novo plano semanal estará disponível em breve.";
-      
-      toast.error(msg, {
-        icon: <AlertTriangle className="w-5 h-5 text-red-500" />,
-        duration: 5000
+      toast.error(`Seu novo plano semanal estará disponível em ${daysToNextPlan()} dias.`, {
+        icon: <Clock className="w-5 h-5 text-amber-500" />
       });
       return;
     }
@@ -129,7 +137,7 @@ const PremiumDashboard = ({
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isBlocked) {
-      toast.error("Assinatura inativa.");
+      toast.error("Acesso restrito.");
       return;
     }
     const file = event.target.files?.[0];
@@ -161,7 +169,7 @@ const PremiumDashboard = ({
 
   const handleEditClick = () => {
     if (isBlocked) {
-      toast.error("Assinatura inativa. Renove para editar seu perfil.");
+      toast.error("Acesso restrito. Renove para editar seu perfil.");
       return;
     }
     if (!canEdit()) {
@@ -199,9 +207,9 @@ const PremiumDashboard = ({
             <div className="space-y-1">
               <h3 className="text-red-500 font-black uppercase tracking-widest text-xs">Acesso Restrito</h3>
               <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
-                {tipo_assinatura === "Unica" 
-                  ? "Seu cardápio único já foi entregue. Para receber novos planos semanais, assine o Plano Mensal abaixo."
-                  : "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."}
+                {isSubscriptionInactive 
+                  ? "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."
+                  : "Seu cardápio único já foi entregue. Para receber novos planos semanais, assine o Plano Mensal abaixo."}
               </p>
             </div>
           </motion.div>
@@ -461,17 +469,17 @@ const PremiumDashboard = ({
             {canRequestPlan() && !isBlocked ? <MessageCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
             <div>
               <h3 className="text-2xl font-black mb-2">
-                {isBlocked ? "Acesso Bloqueado" : tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
+                {isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
-              {isBlocked ? (
+              {isSubscriptionInactive ? (
                 <p className="text-red-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <Lock className="w-4 h-4" /> Renove sua assinatura para solicitar
                 </p>
-              ) : tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? (
+              ) : isUnicaDelivered ? (
                 <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Plano já enviado para seu WhatsApp
                 </p>
-              ) : tipo_assinatura === "Mensal" && !canRequestPlan() ? (
+              ) : (tipo_assinatura === "Mensal" || plano_semanal === true) && !canRequestPlan() ? (
                 <p className="text-amber-200 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <Clock className="w-4 h-4" /> Próximo plano em {daysToNextPlan()} dias
                 </p>
