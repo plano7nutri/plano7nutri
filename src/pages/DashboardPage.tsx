@@ -34,13 +34,13 @@ const DashboardPage = () => {
   useEffect(() => {
     // Só redireciona se realmente não tiver nada e o carregamento terminou
     if (!whatsappToFetch && !isLoading) {
-      navigate("/", { replace: true });
+      navigate("/login", { replace: true });
     }
   }, [whatsappToFetch, isLoading, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("plano7_free_whatsapp");
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   if (isLoading) {
