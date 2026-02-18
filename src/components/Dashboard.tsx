@@ -183,6 +183,22 @@ const Dashboard = ({
 
           {/* Dados - Direita */}
           <div className="lg:col-span-7 space-y-6">
+            
+            {/* Título de Luxo (Light Mode) */}
+            <div className="flex flex-col items-center mb-2">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-primary/5 via-secondary/20 to-primary/5 border border-primary/20 shadow-sm relative group"
+              >
+                <span className="text-xl drop-shadow-sm">💎</span>
+                <h2 className="text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-600 to-primary uppercase tracking-tight text-center">
+                  Seu Planejamento Nutricional
+                </h2>
+                <span className="text-xl drop-shadow-sm">✨</span>
+              </motion.div>
+            </div>
+
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
