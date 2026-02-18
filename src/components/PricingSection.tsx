@@ -4,7 +4,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Check, Star, ShieldCheck } from "lucide-react";
 
-const PricingSection = () => {
+interface PricingSectionProps {
+  isDark?: boolean;
+}
+
+const PricingSection = ({ isDark = false }: PricingSectionProps) => {
   const plans = [
     {
       title: "Cardápio Único",
@@ -43,10 +47,10 @@ const PricingSection = () => {
   return (
     <section className="mt-12 mb-8">
       <div className="text-center mb-10">
-        <h3 className="text-2xl font-bold text-foreground mb-2">
+        <h3 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
           Turbine seu resultado com um plano completo
         </h3>
-        <p className="text-sm text-muted-foreground font-medium">
+        <p className={`text-sm font-medium ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
           Escolha o plano ideal para continuar sua jornada
         </p>
       </div>
@@ -70,11 +74,11 @@ const PricingSection = () => {
             )}
 
             <div className="mb-6">
-              <h4 className="text-lg font-bold text-foreground mb-2">{plan.title}</h4>
+              <h4 className="text-lg font-bold text-zinc-900 mb-2">{plan.title}</h4>
               <div className="flex items-baseline gap-1">
-                <span className="text-sm font-bold text-foreground">R$</span>
-                <span className="text-4xl font-black text-foreground">{plan.price}</span>
-                <span className="text-xs text-muted-foreground font-medium ml-1">/{plan.period}</span>
+                <span className="text-sm font-bold text-zinc-900">R$</span>
+                <span className="text-4xl font-black text-zinc-900">{plan.price}</span>
+                <span className="text-xs text-zinc-500 font-medium ml-1">/{plan.period}</span>
               </div>
             </div>
 
@@ -111,7 +115,7 @@ const PricingSection = () => {
         ))}
       </div>
 
-      <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+      <div className={`flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
         <ShieldCheck size={14} className="text-emerald-500" />
         Pagamento seguro · Sem taxas ocultas · Cancele quando quiser
       </div>

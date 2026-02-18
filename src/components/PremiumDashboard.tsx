@@ -489,7 +489,7 @@ const PremiumDashboard = ({
             animate={{ opacity: 1, y: 0 }}
             className="mt-12 pt-12 border-t border-emerald-500/10"
           >
-            <PricingSection />
+            <PricingSection isDark={true} />
           </motion.div>
         )}
 
