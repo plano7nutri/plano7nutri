@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut } from "lucide-react";
+import { motion } from "motion/react";
+import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, ShieldAlert } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -110,6 +110,28 @@ const Dashboard = ({
             </button>
           )}
         </div>
+
+        {/* Aviso Importante - Versão Grátis */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="mb-8 p-6 rounded-3xl bg-amber-50 border-2 border-amber-200 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden shadow-sm"
+        >
+          <div className="p-3 rounded-full bg-amber-100 text-amber-600 animate-pulse">
+            <ShieldAlert size={32} />
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-amber-700 font-black uppercase tracking-widest text-[10px]">Aviso Importante</h3>
+            <p className="text-sm font-medium text-zinc-700 leading-relaxed">
+              O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-600">ALCANÇAR RESULTADOS REAIS</strong> POR ISSO SIGA SEU PLANEJAMENTO NUTRICIONAL PERSONALIZADO À RISCA.
+            </p>
+            <div className="pt-1">
+              <span className="inline-block bg-amber-600 text-white px-6 py-3 rounded-2xl font-black text-sm sm:text-xl tracking-normal uppercase shadow-md">
+                AQUI NÃO NEGOCIAMOS SAÚDE
+              </span>
+            </div>
+          </div>
+        </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="glass rounded-2xl p-6 shadow-card mb-6">
