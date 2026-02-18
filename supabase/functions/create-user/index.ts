@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   const functionName = "create-user";
-  console.log(`[${functionName}] Iniciando processamento de cadastro/atualização.`);
+  console.log(`[${functionName}] Processando solicitação.`);
 
   try {
     const supabaseAdmin = createClient(
@@ -23,17 +23,11 @@ serve(async (req) => {
     const body = await req.json()
     const { email, admin_secret, metadata } = body
 
-    if (!email) {
-      console.error(`[${functionName}] Erro: E-mail não fornecido.`);
-      throw new Error("E-mail é obrigatório.");
-    }
+    if (!email) throw new Error("E-mail é obrigatório.");
 
-    // Padronização absoluta: a senha é sempre o e-mail
-    const password = email;
-
+    // Validação da Senha Mestre
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
-      console.error(`[${functionName}] Erro: Senha mestre administrativa inválida.`);
       return new Response(JSON.stringify({ error: "Senha Administrativa Inválida." }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 401,
@@ -46,23 +40,18 @@ serve(async (req) => {
       rawPhone = "55" + rawPhone;
     }
 
-    console.log(`[${functionName}] Processando usuário: ${email} (${fullName})`);
-
-    // 1. Verificar se o usuário já existe no Auth
+    // 1. Buscar usuário existente
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-    if (listError) {
-      console.error(`[${functionName}] Erve ao listar usuários:`, listError);
-      throw listError;
-    }
+    if (listError) throw listError;
     
-    const existingUser = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+    const existingUser = users.find(u => u.email?.toLowerCase() === email.trim().toLowerCase());
     let userId;
 
     if (existingUser) {
-      console.log(`[${functionName}] Usuário já existe. Atualizando senha e metadados.`);
+      console.log(`[${functionName}] Usuário encontrado. Atualizando apenas metadados.`);
       userId = existingUser.id;
       const { error: updateAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-        password: password,
+        // REMOVIDO: password (não mexemos na senha em atualizações)
         user_metadata: {
           ...existingUser.user_metadata,
           ...metadata,
@@ -71,15 +60,12 @@ serve(async (req) => {
           whatsapp: rawPhone
         }
       });
-      if (updateAuthError) {
-        console.error(`[${functionName}] Erro ao atualizar Auth:`, updateAuthError);
-        throw updateAuthError;
-      }
+      if (updateAuthError) throw updateAuthError;
     } else {
-      console.log(`[${functionName}] Criando novo usuário no Auth.`);
+      console.log(`[${functionName}] Criando novo usuário.`);
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email,
-        password,
+        email: email.trim().toLowerCase(),
+        password: email.trim().toLowerCase(), // Senha inicial = E-mail
         email_confirm: true,
         user_metadata: {
           ...metadata,
@@ -88,15 +74,11 @@ serve(async (req) => {
           whatsapp: rawPhone
         }
       });
-      if (authError) {
-        console.error(`[${functionName}] Erro ao criar Auth:`, authError);
-        throw authError;
-      }
+      if (authError) throw authError;
       userId = authData.user.id;
     }
 
-    // 2. Sincronizar com a tabela clientes_pagos
-    console.log(`[${functionName}] Sincronizando tabela clientes_pagos para ID: ${userId}`);
+    // 2. Sincronizar dados na tabela clientes_pagos
     const { error: dbError } = await supabaseAdmin
       .from('clientes_pagos')
       .upsert({
@@ -105,25 +87,22 @@ serve(async (req) => {
         nome_usuario: fullName,
         whatsapp: rawPhone,
         telefone_cadastro: rawPhone,
-        email: email,
+        email: email.trim().toLowerCase(),
         tipo_assinatura: metadata?.tipo_assinatura || 'Unica',
         plano_semanal: metadata?.plano_semanal || false,
         assinatura_ativa: metadata?.assinatura_ativa !== undefined ? metadata.assinatura_ativa : true,
         limite_cardapio_unico: 0
       }, { onConflict: 'id' });
 
-    if (dbError) {
-      console.error(`[${functionName}] Erro ao sincronizar banco de dados:`, dbError);
-      throw dbError;
-    }
+    if (dbError) throw dbError;
 
-    console.log(`[${functionName}] Sucesso total para o usuário: ${email}`);
     return new Response(JSON.stringify({ status: "success", userId }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
+
   } catch (error: any) {
-    console.error(`[${functionName}] Erro crítico:`, error.message);
+    console.error(`[${functionName}] Erro:`, error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
