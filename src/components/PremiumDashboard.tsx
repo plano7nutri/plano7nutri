@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert, Settings, CheckCircle2 } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert, Settings, CheckCircle2, Lock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import PremiumEditForm from "./PremiumEditForm";
+import PricingSection from "./PricingSection";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -34,6 +35,7 @@ interface PremiumDashboardProps {
   plano_semanal?: boolean | null;
   ultimo_envio_plano?: string;
   limite_cardapio_unico?: number;
+  assinatura_ativa?: boolean;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
   onProfileUpdate?: (data: any) => Promise<void>;
@@ -46,7 +48,7 @@ const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
   restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, limite_cardapio_unico,
-  onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
+  assinatura_ativa, onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
 }: PremiumDashboardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -59,7 +61,11 @@ const PremiumDashboard = ({
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
+  // Lógica de Bloqueio
+  const isBlocked = assinatura_ativa === false || (tipo_assinatura === "Unica" && limite_cardapio_unico === 1);
+
   const canEdit = () => {
+    if (isBlocked) return false;
     if (!lastUpdateDate) return true;
     const lastUpdate = new Date(lastUpdateDate);
     const now = new Date();
@@ -78,6 +84,7 @@ const PremiumDashboard = ({
   };
 
   const canRequestPlan = () => {
+    if (isBlocked) return false;
     if (tipo_assinatura === "Unica") {
       return limite_cardapio_unico !== 1;
     }
@@ -100,6 +107,11 @@ const PremiumDashboard = ({
   };
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
+    if (isBlocked) {
+      e.preventDefault();
+      toast.error("Sua assinatura está inativa ou seu plano único já foi entregue. Renove para continuar.");
+      return;
+    }
     if (!canRequestPlan()) {
       e.preventDefault();
       const msg = tipo_assinatura === "Unica" 
@@ -116,6 +128,10 @@ const PremiumDashboard = ({
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isBlocked) {
+      toast.error("Assinatura inativa.");
+      return;
+    }
     const file = event.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
@@ -144,6 +160,10 @@ const PremiumDashboard = ({
   };
 
   const handleEditClick = () => {
+    if (isBlocked) {
+      toast.error("Assinatura inativa. Renove para editar seu perfil.");
+      return;
+    }
     if (!canEdit()) {
       toast.info(`Você poderá atualizar seu perfil novamente em ${daysToWait()} dias.`, {
         icon: <Clock className="w-5 h-5 text-amber-500" />
@@ -166,24 +186,47 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-3xl mx-auto">
         
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mb-8 p-6 rounded-3xl bg-amber-500/10 border-2 border-amber-500/30 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <ShieldAlert size={80} className="text-amber-500" />
-          </div>
-          <div className="p-3 rounded-full bg-amber-500/20 text-amber-500 animate-pulse">
-            <ShieldAlert size={32} />
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs">Aviso Importante</h3>
-            <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
-              O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-400">ALCANÇAR RESULTADOS REAIS</strong> POR ISSO SIGA SEU PLANEJAMENTO NUTRICIONAL PERSONALIZADO À RISCA.
-            </p>
-          </div>
-        </motion.div>
+        {/* Alerta de Bloqueio */}
+        {isBlocked && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 p-6 rounded-3xl bg-red-500/10 border-2 border-red-500/30 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden"
+          >
+            <div className="p-3 rounded-full bg-red-500/20 text-red-500">
+              <Lock size={32} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-red-500 font-black uppercase tracking-widest text-xs">Acesso Restrito</h3>
+              <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
+                {tipo_assinatura === "Unica" 
+                  ? "Seu cardápio único já foi entregue. Para receber novos planos semanais, assine o Plano Mensal abaixo."
+                  : "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."}
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {!isBlocked && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-8 p-6 rounded-3xl bg-amber-500/10 border-2 border-amber-500/30 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+              <ShieldAlert size={80} className="text-amber-500" />
+            </div>
+            <div className="p-3 rounded-full bg-amber-500/20 text-amber-500 animate-pulse">
+              <ShieldAlert size={32} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs">Aviso Importante</h3>
+              <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
+                O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-400">ALCANÇAR RESULTADOS REAIS</strong> POR ISSO SIGA SEU PLANEJAMENTO NUTRICIONAL PERSONALIZADO À RISCA.
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -226,23 +269,25 @@ const PremiumDashboard = ({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-zinc-900/50 border border-emerald-500/10 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
-                {canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
+              <div className={`p-2 rounded-lg ${isBlocked ? 'bg-zinc-800' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
+                {isBlocked ? <Lock className="w-5 h-5 text-zinc-500" /> : canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
               </div>
               <div>
                 <h4 className="text-sm font-bold text-zinc-100">Controle de Atualização</h4>
                 <p className="text-xs text-zinc-400">
-                  {canEdit() 
-                    ? "Seu perfil está liberado para nova atualização." 
-                    : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
+                  {isBlocked 
+                    ? "Atualização bloqueada. Renove sua assinatura."
+                    : canEdit() 
+                      ? "Seu perfil está liberado para nova atualização." 
+                      : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
                 </p>
               </div>
             </div>
             <button 
               onClick={handleEditClick}
-              disabled={!canEdit()}
+              disabled={!canEdit() || isBlocked}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
-                canEdit() 
+                !isBlocked && canEdit() 
                   ? "bg-emerald-500 text-emerald-950 hover:bg-emerald-400 shadow-glow" 
                   : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700"
               }`}
@@ -271,9 +316,9 @@ const PremiumDashboard = ({
                   {name ? name.substring(0, 2).toUpperCase() : "??"}
                 </AvatarFallback>
               </Avatar>
-              <label className="absolute bottom-1 right-1 p-2.5 bg-amber-500 text-emerald-950 rounded-full cursor-pointer shadow-lg hover:bg-amber-400 transition-all hover:scale-110">
+              <label className={`absolute bottom-1 right-1 p-2.5 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked ? 'bg-zinc-700 text-zinc-400' : 'bg-amber-500 text-emerald-950 hover:bg-amber-400'}`}>
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} />
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isBlocked} />
               </label>
             </div>
 
@@ -404,21 +449,25 @@ const PremiumDashboard = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
-          whileHover={canRequestPlan() ? { scale: 1.02, y: -5 } : {}}
-          whileTap={canRequestPlan() ? { scale: 0.98 } : {}}
-          className={`block w-full relative group transition-all duration-300 ${!canRequestPlan() ? 'opacity-80' : ''}`}
+          whileHover={canRequestPlan() && !isBlocked ? { scale: 1.02, y: -5 } : {}}
+          whileTap={canRequestPlan() && !isBlocked ? { scale: 0.98 } : {}}
+          className={`block w-full relative group transition-all duration-300 ${(!canRequestPlan() || isBlocked) ? 'opacity-80' : ''}`}
         >
-          <div className={`absolute -inset-1 rounded-3xl blur opacity-25 transition duration-1000 ${canRequestPlan() ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center gap-4 overflow-hidden ${canRequestPlan() ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+          <div className={`absolute -inset-1 rounded-3xl blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center gap-4 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:rotate-12 transition-transform">
-              {canRequestPlan() ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
+              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
             </div>
-            {canRequestPlan() ? <MessageCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
+            {canRequestPlan() && !isBlocked ? <MessageCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
             <div>
               <h3 className="text-2xl font-black mb-2">
-                {tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
+                {isBlocked ? "Acesso Bloqueado" : tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
-              {tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? (
+              {isBlocked ? (
+                <p className="text-red-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                  <Lock className="w-4 h-4" /> Renove sua assinatura para solicitar
+                </p>
+              ) : tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? (
                 <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Plano já enviado para seu WhatsApp
                 </p>
@@ -432,6 +481,17 @@ const PremiumDashboard = ({
             </div>
           </div>
         </motion.a>
+
+        {/* Seção de Preços para Renovação/Nova Compra */}
+        {isBlocked && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-12 pt-12 border-t border-emerald-500/10"
+          >
+            <PricingSection />
+          </motion.div>
+        )}
 
         <AnimatePresence>
           {isEditing && (

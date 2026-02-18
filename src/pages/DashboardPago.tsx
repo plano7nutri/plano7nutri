@@ -59,8 +59,8 @@ const DashboardPago = () => {
             email: user.email,
             nome: user.user_metadata?.nome || user.user_metadata?.full_name || "Usuário",
             whatsapp: user.user_metadata?.whatsapp || "",
-            tipo_assinatura: user.user_metadata?.tipo_assinatura || null, // NULL por padrão
-            plano_semanal: user.user_metadata?.plano_semanal ?? null, // NULL por padrão
+            tipo_assinatura: user.user_metadata?.tipo_assinatura || null,
+            plano_semanal: user.user_metadata?.plano_semanal ?? null,
             assinatura_ativa: true
           }]);
         if (!insertError) {
@@ -189,17 +189,6 @@ const DashboardPago = () => {
     );
   }
 
-  if (userData.assinatura_ativa === false) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
-        <ShieldAlert className="text-red-500 w-16 h-16 mb-6" />
-        <h2 className="text-2xl font-bold text-white mb-2">Assinatura Inativa</h2>
-        <a href="https://wa.me/5511910183401" target="_blank" rel="noopener noreferrer" className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold mb-4">Falar com Suporte</a>
-        <button onClick={handleLogout} className="text-zinc-500 font-bold">Sair</button>
-      </div>
-    );
-  }
-
   const isFirstAccess = !userData.idade || !userData.peso;
 
   if (isFirstAccess) {
@@ -237,6 +226,7 @@ const DashboardPago = () => {
           plano_semanal={userData.plano_semanal}
           ultimo_envio_plano={userData.ultimo_envio_plano}
           limite_cardapio_unico={userData.limite_cardapio_unico}
+          assinatura_ativa={userData.assinatura_ativa}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}
