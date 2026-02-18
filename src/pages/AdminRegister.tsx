@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, ShieldAlert, Lock, Settings, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, UserPlus, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
@@ -13,14 +13,12 @@ const AdminRegister = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [showMasterSecret, setShowMasterSecret] = useState(false);
   
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
     whatsapp: "",
-    password: "",
     adminSecret: "",
     tipo_assinatura: "Unica",
     plano_semanal: false,
@@ -38,11 +36,6 @@ const AdminRegister = () => {
     
     if (!user || user.email !== ADMIN_EMAIL) {
       toast.error("Erro: Apenas o administrador Robson pode realizar cadastros.");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres.");
       return;
     }
 
@@ -64,7 +57,7 @@ const AdminRegister = () => {
         },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password,
+          password: formData.email, // Padronização: Senha é o e-mail
           phone: cleanWhatsapp,
           admin_secret: formData.adminSecret,
           metadata: {
@@ -79,10 +72,10 @@ const AdminRegister = () => {
       });
 
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Erro na autorização.");
+      if (!response.ok) throw new Error(result.error || "Erro no cadastro.");
 
       toast.success("Usuário Elite cadastrado com sucesso!");
-      setFormData({ nome: "", email: "", whatsapp: "", password: "", adminSecret: "", tipo_assinatura: "Unica", plano_semanal: false, assinatura_ativa: true });
+      setFormData({ ...formData, nome: "", email: "", whatsapp: "" });
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -156,13 +149,12 @@ const AdminRegister = () => {
               </div>
             </div>
 
-            <input type="email" placeholder="E-mail de Acesso" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border bg-card outline-none" />
-            
-            <div className="relative">
-              <input type={showPassword ? "text" : "password"} placeholder="Senha Temporária" required value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border bg-card outline-none" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+            <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
+              <label className="block text-sm font-medium text-foreground mb-2">E-mail de Acesso</label>
+              <input type="email" placeholder="cliente@email.com" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border bg-card outline-none" />
+              <p className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter">
+                * A senha será automaticamente o e-mail informado.
+              </p>
             </div>
           </div>
 

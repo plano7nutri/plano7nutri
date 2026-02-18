@@ -18,7 +18,10 @@ serve(async (req) => {
     )
 
     const body = await req.json()
-    const { email, password, phone, admin_secret, metadata } = body
+    const { email, admin_secret, metadata } = body
+
+    // Padronização absoluta: a senha é sempre o e-mail
+    const password = email;
 
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     
@@ -31,7 +34,7 @@ serve(async (req) => {
 
     const fullName = body.nome || metadata?.nome || body.full_name || metadata?.full_name || "Usuário Elite";
     
-    let rawPhone = (phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
+    let rawPhone = (body.phone || body.Phone || metadata?.whatsapp || "").replace(/\D/g, "");
     if ((rawPhone.length === 10 || rawPhone.length === 11) && !rawPhone.startsWith("55")) {
       rawPhone = "55" + rawPhone;
     }
@@ -50,6 +53,7 @@ serve(async (req) => {
     if (existingUser) {
       userId = existingUser.id;
       const { error: updateAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+        password: password, // Garante que a senha seja o e-mail mesmo em atualizações
         user_metadata: {
           full_name: fullName,
           nome: fullName,
