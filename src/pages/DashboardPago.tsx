@@ -41,10 +41,12 @@ const DashboardPago = () => {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { data: userData, isLoading: dataLoading } = useQuery({
+  const { data: userData, isLoading: dataLoading, error: queryError } = useQuery({
     queryKey: ["premiumUser", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
+      
+      // Tenta buscar o perfil
       const { data, error } = await supabase
         .from("clientes_pagos")
         .select("*")
@@ -52,9 +54,36 @@ const DashboardPago = () => {
         .maybeSingle();
       
       if (error) throw error;
+
+      // Se não existir o perfil mas o usuário está logado, tenta criar um perfil básico
+      if (!data && user) {
+        console.log("Perfil não encontrado, tentando criar perfil básico...");
+        const { error: insertError } = await supabase
+          .from("clientes_pagos")
+          .insert([{
+            id: user.id,
+            email: user.email,
+            nome: user.user_metadata?.nome || user.user_metadata?.full_name || "Usuário",
+            whatsapp: user.user_metadata?.whatsapp || "",
+            tipo_assinatura: user.user_metadata?.tipo_assinatura || "Unica",
+            assinatura_ativa: true
+          }]);
+        
+        if (!insertError) {
+          // Busca novamente após inserir
+          const { data: newData } = await supabase
+            .from("clientes_pagos")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+          return newData;
+        }
+      }
+      
       return data;
     },
     enabled: !!user?.id,
+    retry: 1
   });
 
   useEffect(() => {
@@ -195,8 +224,27 @@ const DashboardPago = () => {
   if (!userData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
-        <h2 className="text-2xl font-bold text-white mb-4">Plano não encontrado</h2>
-        <button onClick={() => navigate("/")} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold">Voltar ao Início</button>
+        <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mb-6 border border-amber-500/20">
+          <ShieldAlert className="text-amber-500 w-10 h-10" />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-4">Perfil em Sincronização</h2>
+        <p className="text-zinc-400 max-w-md mb-8">
+          Não conseguimos localizar seus dados de assinante. Se você acabou de assinar, aguarde alguns instantes ou tente recarregar a página.
+        </p>
+        <div className="flex flex-col gap-4 w-full max-w-xs mx-auto">
+          <button 
+            onClick={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
+            className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-500 transition-colors"
+          >
+            Tentar Novamente
+          </button>
+          <button 
+            onClick={handleLogout}
+            className="text-zinc-500 hover:text-white transition-colors font-bold text-sm"
+          >
+            Sair da Conta
+          </button>
+        </div>
       </div>
     );
   }
@@ -212,7 +260,7 @@ const DashboardPago = () => {
         <p className="text-zinc-400 max-w-md mb-8">
           Identificamos que sua assinatura do Plano 7 não está ativa no momento. Entre em contato com o suporte para regularizar seu acesso.
         </p>
-        <div className="flex flex-col gap-4 w-full max-w-xs">
+        <div className="flex flex-col gap-4 w-full max-w-xs mx-auto">
           <a 
             href="https://wa.me/5511910183401" 
             target="_blank" 
