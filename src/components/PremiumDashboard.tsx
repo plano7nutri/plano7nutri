@@ -259,7 +259,7 @@ const PremiumDashboard = ({
               )}
               {onLogout && (
                 <button 
-                  onClick={handleLogout}
+                  onClick={onLogout}
                   className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
                 >
                   <LogOut className="w-4 h-4" />
@@ -300,7 +300,6 @@ const PremiumDashboard = ({
           </div>
         </motion.div>
 
-        {/* ... Rest of the component (Profile Card, Stats, FAQ) remains the same */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -397,7 +396,6 @@ const PremiumDashboard = ({
           )}
         </motion.div>
 
-        {/* Título de Luxo */}
         <div className="flex flex-col items-center mb-10">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
