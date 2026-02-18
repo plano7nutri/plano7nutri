@@ -41,23 +41,17 @@ const DashboardPago = () => {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { data: userData, isLoading: dataLoading, error: queryError } = useQuery({
+  const { data: userData, isLoading: dataLoading } = useQuery({
     queryKey: ["premiumUser", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      
-      // Tenta buscar o perfil
       const { data, error } = await supabase
         .from("clientes_pagos")
         .select("*")
         .eq("id", user.id)
         .maybeSingle();
-      
       if (error) throw error;
-
-      // Se não existir o perfil mas o usuário está logado, tenta criar um perfil básico
       if (!data && user) {
-        console.log("Perfil não encontrado, tentando criar perfil básico...");
         const { error: insertError } = await supabase
           .from("clientes_pagos")
           .insert([{
@@ -68,18 +62,11 @@ const DashboardPago = () => {
             tipo_assinatura: user.user_metadata?.tipo_assinatura || "Unica",
             assinatura_ativa: true
           }]);
-        
         if (!insertError) {
-          // Busca novamente após inserir
-          const { data: newData } = await supabase
-            .from("clientes_pagos")
-            .select("*")
-            .eq("id", user.id)
-            .single();
+          const { data: newData } = await supabase.from("clientes_pagos").select("*").eq("id", user.id).single();
           return newData;
         }
       }
-      
       return data;
     },
     enabled: !!user?.id,
@@ -93,39 +80,28 @@ const DashboardPago = () => {
   }, [user, authLoading, navigate]);
 
   const calculateNutrition = (data: any) => {
-    const tmb =
-      data.sex === "male"
-        ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
-        : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
-
+    const tmb = data.sex === "male" ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5 : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
     const factor = activityFactors[data.activity] || 1.2;
     const get = Math.round(tmb * factor);
-
     let metaCalorias = get;
     if (data.goal.includes("Perder") || data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
     else if (data.goal.includes("Ganhar") || data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
-
     const metaAgua = Math.round((data.weight * 35) / 100) * 100;
-
     let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
     if (metaCalorias < get) { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
     else if (metaCalorias > get) { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
-
     const proteina = Math.round((metaCalorias * protRatio) / 4);
     const carbo = Math.round((metaCalorias * carbRatio) / 4);
     const gordura = Math.round((metaCalorias * fatRatio) / 9);
-
     return { tmb: Math.round(tmb), get, metaCalorias, metaAgua, proteina, carbo, gordura };
   };
 
   const handleUpdateProfile = async (data: any) => {
     if (!user?.id) return;
-    
     setIsProcessing(true);
     try {
       const nutrition = calculateNutrition(data);
-
-      const updateData = {
+      const { error } = await supabase.from("clientes_pagos").update({
         idade: data.age,
         peso: data.weight,
         nivel_atividade_fisica: data.activity,
@@ -139,19 +115,12 @@ const DashboardPago = () => {
         proteina_dia: nutrition.proteina,
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
-      };
-
-      const { error } = await supabase
-        .from("clientes_pagos")
-        .update(updateData)
-        .eq("id", user.id);
-
+      }).eq("id", user.id);
       if (error) throw error;
-
-      toast.success("Perfil e cálculos atualizados com sucesso!");
+      toast.success("Perfil atualizado!");
       queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
     } catch (err) {
-      toast.error("Erro ao atualizar dados.");
+      toast.error("Erro ao atualizar.");
     } finally {
       setIsProcessing(false);
     }
@@ -159,16 +128,10 @@ const DashboardPago = () => {
 
   const handleInitialOnboarding = async (data: OnboardingData) => {
     if (!user?.id) return;
-    
     setIsProcessing(true);
     try {
-      const nutrition = calculateNutrition({
-        ...data,
-        activity: activityLabels[data.activity] || data.activity,
-        goal: goalLabels[data.goal] || data.goal
-      });
-
-      const updateData = {
+      const nutrition = calculateNutrition({ ...data, activity: activityLabels[data.activity] || data.activity, goal: goalLabels[data.goal] || data.goal });
+      const { error } = await supabase.from("clientes_pagos").update({
         nome: data.name,
         whatsapp: data.whatsapp,
         nome_usuario: data.name,
@@ -189,19 +152,12 @@ const DashboardPago = () => {
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
         limite_cardapio_unico: 0
-      };
-
-      const { error } = await supabase
-        .from("clientes_pagos")
-        .update(updateData)
-        .eq("id", user.id);
-
+      }).eq("id", user.id);
       if (error) throw error;
-
-      toast.success("Perfil premium configurado com sucesso!");
+      toast.success("Perfil configurado!");
       queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
     } catch (err) {
-      toast.error("Erro ao salvar seus dados.");
+      toast.error("Erro ao salvar.");
     } finally {
       setIsProcessing(false);
     }
@@ -209,14 +165,14 @@ const DashboardPago = () => {
 
   const handleLogout = async () => {
     await signOut();
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   if (authLoading || dataLoading || isProcessing) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14]">
         <Loader2 className="w-10 h-10 animate-spin text-emerald-500 mb-4" />
-        <p className="text-emerald-400/60 font-medium">Sincronizando dados de elite...</p>
+        <p className="text-emerald-400/60 font-medium">Sincronizando dados...</p>
       </div>
     );
   }
@@ -224,58 +180,21 @@ const DashboardPago = () => {
   if (!userData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
-        <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mb-6 border border-amber-500/20">
-          <ShieldAlert className="text-amber-500 w-10 h-10" />
-        </div>
+        <ShieldAlert className="text-amber-500 w-16 h-16 mb-6" />
         <h2 className="text-2xl font-bold text-white mb-4">Perfil em Sincronização</h2>
-        <p className="text-zinc-400 max-w-md mb-8">
-          Não conseguimos localizar seus dados de assinante. Se você acabou de assinar, aguarde alguns instantes ou tente recarregar a página.
-        </p>
-        <div className="flex flex-col gap-4 w-full max-w-xs mx-auto">
-          <button 
-            onClick={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
-            className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-500 transition-colors"
-          >
-            Tentar Novamente
-          </button>
-          <button 
-            onClick={handleLogout}
-            className="text-zinc-500 hover:text-white transition-colors font-bold text-sm"
-          >
-            Sair da Conta
-          </button>
-        </div>
+        <button onClick={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold mb-4">Tentar Novamente</button>
+        <button onClick={handleLogout} className="text-zinc-500 font-bold">Sair</button>
       </div>
     );
   }
 
-  // Verificação de Assinatura Ativa
   if (userData.assinatura_ativa === false) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
-        <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6 border border-red-500/20">
-          <ShieldAlert className="text-red-500 w-10 h-10" />
-        </div>
+        <ShieldAlert className="text-red-500 w-16 h-16 mb-6" />
         <h2 className="text-2xl font-bold text-white mb-2">Assinatura Inativa</h2>
-        <p className="text-zinc-400 max-w-md mb-8">
-          Identificamos que sua assinatura do Plano 7 não está ativa no momento. Entre em contato com o suporte para regularizar seu acesso.
-        </p>
-        <div className="flex flex-col gap-4 w-full max-w-xs mx-auto">
-          <a 
-            href="https://wa.me/5511910183401" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-500 transition-colors"
-          >
-            Falar com Suporte
-          </a>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center justify-center gap-2 text-zinc-500 hover:text-white transition-colors font-bold text-sm"
-          >
-            <LogOut size={18} /> Sair da Conta
-          </button>
-        </div>
+        <a href="https://wa.me/5511910183401" target="_blank" rel="noopener noreferrer" className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold mb-4">Falar com Suporte</a>
+        <button onClick={handleLogout} className="text-zinc-500 font-bold">Sair</button>
       </div>
     );
   }
@@ -285,9 +204,7 @@ const DashboardPago = () => {
   if (isFirstAccess) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="pt-10 px-6 text-center">
-          <h1 className="text-2xl font-bold text-foreground">Bem-vindo ao Plano 7 Premium</h1>
-        </div>
+        <div className="pt-10 px-6 text-center"><h1 className="text-2xl font-bold">Bem-vindo ao Plano 7 Premium</h1></div>
         <OnboardingWizard onComplete={handleInitialOnboarding} onBack={() => signOut()} hideLoginLink={true} />
       </div>
     );
@@ -313,7 +230,7 @@ const DashboardPago = () => {
           carbo={userData.carbo_dia}
           gordura={userData.gordura_dia}
           restrictions={userData.restricoes_alimentares}
-          preferences={userData.preferences}
+          preferences={userData.preferencias}
           avatarUrl={userData.avatar_url}
           tipo_assinatura={userData.tipo_assinatura}
           plano_semanal={userData.plano_semanal}

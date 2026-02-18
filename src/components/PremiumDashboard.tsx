@@ -112,8 +112,6 @@ const PremiumDashboard = ({
       });
       return;
     }
-
-    // Apenas informa o usuário, a atualização do banco será feita pelo n8n
     toast.success("Abrindo WhatsApp para solicitar seu plano...");
   };
 
@@ -168,7 +166,6 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-3xl mx-auto">
         
-        {/* Quadro de Aviso de Alta Visibilidade */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -177,11 +174,9 @@ const PremiumDashboard = ({
           <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
             <ShieldAlert size={80} className="text-amber-500" />
           </div>
-          
           <div className="p-3 rounded-full bg-amber-500/20 text-amber-500 animate-pulse">
             <ShieldAlert size={32} />
           </div>
-          
           <div className="space-y-1">
             <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs">Aviso Importante</h3>
             <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
@@ -416,14 +411,11 @@ const PremiumDashboard = ({
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:rotate-12 transition-transform">
               {canRequestPlan() ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
             </div>
-            
             {canRequestPlan() ? <MessageCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
-            
             <div>
               <h3 className="text-2xl font-black mb-2">
                 {tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
-              
               {tipo_assinatura === "Unica" && limite_cardapio_unico === 1 ? (
                 <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Plano já enviado para seu WhatsApp
