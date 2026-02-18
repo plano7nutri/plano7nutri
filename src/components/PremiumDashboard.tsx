@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, AlertTriangle, ShieldAlert, Settings, CheckCircle2, Lock } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import PremiumEditForm from "./PremiumEditForm";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
+import HealthReminder from "./HealthReminder";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -193,7 +194,7 @@ const PremiumDashboard = ({
 
   return (
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
         
         {/* Alerta de Bloqueio */}
         {isBlocked && (
@@ -218,31 +219,8 @@ const PremiumDashboard = ({
           </motion.div>
         )}
 
-        {!isBlocked && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-8 p-6 rounded-3xl bg-amber-500/10 border-2 border-amber-500/30 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-              <ShieldAlert size={80} className="text-amber-500" />
-            </div>
-            <div className="p-3 rounded-full bg-amber-500/20 text-amber-500 animate-pulse">
-              <ShieldAlert size={32} />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs">Aviso Importante</h3>
-              <p className="text-sm sm:text-base font-medium text-zinc-100 leading-relaxed">
-                O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-400">ALCANÇAR RESULTADOS REAIS</strong> POR ISSO SIGA SEU PLANEJAMENTO NUTRICIONAL PERSONALIZADO À RISCA.
-              </p>
-              <div className="pt-2">
-                <span className="inline-block bg-amber-500 text-emerald-950 px-6 py-3 rounded-2xl font-black text-sm sm:text-xl tracking-normal uppercase shadow-[0_0_25px_rgba(245,158,11,0.4)]">
-                  AQUI NÃO NEGOCIAMOS SAÚDE
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
+        {/* Novo Lembrete de Saúde Refinado */}
+        {!isBlocked && <HealthReminder isPremium={true} />}
 
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -304,7 +282,7 @@ const PremiumDashboard = ({
               disabled={!canEdit() || isBlocked}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
                 !isBlocked && canEdit() 
-                  ? "bg-emerald-500 text-emerald-950 hover:bg-emerald-400 shadow-glow" 
+                  ? "bg-emerald-50 text-emerald-950 hover:bg-emerald-400 shadow-glow" 
                   : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700"
               }`}
             >
@@ -317,65 +295,71 @@ const PremiumDashboard = ({
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-900/40 to-zinc-900/80 border border-emerald-500/20 p-8 shadow-2xl mb-8 backdrop-blur-xl"
+          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/40 to-zinc-900/80 border border-emerald-500/20 p-10 shadow-2xl mb-8 backdrop-blur-xl"
         >
           <div className="absolute top-0 right-0 p-6 opacity-10">
             <Star className="w-32 h-32 text-amber-400 rotate-12" />
           </div>
 
-          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+          <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-tr from-amber-400 to-emerald-400 rounded-full blur opacity-30 animate-pulse" />
-              <Avatar className="w-32 h-32 border-2 border-emerald-500/30 shadow-2xl">
+              <Avatar className="w-36 h-36 border-2 border-emerald-500/30 shadow-2xl">
                 <AvatarImage src={localAvatarUrl} className="object-cover" />
                 <AvatarFallback className="bg-emerald-950 text-emerald-400 text-3xl font-bold">
                   {name ? name.substring(0, 2).toUpperCase() : "??"}
                 </AvatarFallback>
               </Avatar>
-              <label className={`absolute bottom-1 right-1 p-2.5 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked ? 'bg-zinc-700 text-zinc-400' : 'bg-amber-500 text-emerald-950 hover:bg-amber-400'}`}>
-                {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+              <label className={`absolute bottom-1 right-1 p-3 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked ? 'bg-zinc-700 text-zinc-400' : 'bg-amber-500 text-emerald-950 hover:bg-amber-400'}`}>
+                {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
                 <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isBlocked} />
               </label>
             </div>
 
-            <div className="text-center md:text-left">
-              <h2 className="text-3xl font-black text-white mb-1 tracking-tight">{name || "Usuário"}</h2>
-              <p className="text-emerald-400/80 font-medium mb-6">Seu Plano de Elite Personalizado</p>
+            <div className="text-center md:text-left space-y-4">
+              <div>
+                <h2 className="text-4xl font-black text-white mb-1 tracking-tight">{name || "Usuário"}</h2>
+                <p className="text-emerald-400/80 font-bold uppercase tracking-widest text-xs">Membro Elite • Plano {tipo_assinatura}</p>
+              </div>
               
-              <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
+              <div className="flex flex-wrap justify-center md:justify-start gap-8 text-sm pt-2">
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] font-bold tracking-tighter uppercase">SEXO(Biológico)</span>
-                  <span className="font-bold text-zinc-200">{sex === "male" ? "Masculino" : "Feminino"}</span>
+                  <span className="text-zinc-500 text-[10px] font-bold tracking-tighter uppercase">Sexo</span>
+                  <span className="font-bold text-zinc-100">{sex === "male" ? "Masculino" : "Feminino"}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Idade</span>
-                  <span className="font-bold text-zinc-200">{age || 0} anos</span>
+                  <span className="font-bold text-zinc-100">{age || 0} anos</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Altura</span>
-                  <span className="font-bold text-zinc-200">{(height ? height/100 : 0).toFixed(2)}m</span>
+                  <span className="font-bold text-zinc-100">{(height ? height/100 : 0).toFixed(2)}m</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Peso</span>
-                  <span className="font-bold text-zinc-200">{weight || 0}kg</span>
+                  <span className="font-bold text-zinc-100">{weight || 0}kg</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-3 bg-emerald-950/30 p-4 rounded-2xl border border-emerald-500/5">
-              <Activity className="w-5 h-5 text-emerald-400" />
+          <div className="mt-10 pt-10 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center gap-4 bg-emerald-950/30 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-emerald-950/40">
+              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                <Activity size={24} />
+              </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold">Atividade</p>
-                <p className="text-sm font-bold text-zinc-200">{activityLabel || "Não informado"}</p>
+                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1">Rotina Ativa</p>
+                <p className="text-base font-bold text-zinc-100">{activityLabel || "Não informado"}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-emerald-950/30 p-4 rounded-2xl border border-emerald-500/5">
-              <Target className="w-5 h-5 text-amber-400" />
+            <div className="flex items-center gap-4 bg-emerald-950/30 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-emerald-950/40">
+              <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                <Target size={24} />
+              </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold">Objetivo</p>
-                <p className="text-sm font-bold text-zinc-200">{goalLabel || "Não informado"}</p>
+                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1">Foco Semanal</p>
+                <p className="text-base font-bold text-zinc-100">{goalLabel || "Não informado"}</p>
               </div>
             </div>
           </div>
@@ -383,79 +367,80 @@ const PremiumDashboard = ({
           {(restrictions || preferences) && (
             <div className="mt-6 pt-6 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
               {restrictions && (
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-red-400">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-red-400/80">
                     <UtensilsCrossed className="w-3 h-3" />
                     <span className="text-[10px] uppercase font-bold tracking-tighter">Restrições</span>
                   </div>
-                  <p className="text-sm text-zinc-300 font-medium leading-relaxed">{restrictions}</p>
+                  <p className="text-sm text-zinc-300 font-medium leading-relaxed bg-black/20 p-4 rounded-xl border border-white/5">{restrictions}</p>
                 </div>
               )}
               {preferences && (
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-emerald-400">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-emerald-400/80">
                     <Heart className="w-3 h-3" />
                     <span className="text-[10px] uppercase font-bold tracking-tighter">Preferências</span>
                   </div>
-                  <p className="text-sm text-zinc-300 font-medium leading-relaxed">{preferences}</p>
+                  <p className="text-sm text-zinc-300 font-medium leading-relaxed bg-black/20 p-4 rounded-xl border border-white/5">{preferences}</p>
                 </div>
               )}
             </div>
           )}
         </motion.div>
 
+        {/* ... Rest of the component stats and cards remain the same but use the updated max-w-4xl container */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-6 backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-emerald-500/10 rounded-lg"><Flame className="w-5 h-5 text-emerald-400" /></div>
-              <h3 className="font-bold text-zinc-200">Energia & Hidratação</h3>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2.5 bg-emerald-500/10 rounded-xl"><Flame className="w-6 h-6 text-emerald-400" /></div>
+              <h3 className="text-xl font-bold text-zinc-100">Energia & Hidratação</h3>
             </div>
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div className="flex justify-between items-end">
-                <div>
-                  <p className="text-xs text-zinc-500 font-bold uppercase mb-1">Meta Diária</p>
-                  <p className="text-3xl font-black text-emerald-400">{(metaCalorias || 0).toLocaleString()} <span className="text-sm font-normal text-zinc-500">kcal</span></p>
+                <div className="space-y-2">
+                  <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Meta de Queima</p>
+                  <p className="text-4xl font-black text-emerald-400 tracking-tighter">{(metaCalorias || 0).toLocaleString()} <span className="text-base font-bold text-zinc-500 uppercase tracking-normal">kcal</span></p>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-zinc-500 font-bold uppercase mb-1">Água</p>
-                  <p className="text-2xl font-black text-blue-400">{metaAgua || 0} <span className="text-sm font-normal text-zinc-500">ml</span></p>
+                <div className="text-right space-y-2">
+                  <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Água</p>
+                  <p className="text-3xl font-black text-blue-400 tracking-tighter">{metaAgua || 0} <span className="text-base font-bold text-zinc-500 uppercase tracking-normal">ml</span></p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
+              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-800">
                 <div>
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase">TMB</p>
-                  <p className="font-bold text-zinc-300">{(tmb || 0).toLocaleString()} kcal</p>
+                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Metabolismo (TMB)</p>
+                  <p className="text-lg font-bold text-zinc-100">{(tmb || 0).toLocaleString()} <span className="text-xs font-medium text-zinc-500">kcal</span></p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase">GET</p>
-                  <p className="font-bold text-zinc-300">{(get || 0).toLocaleString()} kcal</p>
+                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Gasto Total (GET)</p>
+                  <p className="text-lg font-bold text-zinc-100">{(get || 0).toLocaleString()} <span className="text-xs font-medium text-zinc-500">kcal</span></p>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-6 backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-amber-500/10 rounded-lg"><Zap className="w-5 h-5 text-amber-400" /></div>
-              <h3 className="font-bold text-zinc-200">Macronutrientes (Diário)</h3>
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2.5 bg-amber-500/10 rounded-xl"><Zap className="w-6 h-6 text-amber-400" /></div>
+              <h3 className="text-xl font-bold text-zinc-100">Macro Distribuição</h3>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Proteína</p>
-                <p className="text-2xl font-black text-zinc-100">{proteina || 0}g</p>
+              <div className="text-center p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/5 transition-colors hover:bg-emerald-950/30">
+                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-3">Proteína</p>
+                <p className="text-3xl font-black text-zinc-100 tracking-tighter">{proteina || 0}g</p>
               </div>
-              <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Carbo</p>
-                <p className="text-2xl font-black text-zinc-100">{carbo || 0}g</p>
+              <div className="text-center p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/5 transition-colors hover:bg-emerald-950/30">
+                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-3">Carbo</p>
+                <p className="text-3xl font-black text-zinc-100 tracking-tighter">{carbo || 0}g</p>
               </div>
-              <div className="text-center p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/5">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase mb-2">Gordura</p>
-                <p className="text-2xl font-black text-zinc-100">{gordura || 0}g</p>
+              <div className="text-center p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/5 transition-colors hover:bg-emerald-950/30">
+                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-3">Gordura</p>
+                <p className="text-3xl font-black text-zinc-100 tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
-            <div className="mt-6 p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10">
-              <p className="text-[10px] text-amber-400 font-bold uppercase mb-1">Dica Premium</p>
-              <p className="text-xs text-zinc-400 leading-relaxed">Seu plano foi otimizado para máxima absorção de nutrientes e performance.</p>
+            <div className="mt-8 p-5 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex items-start gap-4">
+              <Star className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-zinc-400 leading-relaxed font-medium">Sua distribuição foi calibrada para preservar massa muscular e otimizar a queima calórica.</p>
             </div>
           </motion.div>
         </div>
@@ -469,14 +454,14 @@ const PremiumDashboard = ({
           whileTap={canRequestPlan() && !isBlocked ? { scale: 0.98 } : {}}
           className={`block w-full relative group transition-all duration-300 ${(!canRequestPlan() || isBlocked) ? 'opacity-80' : ''}`}
         >
-          <div className={`absolute -inset-1 rounded-3xl blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center gap-4 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+          <div className={`absolute -inset-1 rounded-[2.5rem] blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center gap-6 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:rotate-12 transition-transform">
-              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
+              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-32 h-32" /> : <CheckCircle2 className="w-32 h-32" />}
             </div>
-            {canRequestPlan() && !isBlocked ? <MessageCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
-            <div>
-              <h3 className="text-2xl font-black mb-2">
+            {canRequestPlan() && !isBlocked ? <MessageCircle className="w-12 h-12" /> : <CheckCircle2 className="w-12 h-12 text-emerald-500" />}
+            <div className="space-y-3">
+              <h3 className="text-3xl font-black uppercase tracking-tight">
                 {isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
               {isSubscriptionInactive ? (
@@ -489,27 +474,25 @@ const PremiumDashboard = ({
                 </p>
               ) : (tipo_assinatura === "Mensal" || plano_semanal === true) && !canRequestPlan() ? (
                 <p className="text-amber-200 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                  <Clock className="w-4 h-4" /> Próximo plano em {daysToNextPlan()} dias
+                  <Clock className="w-4 h-4" /> Próximo plano disponível em {daysToNextPlan()} dias
                 </p>
               ) : (
-                <p className="text-emerald-100 text-sm opacity-90">Fale agora com seu consultor e receba sua lista de compras e cardápio exclusivo.</p>
+                <p className="text-emerald-100 text-base font-medium opacity-90 max-w-lg">Receba agora sua lista de compras inteligente e o cardápio completo da semana direto no seu WhatsApp.</p>
               )}
             </div>
           </div>
         </motion.a>
 
-        {/* Seção de Preços para Renovação/Nova Compra */}
         {isBlocked && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-12 pt-12 border-t border-emerald-500/10"
+            className="mt-16 pt-16 border-t border-emerald-500/10"
           >
             <PricingSection isDark={true} />
           </motion.div>
         )}
 
-        {/* FAQ Section */}
         <FAQSection isDark={true} />
 
         <AnimatePresence>

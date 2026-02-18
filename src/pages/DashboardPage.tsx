@@ -34,13 +34,14 @@ const DashboardPage = () => {
   useEffect(() => {
     // Só redireciona se realmente não tiver nada e o carregamento terminou
     if (!whatsappToFetch && !isLoading) {
-      navigate("/login", { replace: true });
+      navigate("/", { state: { view: "check-free-plan" }, replace: true });
     }
   }, [whatsappToFetch, isLoading, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("plano7_free_whatsapp");
-    navigate("/login", { replace: true });
+    // Redireciona para a Home com o estado para abrir a tela de login gratuito
+    navigate("/", { state: { view: "check-free-plan" }, replace: true });
   };
 
   if (isLoading) {

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, ShieldAlert } from "lucide-react";
+import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
+import HealthReminder from "./HealthReminder";
 
 interface DashboardProps {
   name: string;
@@ -96,7 +97,7 @@ const Dashboard = ({
 
   return (
     <div className="min-h-screen px-6 py-10">
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
         
         {/* Header com Logout */}
         <div className="flex justify-end mb-4">
@@ -111,186 +112,194 @@ const Dashboard = ({
           )}
         </div>
 
-        {/* Aviso Importante - Versão Grátis */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mb-8 p-6 rounded-3xl bg-amber-50 border-2 border-amber-200 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden shadow-sm"
-        >
-          <div className="p-3 rounded-full bg-amber-100 text-amber-600 animate-pulse">
-            <ShieldAlert size={32} />
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-amber-700 font-black uppercase tracking-widest text-[10px]">Aviso Importante</h3>
-            <p className="text-sm font-medium text-zinc-700 leading-relaxed">
-              O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-600">ALCANÇAR RESULTADOS REAIS</strong> POR ISSO SIGA SEU PLANEJAMENTO NUTRICIONAL PERSONALIZADO À RISCA.
-            </p>
-            <div className="pt-1">
-              <span className="inline-block bg-amber-600 text-white px-6 py-3 rounded-2xl font-black text-sm sm:text-xl tracking-normal uppercase shadow-md">
-                AQUI NÃO NEGOCIAMOS SAÚDE
-              </span>
-            </div>
-          </div>
-        </motion.div>
+        {/* Novo Lembrete de Saúde Refinado */}
+        <HealthReminder />
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="glass rounded-2xl p-6 shadow-card mb-6">
-          
-          <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
-            <div className="relative group">
-              <Avatar key={localAvatarUrl} className="w-24 h-24 border-4 border-white shadow-lg overflow-hidden">
-                <AvatarImage src={localAvatarUrl} alt={name} className="object-cover w-full h-full" />
-                <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
-                  {name.substring(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              
-              <label className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-colors group-hover:scale-110 duration-200">
-                {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
-              </label>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Perfil - Esquerda */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-5 glass rounded-3xl p-8 shadow-card h-fit"
+          >
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="relative group">
+                <Avatar key={localAvatarUrl} className="w-32 h-32 border-4 border-white shadow-xl overflow-hidden">
+                  <AvatarImage src={localAvatarUrl} alt={name} className="object-cover w-full h-full" />
+                  <AvatarFallback className="bg-secondary text-primary text-3xl font-bold">
+                    {name.substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <label className="absolute bottom-1 right-1 p-3 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-all hover:scale-110 duration-200">
+                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
+                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
+                </label>
+              </div>
 
-            <div className="text-center sm:text-left">
-              <h2 className="text-2xl font-bold text-foreground">{name}</h2>
-              <p className="text-sm text-muted-foreground">Seu planejamento nutricional personalizado.</p>
-            </div>
-          </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">{name}</h2>
+                <p className="text-sm text-muted-foreground">Plano Nutricional Gratuito</p>
+              </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sexo(biológico)</span>
-              <p className="font-bold text-foreground">{sex === "male" ? "Masculino" : "Feminino"}</p>
-            </div>
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Idade</span>
-              <p className="font-bold text-foreground">{age} anos</p>
-            </div>
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Altura</span>
-              <p className="font-bold text-foreground">{(height / 100).toFixed(2).replace(".", ",")} m</p>
-            </div>
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Peso</span>
-              <p className="font-bold text-foreground">{weight} kg</p>
-            </div>
-            <div className="col-span-2 sm:col-span-4 mt-2">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nível de Atividade</span>
-              <p className="font-bold text-foreground flex items-center gap-1"><Activity className="w-4 h-4 text-primary" /> {activityLabel}</p>
-            </div>
-          </div>
-
-          <div className="mt-4 pt-4 border-t border-border">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Objetivo</span>
-            <p className="font-bold text-foreground flex items-center gap-1"><Target className="w-4 h-4 text-accent" /> {goalLabel}</p>
-          </div>
-
-          {(restrictions || preferences) && (
-            <div className="mt-4 pt-4 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {restrictions && (
-                <div>
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                    <UtensilsCrossed className="w-3 h-3" /> Restrições
-                  </span>
-                  <p className="text-sm text-foreground mt-1">{restrictions}</p>
+              <div className="w-full grid grid-cols-2 gap-4 text-sm border-y border-border py-6">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Idade</span>
+                  <p className="font-bold text-foreground">{age} anos</p>
                 </div>
-              )}
-              {preferences && (
-                <div>
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Preferências</span>
-                  <p className="text-sm text-foreground mt-1">{preferences}</p>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Peso</span>
+                  <p className="font-bold text-foreground">{weight} kg</p>
                 </div>
-              )}
-            </div>
-          )}
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
-          className="mb-6">
-          <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-            <Flame className="w-5 h-5" /> Planejamento Nutricional
-          </h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="glass rounded-2xl p-5 shadow-card">
-              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Droplets className="w-4 h-4 text-primary" /> Energia & Hidratação
-              </h4>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <span className="text-xs text-muted-foreground">Meta Calorias</span>
-                  <p className="text-xl font-extrabold text-primary">{metaCalorias.toLocaleString("pt-BR", { minimumFractionDigits: 0 })} kcal</p>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Altura</span>
+                  <p className="font-bold text-foreground">{(height / 100).toFixed(2).replace(".", ",")} m</p>
                 </div>
-                <div>
-                  <span className="text-xs text-muted-foreground">Meta Água</span>
-                  <p className="text-xl font-extrabold text-primary">{metaAgua} ml</p>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Sexo</span>
+                  <p className="font-bold text-foreground">{sex === "male" ? "Masculino" : "Feminino"}</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+
+              <div className="w-full text-left space-y-4">
                 <div>
-                  <span className="text-xs text-muted-foreground">Taxa Metabólica (TMB)</span>
-                  <p className="font-bold text-foreground">{tmb.toLocaleString("pt-BR")} kcal</p>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-2">Atividade Física</span>
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
+                    <Activity className="w-4 h-4 text-primary" />
+                    <p className="text-sm font-bold text-foreground">{activityLabel}</p>
+                  </div>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground">Gasto Total (GET)</span>
-                  <p className="font-bold text-foreground">{get.toLocaleString("pt-BR")} kcal</p>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-2">Objetivo Semanal</span>
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/10 border border-accent/20">
+                    <Target className="w-4 h-4 text-accent" />
+                    <p className="text-sm font-bold text-foreground">{goalLabel}</p>
+                  </div>
                 </div>
               </div>
             </div>
+          </motion.div>
 
-            <div className="glass rounded-2xl p-5 shadow-card">
-              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-primary" /> Macronutrientes (Diário)
-              </h4>
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-xl border border-border p-3">
-                  <span className="text-xs text-muted-foreground">Proteína</span>
-                  <p className="text-xl font-extrabold text-foreground">{proteina}g</p>
+          {/* Dados - Direita */}
+          <div className="lg:col-span-7 space-y-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="glass rounded-3xl p-8 shadow-card"
+            >
+              <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
+                <Flame className="w-5 h-5" /> Energia & Hidratação
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <span className="text-sm text-muted-foreground font-medium">Meta Diária de Calorias</span>
+                  <p className="text-4xl font-black text-primary leading-none">
+                    {metaCalorias.toLocaleString("pt-BR", { minimumFractionDigits: 0 })} <span className="text-lg font-bold">kcal</span>
+                  </p>
                 </div>
-                <div className="rounded-xl border border-border p-3">
-                  <span className="text-xs text-muted-foreground">Carbo</span>
-                  <p className="text-xl font-extrabold text-foreground">{carbo}g</p>
-                </div>
-                <div className="rounded-xl border border-border p-3">
-                  <span className="text-xs text-muted-foreground">Gordura</span>
-                  <p className="text-xl font-extrabold text-foreground">{gordura}g</p>
+                <div className="space-y-2">
+                  <span className="text-sm text-muted-foreground font-medium">Ingestão de Água Diária</span>
+                  <p className="text-4xl font-black text-primary leading-none">
+                    {metaAgua} <span className="text-lg font-bold">ml</span>
+                  </p>
                 </div>
               </div>
-            </div>
+              <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-border">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase">TMB</span>
+                  <p className="text-sm font-bold">{tmb.toLocaleString("pt-BR")} kcal</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase">GET</span>
+                  <p className="text-sm font-bold">{get.toLocaleString("pt-BR")} kcal</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="glass rounded-3xl p-8 shadow-card"
+            >
+              <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
+                <Zap className="w-5 h-5" /> Macronutrientes (Meta Diária)
+              </h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Proteína</span>
+                  <p className="text-2xl font-black text-foreground">{proteina}g</p>
+                </div>
+                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Carbo</span>
+                  <p className="text-2xl font-black text-foreground">{carbo}g</p>
+                </div>
+                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Gordura</span>
+                  <p className="text-2xl font-black text-foreground">{gordura}g</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {(restrictions || preferences) && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="glass rounded-3xl p-8 shadow-card grid grid-cols-1 sm:grid-cols-2 gap-8"
+              >
+                {restrictions && (
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                      <UtensilsCrossed className="w-4 h-4 text-red-500" /> Restrições
+                    </span>
+                    <p className="text-sm text-foreground leading-relaxed bg-white/50 p-4 rounded-2xl border border-border">{restrictions}</p>
+                  </div>
+                )}
+                {preferences && (
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Preferências</span>
+                    <p className="text-sm text-foreground leading-relaxed bg-white/50 p-4 rounded-2xl border border-border">{preferences}</p>
+                  </div>
+                )}
+              </motion.div>
+            )}
           </div>
-        </motion.div>
-
-        {/* Seção de Planos Pagos */}
-        <PricingSection />
-
-        <div className="text-center mb-4">
-          <p className="text-[11px] text-muted-foreground font-medium italic">
-            ou continue com o plano gratuito
-          </p>
         </div>
 
-        <motion.a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.4 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="block w-full bg-whatsapp text-whatsapp-foreground rounded-2xl p-6 shadow-whatsapp animate-pulse-glow transition-all duration-300 hover:shadow-[0_0_40px_hsla(142,70%,49%,0.4)]"
-        >
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <MessageCircle className="w-7 h-7" />
-            <span className="text-xl font-bold uppercase">Receber Meu Plano 7 GRÁTIS AGORA</span>
-          </div>
-          <p className="text-sm opacity-90 text-center">
-            Clique para gerar sua lista de compras e cardápio semanal instantaneamente.
-          </p>
-        </motion.a>
+        {/* Pricing & CTA */}
+        <div className="mt-12 space-y-12">
+          <PricingSection />
 
-        {/* FAQ Section */}
-        <FAQSection />
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground font-bold italic tracking-wider uppercase">
+              Ou continue com o seu acesso atual
+            </p>
+          </div>
+
+          <motion.a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02, y: -5 }}
+            whileTap={{ scale: 0.98 }}
+            className="block w-full bg-whatsapp text-whatsapp-foreground rounded-3xl p-8 shadow-whatsapp animate-pulse-glow transition-all duration-300"
+          >
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center justify-center gap-3">
+                <MessageCircle className="w-8 h-8" />
+                <span className="text-2xl font-black uppercase tracking-tight">Receber Meu Plano Grátis Agora</span>
+              </div>
+              <p className="text-sm font-medium opacity-90 text-center max-w-lg">
+                Seu cardápio de 7 dias e lista de compras serão gerados instantaneamente e enviados para seu celular.
+              </p>
+            </div>
+          </motion.a>
+
+          <FAQSection />
+        </div>
       </div>
     </div>
   );

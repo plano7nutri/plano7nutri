@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Landing from "@/components/Landing";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
@@ -39,6 +39,16 @@ const Index = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Verifica se veio de um redirecionamento de logout
+  useEffect(() => {
+    if (location.state?.view) {
+      setView(location.state.view as View);
+      // Limpa o estado para não repetir no refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleLoginFree = async () => {
     const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
