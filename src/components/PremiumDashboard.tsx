@@ -30,8 +30,8 @@ interface PremiumDashboardProps {
   restrictions: string;
   preferences: string;
   avatarUrl?: string;
-  tipo_assinatura?: string;
-  plano_semanal?: boolean;
+  tipo_assinatura?: string | null;
+  plano_semanal?: boolean | null;
   ultimo_envio_plano?: string;
   limite_cardapio_unico?: number;
   onAvatarUpdate?: () => void;
@@ -196,9 +196,11 @@ const PremiumDashboard = ({
                 <Crown className="w-4 h-4" />
                 Membro Premium
               </div>
-              <div className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest text-emerald-400">
-                {tipo_assinatura === "Mensal" ? "Plano Mensal" : "Cardápio Único"}
-              </div>
+              {tipo_assinatura && (
+                <div className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                  {tipo_assinatura === "Mensal" ? "Plano Mensal" : "Cardápio Único"}
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-4">
               {user?.email === ADMIN_EMAIL && (

@@ -59,7 +59,8 @@ const DashboardPago = () => {
             email: user.email,
             nome: user.user_metadata?.nome || user.user_metadata?.full_name || "Usuário",
             whatsapp: user.user_metadata?.whatsapp || "",
-            tipo_assinatura: user.user_metadata?.tipo_assinatura || "Unica",
+            tipo_assinatura: user.user_metadata?.tipo_assinatura || null, // NULL por padrão
+            plano_semanal: user.user_metadata?.plano_semanal ?? null, // NULL por padrão
             assinatura_ativa: true
           }]);
         if (!insertError) {

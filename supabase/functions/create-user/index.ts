@@ -21,12 +21,10 @@ serve(async (req) => {
     )
 
     const body = await req.json()
-    // Extraímos a senha e os metadados do seu JSON
     const { email, password, admin_secret, user_metadata, metadata } = body
 
     if (!email) throw new Error("E-mail é obrigatório.");
 
-    // Validação da Senha Mestre
     const MASTER_PASSWORD = Deno.env.get('ADMIN_MASTER_PASSWORD');
     if (!admin_secret || admin_secret !== MASTER_PASSWORD) {
       return new Response(JSON.stringify({ error: "Senha Administrativa Inválida." }), {
@@ -35,7 +33,6 @@ serve(async (req) => {
       })
     }
 
-    // Combinamos os metadados possíveis
     const finalMetadata = { ...metadata, ...user_metadata };
     const fullName = body.nome || finalMetadata?.nome || finalMetadata?.full_name || "Usuário Elite";
     let rawPhone = (body.phone || finalMetadata?.whatsapp || "").replace(/\D/g, "");
@@ -44,7 +41,6 @@ serve(async (req) => {
       rawPhone = "55" + rawPhone;
     }
 
-    // 1. Buscar usuário existente
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) throw listError;
     
@@ -52,10 +48,9 @@ serve(async (req) => {
     let userId;
 
     if (existingUser) {
-      console.log(`[${functionName}] Usuário encontrado. Atualizando apenas metadados (Senha intocada).`);
+      console.log(`[${functionName}] Usuário encontrado. Atualizando metadados.`);
       userId = existingUser.id;
       const { error: updateAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-        // NÃO incluímos o campo password aqui para não mexer na senha existente
         user_metadata: {
           ...existingUser.user_metadata,
           ...finalMetadata,
@@ -66,10 +61,10 @@ serve(async (req) => {
       });
       if (updateAuthError) throw updateAuthError;
     } else {
-      console.log(`[${functionName}] Criando novo usuário com a senha fornecida.`);
+      console.log(`[${functionName}] Criando novo usuário.`);
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: email.trim().toLowerCase(),
-        password: password || email.trim().toLowerCase(), // Usa a senha do JSON ou e-mail como fallback
+        password: password || email.trim().toLowerCase(),
         email_confirm: true,
         user_metadata: {
           ...finalMetadata,
@@ -83,6 +78,7 @@ serve(async (req) => {
     }
 
     // 2. Sincronizar dados na tabela clientes_pagos
+    // Deixamos tipo_assinatura e plano_semanal como NULL se não vierem no metadata
     const { error: dbError } = await supabaseAdmin
       .from('clientes_pagos')
       .upsert({
@@ -92,8 +88,8 @@ serve(async (req) => {
         whatsapp: rawPhone,
         telefone_cadastro: rawPhone,
         email: email.trim().toLowerCase(),
-        tipo_assinatura: finalMetadata?.tipo_assinatura || 'Unica',
-        plano_semanal: finalMetadata?.plano_semanal || false,
+        tipo_assinatura: finalMetadata?.tipo_assinatura ?? null,
+        plano_semanal: finalMetadata?.plano_semanal ?? null,
         assinatura_ativa: finalMetadata?.assinatura_ativa !== undefined ? finalMetadata.assinatura_ativa : true,
         limite_cardapio_unico: 0
       }, { onConflict: 'id' });
