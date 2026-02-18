@@ -295,7 +295,7 @@ const PremiumDashboard = ({
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/40 to-zinc-900/80 border border-emerald-500/20 p-10 shadow-2xl mb-8 backdrop-blur-xl"
+          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/40 to-zinc-900/80 border border-emerald-500/20 p-10 shadow-2xl mb-12 backdrop-blur-xl"
         >
           <div className="absolute top-0 right-0 p-6 opacity-10">
             <Star className="w-32 h-32 text-amber-400 rotate-12" />
@@ -388,7 +388,22 @@ const PremiumDashboard = ({
           )}
         </motion.div>
 
-        {/* ... Rest of the component stats and cards remain the same but use the updated max-w-4xl container */}
+        {/* Título de Luxo */}
+        <div className="flex flex-col items-center mb-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-4 px-6 py-3 rounded-[1.5rem] bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-amber-500/10 border border-amber-500/30 shadow-glow relative group"
+          >
+            <div className="absolute -inset-1 bg-amber-500/20 blur opacity-30 group-hover:opacity-50 transition-opacity" />
+            <span className="text-2xl drop-shadow-sm">💎</span>
+            <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-emerald-100 to-amber-200 uppercase tracking-tighter text-center">
+              Seu Planejamento Nutricional
+            </h2>
+            <span className="text-2xl drop-shadow-sm">✨</span>
+          </motion.div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-8">
@@ -450,36 +465,38 @@ const PremiumDashboard = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
-          whileHover={canRequestPlan() && !isBlocked ? { scale: 1.02, y: -5 } : {}}
+          whileHover={canRequestPlan() && !isBlocked ? { scale: 1.02, y: -2 } : {}}
           whileTap={canRequestPlan() && !isBlocked ? { scale: 0.98 } : {}}
           className={`block w-full relative group transition-all duration-300 ${(!canRequestPlan() || isBlocked) ? 'opacity-80' : ''}`}
         >
-          <div className={`absolute -inset-1 rounded-[2.5rem] blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-[2.5rem] p-8 shadow-2xl flex flex-col items-center text-center gap-6 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
-            <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:rotate-12 transition-transform">
-              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-32 h-32" /> : <CheckCircle2 className="w-32 h-32" />}
+          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:rotate-12 transition-transform">
+              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
             </div>
-            {canRequestPlan() && !isBlocked ? <MessageCircle className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8 text-emerald-500" />}
-            <div className="space-y-3">
-              <h3 className="text-2xl font-black uppercase tracking-tight">
+            
+            <div className="flex items-center gap-3">
+              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+              <h3 className="text-lg font-black uppercase tracking-tight">
                 {isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
-              {isSubscriptionInactive ? (
-                <p className="text-red-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                  <Lock className="w-4 h-4" /> Renove seu plano para solicitar
-                </p>
-              ) : isUnicaDelivered ? (
-                <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" /> Plano já enviado para seu WhatsApp
-                </p>
-              ) : (tipo_assinatura === "Mensal" || plano_semanal === true) && !canRequestPlan() ? (
-                <p className="text-amber-200 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                  <Clock className="w-4 h-4" /> Próximo plano disponível em {daysToNextPlan()} dias
-                </p>
-              ) : (
-                <p className="text-emerald-100 text-sm font-medium opacity-90 max-w-lg">Receba agora sua lista de compras inteligente e o cardápio completo da semana direto no seu WhatsApp.</p>
-              )}
             </div>
+
+            {isSubscriptionInactive ? (
+              <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                <Lock className="w-3 h-3" /> Renove seu plano para solicitar
+              </p>
+            ) : isUnicaDelivered ? (
+              <p className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                <CheckCircle2 className="w-3 h-3" /> Plano já enviado para seu WhatsApp
+              </p>
+            ) : (tipo_assinatura === "Mensal" || plano_semanal === true) && !canRequestPlan() ? (
+              <p className="text-amber-200 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                <Clock className="w-3 h-3" /> Próximo plano disponível em {daysToNextPlan()} dias
+              </p>
+            ) : (
+              <p className="text-emerald-100 text-xs font-medium opacity-90 max-w-lg">Clique para receber seu cardápio de elite e lista de compras agora.</p>
+            )}
           </div>
         </motion.a>
 
