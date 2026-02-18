@@ -47,7 +47,7 @@ const FAQSection = ({ isDark = false }: FAQSectionProps) => {
     },
     {
       question: "Por que não posso editar meus dados a qualquer momento?",
-      answer: "Resultados reais exigem constância. O ciclo de 7 dias é o tempo mínimo para seu metabolismo responder ao planejamento. Permitir trocas diárias quebraria o ciclo de adaptação do seu corpo. Após 7 dias, o sistema libera novas atualizações.",
+      answer: "Resultados reais exigem constância. Todo o seu planejamento é baseado em cálculos científicos rigorosos sobre sua biometria atual. Alterar esses dados no meio do processo invalidaria sua estratégia nutricional e jogaria fora todo o esforço de adaptação do seu metabolismo. Para garantir sua segurança e a eficácia do método, o sistema permite novas atualizações apenas após a conclusão de cada ciclo de 7 dias.",
       icon: <Info className="w-4 h-4" />
     },
     {
