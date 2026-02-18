@@ -68,8 +68,12 @@ const PremiumDashboard = ({
   const isUnicaDelivered = tipo_assinatura === "Unica" && limite_cardapio_unico === 1;
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
+  // VERIFICAÇÃO DUPLA: Assinatura deve estar Ativa E tempo deve ser >= 7 dias
   const canEdit = () => {
+    // 1. Verificar se a assinatura está ativa (ou se não é um bloqueio mestre)
     if (isBlocked) return false;
+
+    // 2. Verificar a trava de tempo (7 dias)
     if (!lastUpdateDate) return true;
     const lastUpdate = new Date(lastUpdateDate);
     const now = new Date();
@@ -90,12 +94,10 @@ const PremiumDashboard = ({
   const canRequestPlan = () => {
     if (isBlocked) return false;
     
-    // Se for Unica, só pode se não tiver limite 1
     if (tipo_assinatura === "Unica") {
       return limite_cardapio_unico !== 1;
     }
 
-    // Se for Mensal (plano_semanal true), verifica os 7 dias
     if (tipo_assinatura === "Mensal" || plano_semanal === true) {
       if (!ultimo_envio_plano) return true;
       const lastRequest = new Date(ultimo_envio_plano);
@@ -170,16 +172,23 @@ const PremiumDashboard = ({
   };
 
   const handleEditClick = () => {
+    // 1. Bloqueio por Inatividade de Assinatura
     if (isBlocked) {
-      toast.error("Acesso restrito. Renove para editar seu perfil.");
+      const reason = isSubscriptionInactive 
+        ? "Assinatura inativa. Renove para editar seu perfil." 
+        : "Cardápio único já entregue. Mude para o plano mensal para edições ilimitadas.";
+      toast.error(reason);
       return;
     }
+
+    // 2. Bloqueio por Trava de Tempo (7 dias)
     if (!canEdit()) {
       toast.info(`Você poderá atualizar seu perfil novamente em ${daysToWait()} dias.`, {
         icon: <Clock className="w-5 h-5 text-amber-500" />
       });
       return;
     }
+
     setIsEditing(true);
   };
 
@@ -219,7 +228,6 @@ const PremiumDashboard = ({
           </motion.div>
         )}
 
-        {/* Novo Lembrete de Saúde Refinado */}
         {!isBlocked && <HealthReminder isPremium={true} />}
 
         <motion.div 
@@ -251,7 +259,7 @@ const PremiumDashboard = ({
               )}
               {onLogout && (
                 <button 
-                  onClick={onLogout}
+                  onClick={handleLogout}
                   className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
                 >
                   <LogOut className="w-4 h-4" />
@@ -270,7 +278,7 @@ const PremiumDashboard = ({
                 <h4 className="text-sm font-bold text-zinc-100">Controle de Atualização</h4>
                 <p className="text-xs text-zinc-400">
                   {isBlocked 
-                    ? "Atualização bloqueada. Renove seu acesso."
+                    ? "Atualização bloqueada. Assinatura Inativa."
                     : canEdit() 
                       ? "Seu perfil está liberado para nova atualização." 
                       : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
@@ -292,6 +300,7 @@ const PremiumDashboard = ({
           </div>
         </motion.div>
 
+        {/* ... Rest of the component (Profile Card, Stats, FAQ) remains the same */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
