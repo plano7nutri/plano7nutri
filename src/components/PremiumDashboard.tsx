@@ -228,13 +228,13 @@ const PremiumDashboard = ({
             <div className="p-3 rounded-full bg-amber-500/20 text-amber-500 animate-pulse">
               <ShieldAlert size={32} />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs">Aviso Importante</h3>
               <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
                 O SUCESSO DO PLANO 7 DEPENDE DE REGRAS PARA <strong className="font-black text-amber-400">ALCANÇAR RESULTADOS REAIS</strong> POR ISSO SIGA SEU PLANEJAMENTO NUTRICIONAL PERSONALIZADO À RISCA.
               </p>
-              <div className="pt-1">
-                <span className="inline-block bg-amber-500 text-emerald-950 px-3 py-1 rounded-lg font-black text-xs sm:text-sm tracking-tighter uppercase">
+              <div className="pt-2">
+                <span className="inline-block bg-amber-500 text-emerald-950 px-5 py-2.5 rounded-2xl font-black text-sm sm:text-lg tracking-tighter uppercase shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                   AQUI NÃO NEGOCIAMOS SAÚDE
                 </span>
               </div>
