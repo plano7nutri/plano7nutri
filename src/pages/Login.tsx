@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Zap } from 'lucide-react';
 
 const Login = () => {
   const { session } = useAuth();
@@ -22,22 +22,27 @@ const Login = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass rounded-2xl p-8 shadow-card"
+        className="w-full max-w-md glass rounded-2xl p-8 shadow-card border border-primary/10"
       >
         <button 
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 transition-colors"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 transition-colors font-medium"
         >
           <ArrowLeft size={16} /> Voltar para o início
         </button>
 
         <div className="text-center mb-8">
+          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Zap className="text-primary w-6 h-6" />
+          </div>
           <h1 className="text-2xl font-bold text-foreground">Área do Assinante</h1>
-          <p className="text-muted-foreground">Acesse seu plano personalizado completo.</p>
+          <p className="text-sm text-muted-foreground mt-1">Acesse seu planejamento elite completo.</p>
         </div>
 
         <Auth
           supabaseClient={supabase}
+          view="sign_in"
+          showLinks={false} // Remove os links padrão de "esqueci senha" e "cadastrar" internos
           appearance={{
             theme: ThemeSupa,
             variables: {
@@ -45,58 +50,60 @@ const Login = () => {
                 colors: {
                   brand: 'hsl(160, 60%, 38%)',
                   brandAccent: 'hsl(160, 60%, 28%)',
+                  inputBackground: 'white',
+                  inputText: 'black',
+                  inputPlaceholder: 'hsl(210, 10%, 50%)',
                 },
                 radii: {
                   buttonRadius: '0.75rem',
                   inputRadius: '0.75rem',
                 }
               }
+            },
+            className: {
+              container: 'auth-container',
+              button: 'auth-button font-bold',
+              input: 'auth-input',
             }
           }}
           localization={{
             variables: {
               sign_in: {
-                email_label: 'Endereço de e-mail',
+                email_label: 'E-mail',
                 password_label: 'Senha',
-                email_input_placeholder: 'Seu endereço de e-mail',
+                email_input_placeholder: 'Seu e-mail de cadastro',
                 password_input_placeholder: 'Sua senha',
-                button_label: 'Entrar',
-                loading_button_label: 'Entrando...',
-                social_provider_text: 'Entrar com {{provider}}',
-                link_text: 'Já tem uma conta? Entre aqui',
-              },
-              sign_up: {
-                email_label: 'Endereço de e-mail',
-                password_label: 'Senha',
-                email_input_placeholder: 'Seu endereço de e-mail',
-                password_input_placeholder: 'Sua senha',
-                button_label: 'Criar conta',
-                loading_button_label: 'Criando conta...',
-                social_provider_text: 'Cadastrar com {{provider}}',
-                link_text: 'Não tem uma conta? Cadastre-se',
-                confirmation_text: 'Verifique seu e-mail para o link de confirmação',
-              },
-              forgotten_password: {
-                email_label: 'Endereço de e-mail',
-                password_label: 'Senha',
-                email_input_placeholder: 'Seu endereço de e-mail',
-                button_label: 'Enviar instruções de recuperação',
-                loading_button_label: 'Enviando instruções...',
-                link_text: 'Esqueceu sua senha?',
-                confirmation_text: 'Verifique seu e-mail para o link de recuperação de senha',
-              },
-              update_password: {
-                password_label: 'Nova senha',
-                password_input_placeholder: 'Sua nova senha',
-                button_label: 'Atualizar senha',
-                loading_button_label: 'Atualizando senha...',
-                confirmation_text: 'Sua senha foi atualizada',
-              },
+                button_label: 'Entrar agora',
+                loading_button_label: 'Autenticando...',
+              }
             },
           }}
           providers={[]}
           theme="light"
         />
+
+        {/* Link personalizado solicitado */}
+        <div className="mt-8 text-center pt-6 border-t border-border">
+          <p className="text-sm text-muted-foreground">
+            Não tem conta?{' '}
+            <button 
+              onClick={() => navigate('/', { state: { view: 'onboarding' } })}
+              className="text-primary font-bold hover:underline"
+            >
+              Teste grátis
+            </button>
+          </p>
+          
+          <button 
+            onClick={() => {
+              // Simula um "esqueci minha senha" se necessário ou redireciona
+              toast.info("Para recuperar sua senha, utilize o link de confirmação enviado ao seu e-mail.");
+            }}
+            className="text-xs text-muted-foreground hover:text-foreground mt-4 block mx-auto transition-colors"
+          >
+            Esqueceu sua senha?
+          </button>
+        </div>
       </motion.div>
     </div>
   );
