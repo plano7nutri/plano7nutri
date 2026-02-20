@@ -55,7 +55,7 @@ const Features = () => {
             transition={{ delay: 0.1 }}
             className="text-lg text-muted-foreground font-medium"
           >
-            Simples, completo e direto no seu WhatsApp
+            Simples, completo e direto no seu WhatsApp.
           </motion.p>
         </div>
 
