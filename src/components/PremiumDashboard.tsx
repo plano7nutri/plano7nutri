@@ -70,6 +70,9 @@ const PremiumDashboard = ({
 
   // VERIFICAÇÃO DUPLA: Assinatura deve estar Ativa E tempo deve ser >= 7 dias
   const canEdit = () => {
+    // O Administrador Robson sempre pode editar, ignorando qualquer trava ou bloqueio
+    if (user?.email === ADMIN_EMAIL) return true;
+
     // 1. Verificar se a assinatura está ativa (ou se não é um bloqueio mestre)
     if (isBlocked) return false;
 
@@ -92,6 +95,9 @@ const PremiumDashboard = ({
   };
 
   const canRequestPlan = () => {
+    // Admin Robson também ignora travas de solicitação de plano
+    if (user?.email === ADMIN_EMAIL) return true;
+    
     if (isBlocked) return false;
     
     if (tipo_assinatura === "Unica") {
@@ -119,6 +125,11 @@ const PremiumDashboard = ({
   };
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
+    if (user?.email === ADMIN_EMAIL) {
+      toast.success("Acesso admin: Abrindo WhatsApp...");
+      return;
+    }
+
     if (isSubscriptionInactive) {
       e.preventDefault();
       toast.error("Seu acesso está inativo. Renove para continuar.");
@@ -140,7 +151,7 @@ const PremiumDashboard = ({
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isBlocked) {
+    if (isBlocked && user?.email !== ADMIN_EMAIL) {
       toast.error("Acesso restrito.");
       return;
     }
@@ -172,6 +183,12 @@ const PremiumDashboard = ({
   };
 
   const handleEditClick = () => {
+    // Administrador Robson ignora todas as travas
+    if (user?.email === ADMIN_EMAIL) {
+      setIsEditing(true);
+      return;
+    }
+
     // 1. Bloqueio por Inatividade de Assinatura
     if (isBlocked) {
       const reason = isSubscriptionInactive 
@@ -205,8 +222,8 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-4xl mx-auto">
         
-        {/* Alerta de Bloqueio */}
-        {isBlocked && (
+        {/* Alerta de Bloqueio - Oculto para Admin */}
+        {isBlocked && user?.email !== ADMIN_EMAIL && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -228,7 +245,7 @@ const PremiumDashboard = ({
           </motion.div>
         )}
 
-        {!isBlocked && <HealthReminder isPremium={true} />}
+        {(!isBlocked || user?.email === ADMIN_EMAIL) && <HealthReminder isPremium={true} />}
 
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -271,25 +288,27 @@ const PremiumDashboard = ({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-zinc-900/50 border border-emerald-500/10 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${isBlocked ? 'bg-zinc-800' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
-                {isBlocked ? <Lock className="w-5 h-5 text-zinc-500" /> : canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
+              <div className={`p-2 rounded-lg ${user?.email === ADMIN_EMAIL ? 'bg-amber-500/20 text-amber-400' : isBlocked ? 'bg-zinc-800' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
+                {user?.email === ADMIN_EMAIL ? <Settings className="w-5 h-5" /> : isBlocked ? <Lock className="w-5 h-5 text-zinc-500" /> : canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
               </div>
               <div>
                 <h4 className="text-sm font-bold text-zinc-100">Controle de Atualização</h4>
                 <p className="text-xs text-zinc-400">
-                  {isBlocked 
-                    ? "Atualização bloqueada. Assinatura Inativa."
-                    : canEdit() 
-                      ? "Seu perfil está liberado para nova atualização." 
-                      : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
+                  {user?.email === ADMIN_EMAIL 
+                    ? "Modo Administrador: Edição livre liberada."
+                    : isBlocked 
+                      ? "Atualização bloqueada. Assinatura Inativa."
+                      : canEdit() 
+                        ? "Seu perfil está liberado para nova atualização." 
+                        : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
                 </p>
               </div>
             </div>
             <button 
               onClick={handleEditClick}
-              disabled={!canEdit() || isBlocked}
+              disabled={(!canEdit() || isBlocked) && user?.email !== ADMIN_EMAIL}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
-                !isBlocked && canEdit() 
+                user?.email === ADMIN_EMAIL || (!isBlocked && canEdit()) 
                   ? "bg-emerald-50 text-emerald-950 hover:bg-emerald-400 shadow-glow" 
                   : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700"
               }`}
@@ -318,9 +337,9 @@ const PremiumDashboard = ({
                   {name ? name.substring(0, 2).toUpperCase() : "??"}
                 </AvatarFallback>
               </Avatar>
-              <label className={`absolute bottom-1 right-1 p-3 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked ? 'bg-zinc-700 text-zinc-400' : 'bg-amber-500 text-emerald-950 hover:bg-amber-400'}`}>
+              <label className={`absolute bottom-1 right-1 p-3 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked && user?.email !== ADMIN_EMAIL ? 'bg-zinc-700 text-zinc-400' : 'bg-amber-500 text-emerald-950 hover:bg-amber-400'}`}>
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isBlocked} />
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isBlocked && user?.email !== ADMIN_EMAIL} />
               </label>
             </div>
 
@@ -472,24 +491,26 @@ const PremiumDashboard = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
-          whileHover={canRequestPlan() && !isBlocked ? { scale: 1.02, y: -2 } : {}}
-          whileTap={canRequestPlan() && !isBlocked ? { scale: 0.98 } : {}}
-          className={`block w-full relative group transition-all duration-300 ${(!canRequestPlan() || isBlocked) ? 'opacity-80' : ''}`}
+          whileHover={canRequestPlan() || user?.email === ADMIN_EMAIL ? { scale: 1.02, y: -2 } : {}}
+          whileTap={canRequestPlan() || user?.email === ADMIN_EMAIL ? { scale: 0.98 } : {}}
+          className={`block w-full relative group transition-all duration-300 ${( (!canRequestPlan() || isBlocked) && user?.email !== ADMIN_EMAIL) ? 'opacity-80' : ''}`}
         >
-          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${canRequestPlan() && !isBlocked ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${canRequestPlan() && !isBlocked ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${ (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${ (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:rotate-12 transition-transform">
-              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
+              { (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
             </div>
             
             <div className="flex items-center gap-3">
-              {canRequestPlan() && !isBlocked ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+              { (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
               <h3 className="text-lg font-black uppercase tracking-tight">
-                {isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
+                {user?.email === ADMIN_EMAIL ? "Solicitar Cardápio (Modo Admin)" : isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
             </div>
 
-            {isSubscriptionInactive ? (
+            {user?.email === ADMIN_EMAIL ? (
+              <p className="text-emerald-100 text-xs font-medium opacity-90 max-w-lg">Acesso administrativo liberado. Clique para solicitar.</p>
+            ) : isSubscriptionInactive ? (
               <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                 <Lock className="w-3 h-3" /> Renove seu plano para solicitar
               </p>
@@ -507,7 +528,7 @@ const PremiumDashboard = ({
           </div>
         </motion.a>
 
-        {isBlocked && (
+        {(isBlocked && user?.email !== ADMIN_EMAIL) && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
