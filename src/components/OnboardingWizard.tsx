@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
@@ -107,17 +107,36 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const handleHeightChange = (val: string) => {
-    let formatted = val.replace(/[^0-9,.]/g, "");
-    formatted = formatted.replace(".", ",");
-    const parts = formatted.split(",");
-    if (parts.length > 2) formatted = parts[0] + "," + parts.slice(1).join("");
+    let formatted = val.replace(/[^0-9,]/g, "");
+    if (!formatted.includes(",")) {
+      if (formatted.length > 1) {
+        formatted = formatted.charAt(0) + "," + formatted.slice(1);
+      }
+    }
+    
     setHeightInput(formatted);
+    
     const numericString = formatted.replace(",", ".");
     const numericVal = parseFloat(numericString);
     if (!isNaN(numericVal)) {
-      if (numericVal > 3) setData(prev => ({ ...prev, height: Math.round(numericVal) }));
-      else setData(prev => ({ ...prev, height: Math.round(numericVal * 100) }));
+      if (numericVal <= 3) {
+        setData(prev => ({ ...prev, height: Math.round(numericVal * 100) }));
+      } else {
+        setData(prev => ({ ...prev, height: Math.round(numericVal) }));
+      }
     }
+  };
+
+  const stepHeight = (increment: number) => {
+    const currentHeight = data.height; // em cm (ex: 170)
+    const nextHeight = Math.max(50, Math.min(250, currentHeight + increment));
+    
+    setData(prev => ({ ...prev, height: nextHeight }));
+    setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
+  };
+
+  const stepWeight = (increment: number) => {
+    setData(prev => ({ ...prev, weight: Math.max(20, Math.min(300, prev.weight + increment)) }));
   };
 
   const canProceed = () => {
@@ -233,25 +252,49 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Idade</label>
-                  <input type="number" value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setData(prev => ({...prev, age: Math.max(1, prev.age - 1)}))} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
+                      <Minus className="w-4 h-4 text-primary" />
+                    </button>
+                    <input type="number" value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })}
+                      className="w-full px-2 py-3 rounded-xl border bg-card text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring" />
+                    <button onClick={() => setData(prev => ({...prev, age: Math.min(120, prev.age + 1)}))} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
+                      <Plus className="w-4 h-4 text-primary" />
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Altura (m)</label>
-                  <input 
-                    type="text" 
-                    placeholder="1,70" 
-                    value={heightInput} 
-                    onChange={(e) => handleHeightChange(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" 
-                  />
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => stepHeight(-1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
+                      <Minus className="w-4 h-4 text-primary" />
+                    </button>
+                    <input 
+                      type="text" 
+                      placeholder="1,70" 
+                      value={heightInput} 
+                      onChange={(e) => handleHeightChange(e.target.value)}
+                      className="w-full px-2 py-3 rounded-xl border bg-card text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring" 
+                    />
+                    <button onClick={() => stepHeight(1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
+                      <Plus className="w-4 h-4 text-primary" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <div className="mb-6">
                 <label className="block text-sm font-medium text-foreground mb-2">Peso (kg)</label>
-                <input type="number" value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })}
-                  className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium text-center focus:outline-none focus:ring-2 focus:ring-ring" />
+                <div className="flex items-center gap-2">
+                  <button onClick={() => stepWeight(-1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
+                    <Minus className="w-4 h-4 text-primary" />
+                  </button>
+                  <input type="number" value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })}
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring" />
+                  <button onClick={() => stepWeight(1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
+                    <Plus className="w-4 h-4 text-primary" />
+                  </button>
+                </div>
               </div>
 
               <label className="block text-sm font-medium text-foreground mb-3">Sexo Biológico</label>
