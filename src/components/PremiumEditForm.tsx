@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { X, Loader2, Save } from "lucide-react";
+import { X, Loader2, Save, Plus, Minus } from "lucide-react";
 
 interface PremiumEditFormProps {
   initialData: {
@@ -37,6 +37,13 @@ const goalOptions = [
 const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps) => {
   const [formData, setFormData] = useState(initialData);
   const [loading, setLoading] = useState(false);
+  const [heightInput, setHeightInput] = useState((initialData.height / 100).toFixed(2).replace(".", ","));
+
+  const handleHeightChange = (increment: number) => {
+    const nextHeight = Math.max(50, Math.min(250, formData.height + increment));
+    setFormData({ ...formData, height: nextHeight });
+    setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,21 +70,55 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Idade</label>
-              <input 
-                type="number" 
-                value={formData.age}
-                onChange={(e) => setFormData({...formData, age: Number(e.target.value)})}
-                className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setFormData({...formData, age: Math.max(1, formData.age - 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                  <Minus size={14} />
+                </button>
+                <input 
+                  type="number" 
+                  value={formData.age}
+                  onChange={(e) => setFormData({...formData, age: Number(e.target.value)})}
+                  className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-2 py-2 text-white text-center focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+                <button type="button" onClick={() => setFormData({...formData, age: Math.min(120, formData.age + 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                  <Plus size={14} />
+                </button>
+              </div>
             </div>
             <div>
               <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Peso (kg)</label>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setFormData({...formData, weight: Math.max(20, formData.weight - 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                  <Minus size={14} />
+                </button>
+                <input 
+                  type="number" 
+                  value={formData.weight}
+                  onChange={(e) => setFormData({...formData, weight: Number(e.target.value)})}
+                  className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-2 py-2 text-white text-center focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+                <button type="button" onClick={() => setFormData({...formData, weight: Math.min(300, formData.weight + 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                  <Plus size={14} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Altura (m)</label>
+            <div className="flex items-center gap-4">
+              <button type="button" onClick={() => handleHeightChange(-1)} className="p-3 bg-zinc-800 rounded-xl text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                <Minus size={18} />
+              </button>
               <input 
-                type="number" 
-                value={formData.weight}
-                onChange={(e) => setFormData({...formData, weight: Number(e.target.value)})}
-                className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                type="text" 
+                readOnly
+                value={heightInput}
+                className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-4 py-3 text-white text-center text-xl font-bold outline-none"
               />
+              <button type="button" onClick={() => handleHeightChange(1)} className="p-3 bg-zinc-800 rounded-xl text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                <Plus size={18} />
+              </button>
             </div>
           </div>
 
