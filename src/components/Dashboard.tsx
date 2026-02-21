@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
@@ -56,10 +57,11 @@ const Dashboard = ({
 
   const renderFormattedText = (text: string | null | undefined) => {
     if (!text) return null;
-    const parts = text.split(/(\*\*.*?\*\*)/g);
+    // Regex para capturar texto entre asteriscos simples: *texto*
+    const parts = text.split(/(\*.*?\*)/g);
     return parts.map((part, i) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={i} className="font-black text-primary">{part.slice(2, -2)}</strong>;
+      if (part.startsWith('*') && part.endsWith('*')) {
+        return <strong key={i} className="font-black text-primary">{part.slice(1, -1)}</strong>;
       }
       return part;
     });
@@ -273,42 +275,54 @@ const Dashboard = ({
           </div>
         </div>
 
-        {/* Seção de Cardápio e Lista com Accordion (Fechado por padrão) */}
-        <div className="mt-12 space-y-4">
+        {/* Seção de Cardápio e Lista com Popups (Dialog) */}
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="cardapio" className="border rounded-3xl bg-white shadow-sm overflow-hidden border-primary/10">
-                <AccordionTrigger className="px-8 py-6 hover:no-underline">
-                  <div className="flex items-center gap-3 text-primary font-bold">
-                    <Utensils className="w-5 h-5" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                  <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  Ver Cardápio Personalizado
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
+                <div className="sticky top-0 bg-white border-b border-border p-6 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-3 text-primary font-bold text-xl">
+                    <Utensils className="w-6 h-6" />
                     Cardápio Personalizado
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-8 pb-8">
-                  <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-6 rounded-2xl border border-border">
+                </div>
+                <div className="p-8">
+                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
                     {renderFormattedText(cardapio)}
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
 
           {lista && (
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="lista" className="border rounded-3xl bg-white shadow-sm overflow-hidden border-primary/10">
-                <AccordionTrigger className="px-8 py-6 hover:no-underline">
-                  <div className="flex items-center gap-3 text-primary font-bold">
-                    <ClipboardList className="w-5 h-5" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                  <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  Ver Lista de Compras
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
+                <div className="sticky top-0 bg-white border-b border-border p-6 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-3 text-primary font-bold text-xl">
+                    <ClipboardList className="w-6 h-6" />
                     Lista de Compras
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-8 pb-8">
-                  <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-6 rounded-2xl border border-border">
+                </div>
+                <div className="p-8">
+                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
                     {renderFormattedText(lista)}
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
         </div>
 

@@ -2,18 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PremiumEditForm from "./PremiumEditForm";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
@@ -73,10 +74,11 @@ const PremiumDashboard = ({
 
   const renderFormattedText = (text: string | null | undefined) => {
     if (!text) return null;
-    const parts = text.split(/(\*\*.*?\*\*)/g);
+    // Regex para capturar texto entre asteriscos simples: *texto*
+    const parts = text.split(/(\*.*?\*)/g);
     return parts.map((part, i) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={i} className="font-black text-emerald-400">{part.slice(2, -2)}</strong>;
+      if (part.startsWith('*') && part.endsWith('*')) {
+        return <strong key={i} className="font-black text-emerald-400">{part.slice(1, -1)}</strong>;
       }
       return part;
     });
@@ -446,42 +448,54 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        {/* Seção Premium de Cardápio e Lista com Accordion (Fechado por padrão) */}
-        <div className="mt-12 space-y-4">
+        {/* Seção Premium de Cardápio e Lista com Popups (Dialog) */}
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="cardapio" className="border border-emerald-500/20 rounded-3xl bg-zinc-900/50 shadow-2xl overflow-hidden backdrop-blur-sm">
-                <AccordionTrigger className="px-8 py-6 hover:no-underline">
-                  <div className="flex items-center gap-3 text-emerald-400 font-bold">
-                    <Utensils className="w-5 h-5" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="flex items-center justify-center gap-3 bg-zinc-900/50 border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                  <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  Ver Cardápio Elite
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-[#051c14]">
+                <div className="sticky top-0 bg-[#051c14] border-b border-emerald-500/10 p-6 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-3 text-emerald-400 font-bold text-xl">
+                    <Utensils className="w-6 h-6" />
                     Cardápio Personalizado
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-8 pb-8">
-                  <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
+                </div>
+                <div className="p-8">
+                  <div className="whitespace-pre-wrap text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-8 rounded-2xl border border-white/5 shadow-inner">
                     {renderFormattedText(cardapio)}
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
 
           {lista && (
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="lista" className="border border-emerald-500/20 rounded-3xl bg-zinc-900/50 shadow-2xl overflow-hidden backdrop-blur-sm">
-                <AccordionTrigger className="px-8 py-6 hover:no-underline">
-                  <div className="flex items-center gap-3 text-emerald-400 font-bold">
-                    <ClipboardList className="w-5 h-5" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="flex items-center justify-center gap-3 bg-zinc-900/50 border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                  <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  Ver Lista de Compras
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-[#051c14]">
+                <div className="sticky top-0 bg-[#051c14] border-b border-emerald-500/10 p-6 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-3 text-emerald-400 font-bold text-xl">
+                    <ClipboardList className="w-6 h-6" />
                     Lista de Compras
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-8 pb-8">
-                  <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
+                </div>
+                <div className="p-8">
+                  <div className="whitespace-pre-wrap text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-8 rounded-2xl border border-white/5 shadow-inner">
                     {renderFormattedText(lista)}
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
         </div>
 
