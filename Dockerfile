@@ -1,23 +1,23 @@
 # Estágio de Build
-FROM node:20-slim AS build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Instalar dependências
-COPY package*.json ./
+# Instalar dependências (usando cache)
+COPY package.json package-lock.json* ./
 RUN npm install
 
-# Copiar código e gerar build
+# Copiar o restante e gerar o build
 COPY . .
 RUN npm run build
 
-# Estágio de Produção
+# Estágio de Servidor (Nginx)
 FROM nginx:stable-alpine
 
-# Copiar arquivos do build para o diretório do Nginx
+# Copiar arquivos do build (Vite gera na pasta /dist)
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copiar configuração customizada do Nginx
+# Copiar nossa configuração customizada
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
