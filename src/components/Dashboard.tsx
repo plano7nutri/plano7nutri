@@ -95,7 +95,7 @@ const Dashboard = ({
   };
 
   const isBlocked = entregue === true;
-  const whatsappUrl = isBlocked ? "#" : `https://wa.me/5511910183401?text=${encodeURIComponent("*Quero Meu Planejamento da Semana Agora*")}`;
+  const whatsappUrl = isBlocked ? "#" : `https://wa.me/5511933735838?text=${encodeURIComponent("*Quero Meu Planejamento da Semana Agora*")}`;
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
     if (isBlocked) {
