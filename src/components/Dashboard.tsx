@@ -4,7 +4,12 @@ import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, L
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
@@ -257,61 +262,44 @@ const Dashboard = ({
           </div>
         </div>
 
-        {/* Nova Seção: Cardápio e Lista de Compras */}
-        {(cardapio || lista) && (
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-12 glass rounded-[2.5rem] p-1 shadow-card border border-primary/10 overflow-hidden"
-          >
-            <Tabs defaultValue="cardapio" className="w-full">
-              <div className="px-8 pt-8 pb-4">
-                <TabsList className="grid w-full grid-cols-2 h-14 bg-secondary/50 rounded-2xl p-1">
-                  <TabsTrigger value="cardapio" className="rounded-xl font-bold text-sm data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm flex items-center gap-2">
-                    <Utensils className="w-4 h-4" />
+        {/* Seção de Cardápio e Lista com Accordion (Fechado por padrão) */}
+        <div className="mt-12 space-y-4">
+          {cardapio && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="cardapio" className="border rounded-3xl bg-white shadow-sm overflow-hidden border-primary/10">
+                <AccordionTrigger className="px-8 py-6 hover:no-underline">
+                  <div className="flex items-center gap-3 text-primary font-bold">
+                    <Utensils className="w-5 h-5" />
                     Cardápio Personalizado
-                  </TabsTrigger>
-                  <TabsTrigger value="lista" className="rounded-xl font-bold text-sm data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm flex items-center gap-2">
-                    <ClipboardList className="w-4 h-4" />
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-8 pb-8">
+                  <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-6 rounded-2xl border border-border">
+                    {cardapio}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+
+          {lista && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="lista" className="border rounded-3xl bg-white shadow-sm overflow-hidden border-primary/10">
+                <AccordionTrigger className="px-8 py-6 hover:no-underline">
+                  <div className="flex items-center gap-3 text-primary font-bold">
+                    <ClipboardList className="w-5 h-5" />
                     Lista de Compras
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              <div className="px-8 pb-8">
-                <TabsContent value="cardapio" className="mt-4 focus-visible:outline-none">
-                  <div className="bg-white/80 rounded-3xl p-6 md:p-8 border border-border shadow-inner min-h-[300px]">
-                    {cardapio ? (
-                      <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium">
-                        {cardapio}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-12">
-                        <Utensils className="w-12 h-12 mb-4 opacity-20" />
-                        <p className="font-bold">Seu cardápio está sendo preparado...</p>
-                      </div>
-                    )}
                   </div>
-                </TabsContent>
-
-                <TabsContent value="lista" className="mt-4 focus-visible:outline-none">
-                  <div className="bg-white/80 rounded-3xl p-6 md:p-8 border border-border shadow-inner min-h-[300px]">
-                    {lista ? (
-                      <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium">
-                        {lista}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-12">
-                        <ClipboardList className="w-12 h-12 mb-4 opacity-20" />
-                        <p className="font-bold">Sua lista de compras está sendo gerada...</p>
-                      </div>
-                    )}
+                </AccordionTrigger>
+                <AccordionContent className="px-8 pb-8">
+                  <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-6 rounded-2xl border border-border">
+                    {lista}
                   </div>
-                </TabsContent>
-              </div>
-            </Tabs>
-          </motion.div>
-        )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+        </div>
 
         <div className="mt-12 space-y-12">
           <PricingSection />

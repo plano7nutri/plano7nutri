@@ -8,7 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import PremiumEditForm from "./PremiumEditForm";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
@@ -430,61 +435,44 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        {/* Nova Seção Premium: Cardápio e Lista de Compras */}
-        {(cardapio || lista) && (
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-12 bg-zinc-900/50 rounded-[2.5rem] p-1 shadow-2xl border border-emerald-500/20 overflow-hidden backdrop-blur-sm"
-          >
-            <Tabs defaultValue="cardapio" className="w-full">
-              <div className="px-8 pt-8 pb-4">
-                <TabsList className="grid w-full grid-cols-2 h-14 bg-black/40 rounded-2xl p-1">
-                  <TabsTrigger value="cardapio" className="rounded-xl font-bold text-sm data-[state=active]:bg-emerald-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-glow flex items-center gap-2 transition-all">
-                    <Utensils className="w-4 h-4" />
+        {/* Seção Premium de Cardápio e Lista com Accordion (Fechado por padrão) */}
+        <div className="mt-12 space-y-4">
+          {cardapio && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="cardapio" className="border border-emerald-500/20 rounded-3xl bg-zinc-900/50 shadow-2xl overflow-hidden backdrop-blur-sm">
+                <AccordionTrigger className="px-8 py-6 hover:no-underline">
+                  <div className="flex items-center gap-3 text-emerald-400 font-bold">
+                    <Utensils className="w-5 h-5" />
                     Cardápio Personalizado
-                  </TabsTrigger>
-                  <TabsTrigger value="lista" className="rounded-xl font-bold text-sm data-[state=active]:bg-emerald-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-glow flex items-center gap-2 transition-all">
-                    <ClipboardList className="w-4 h-4" />
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-8 pb-8">
+                  <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
+                    {cardapio}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+
+          {lista && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="lista" className="border border-emerald-500/20 rounded-3xl bg-zinc-900/50 shadow-2xl overflow-hidden backdrop-blur-sm">
+                <AccordionTrigger className="px-8 py-6 hover:no-underline">
+                  <div className="flex items-center gap-3 text-emerald-400 font-bold">
+                    <ClipboardList className="w-5 h-5" />
                     Lista de Compras
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              <div className="px-8 pb-8">
-                <TabsContent value="cardapio" className="mt-4 focus-visible:outline-none">
-                  <div className="bg-black/30 rounded-3xl p-6 md:p-8 border border-white/5 shadow-inner min-h-[300px]">
-                    {cardapio ? (
-                      <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium">
-                        {cardapio}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-12">
-                        <Utensils className="w-12 h-12 mb-4 opacity-20" />
-                        <p className="font-bold">Seu cardápio premium está sendo preparado...</p>
-                      </div>
-                    )}
                   </div>
-                </TabsContent>
-
-                <TabsContent value="lista" className="mt-4 focus-visible:outline-none">
-                  <div className="bg-black/30 rounded-3xl p-6 md:p-8 border border-white/5 shadow-inner min-h-[300px]">
-                    {lista ? (
-                      <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium">
-                        {lista}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-12">
-                        <ClipboardList className="w-12 h-12 mb-4 opacity-20" />
-                        <p className="font-bold">Sua lista de compras premium está sendo gerada...</p>
-                      </div>
-                    )}
+                </AccordionTrigger>
+                <AccordionContent className="px-8 pb-8">
+                  <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
+                    {lista}
                   </div>
-                </TabsContent>
-              </div>
-            </Tabs>
-          </motion.div>
-        )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+        </div>
 
         <motion.a
           href={whatsappUrl}
