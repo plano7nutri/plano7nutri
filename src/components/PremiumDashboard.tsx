@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PremiumEditForm from "./PremiumEditForm";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
@@ -38,6 +39,8 @@ interface PremiumDashboardProps {
   ultimo_envio_plano?: string;
   limite_cardapio_unico?: number;
   assinatura_ativa?: boolean;
+  cardapio?: string | null;
+  lista?: string | null;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
   onProfileUpdate?: (data: any) => Promise<void>;
@@ -50,7 +53,7 @@ const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
   restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, limite_cardapio_unico,
-  assinatura_ativa, onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
+  assinatura_ativa, cardapio, lista, onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate
 }: PremiumDashboardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -63,20 +66,13 @@ const PremiumDashboard = ({
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
-  // Lógica de Bloqueio Mestre
   const isSubscriptionInactive = assinatura_ativa === false;
   const isUnicaDelivered = tipo_assinatura === "Unica" && limite_cardapio_unico === 1;
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
-  // VERIFICAÇÃO DUPLA: Assinatura deve estar Ativa E tempo deve ser >= 7 dias
   const canEdit = () => {
-    // O Administrador Robson sempre pode editar, ignorando qualquer trava ou bloqueio
     if (user?.email === ADMIN_EMAIL) return true;
-
-    // 1. Verificar se a assinatura está ativa (ou se não é um bloqueio mestre)
     if (isBlocked) return false;
-
-    // 2. Verificar a trava de tempo (7 dias)
     if (!lastUpdateDate) return true;
     const lastUpdate = new Date(lastUpdateDate);
     const now = new Date();
@@ -95,15 +91,9 @@ const PremiumDashboard = ({
   };
 
   const canRequestPlan = () => {
-    // Admin Robson também ignora travas de solicitação de plano
     if (user?.email === ADMIN_EMAIL) return true;
-    
     if (isBlocked) return false;
-    
-    if (tipo_assinatura === "Unica") {
-      return limite_cardapio_unico !== 1;
-    }
-
+    if (tipo_assinatura === "Unica") return limite_cardapio_unico !== 1;
     if (tipo_assinatura === "Mensal" || plano_semanal === true) {
       if (!ultimo_envio_plano) return true;
       const lastRequest = new Date(ultimo_envio_plano);
@@ -112,7 +102,6 @@ const PremiumDashboard = ({
       const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
       return diffTime >= sevenDaysInMs;
     }
-
     return true;
   };
 
@@ -129,7 +118,6 @@ const PremiumDashboard = ({
       toast.success("Acesso admin: Abrindo WhatsApp...");
       return;
     }
-
     if (isSubscriptionInactive) {
       e.preventDefault();
       toast.error("Seu acesso está inativo. Renove para continuar.");
@@ -183,13 +171,10 @@ const PremiumDashboard = ({
   };
 
   const handleEditClick = () => {
-    // Administrador Robson ignora todas as travas
     if (user?.email === ADMIN_EMAIL) {
       setIsEditing(true);
       return;
     }
-
-    // 1. Bloqueio por Inatividade de Assinatura
     if (isBlocked) {
       const reason = isSubscriptionInactive 
         ? "Assinatura inativa. Renove para editar seu perfil." 
@@ -197,15 +182,12 @@ const PremiumDashboard = ({
       toast.error(reason);
       return;
     }
-
-    // 2. Bloqueio por Trava de Tempo (7 dias)
     if (!canEdit()) {
       toast.info(`Você poderá atualizar seu perfil novamente em ${daysToWait()} dias.`, {
         icon: <Clock className="w-5 h-5 text-amber-500" />
       });
       return;
     }
-
     setIsEditing(true);
   };
 
@@ -222,7 +204,6 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
       <div className="w-full max-w-4xl mx-auto">
         
-        {/* Alerta de Bloqueio - Oculto para Admin */}
         {isBlocked && user?.email !== ADMIN_EMAIL && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
@@ -390,29 +371,6 @@ const PremiumDashboard = ({
               </div>
             </div>
           </div>
-
-          {(restrictions || preferences) && (
-            <div className="mt-6 pt-6 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-              {restrictions && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-red-400/80">
-                    <UtensilsCrossed className="w-3 h-3" />
-                    <span className="text-[10px] uppercase font-bold tracking-tighter">Restrições</span>
-                  </div>
-                  <p className="text-sm text-zinc-300 font-medium leading-relaxed bg-black/20 p-4 rounded-xl border border-white/5">{restrictions}</p>
-                </div>
-              )}
-              {preferences && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-emerald-400/80">
-                    <Heart className="w-3 h-3" />
-                    <span className="text-[10px] uppercase font-bold tracking-tighter">Preferências</span>
-                  </div>
-                  <p className="text-sm text-zinc-300 font-medium leading-relaxed bg-black/20 p-4 rounded-xl border border-white/5">{preferences}</p>
-                </div>
-              )}
-            </div>
-          )}
         </motion.div>
 
         <div className="flex flex-col items-center mb-10">
@@ -447,16 +405,6 @@ const PremiumDashboard = ({
                   <p className="text-3xl font-black text-blue-400 tracking-tighter">{metaAgua || 0} <span className="text-base font-bold text-zinc-500 uppercase tracking-normal">ml</span></p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-800">
-                <div>
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Metabolismo (TMB)</p>
-                  <p className="text-lg font-bold text-zinc-100">{(tmb || 0).toLocaleString()} <span className="text-xs font-medium text-zinc-500">kcal</span></p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Gasto Total (GET)</p>
-                  <p className="text-lg font-bold text-zinc-100">{(get || 0).toLocaleString()} <span className="text-xs font-medium text-zinc-500">kcal</span></p>
-                </div>
-              </div>
             </div>
           </motion.div>
 
@@ -479,12 +427,64 @@ const PremiumDashboard = ({
                 <p className="text-3xl font-black text-zinc-100 tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
-            <div className="mt-8 p-5 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex items-start gap-4">
-              <Star className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-              <p className="text-xs text-zinc-400 leading-relaxed font-medium">Sua distribuição foi calibrada para preservar massa muscular e otimizar a queima calórica.</p>
-            </div>
           </motion.div>
         </div>
+
+        {/* Nova Seção Premium: Cardápio e Lista de Compras */}
+        {(cardapio || lista) && (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-12 bg-zinc-900/50 rounded-[2.5rem] p-1 shadow-2xl border border-emerald-500/20 overflow-hidden backdrop-blur-sm"
+          >
+            <Tabs defaultValue="cardapio" className="w-full">
+              <div className="px-8 pt-8 pb-4">
+                <TabsList className="grid w-full grid-cols-2 h-14 bg-black/40 rounded-2xl p-1">
+                  <TabsTrigger value="cardapio" className="rounded-xl font-bold text-sm data-[state=active]:bg-emerald-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-glow flex items-center gap-2 transition-all">
+                    <Utensils className="w-4 h-4" />
+                    Cardápio Personalizado
+                  </TabsTrigger>
+                  <TabsTrigger value="lista" className="rounded-xl font-bold text-sm data-[state=active]:bg-emerald-500 data-[state=active]:text-emerald-950 data-[state=active]:shadow-glow flex items-center gap-2 transition-all">
+                    <ClipboardList className="w-4 h-4" />
+                    Lista de Compras
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <div className="px-8 pb-8">
+                <TabsContent value="cardapio" className="mt-4 focus-visible:outline-none">
+                  <div className="bg-black/30 rounded-3xl p-6 md:p-8 border border-white/5 shadow-inner min-h-[300px]">
+                    {cardapio ? (
+                      <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium">
+                        {cardapio}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-12">
+                        <Utensils className="w-12 h-12 mb-4 opacity-20" />
+                        <p className="font-bold">Seu cardápio premium está sendo preparado...</p>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="lista" className="mt-4 focus-visible:outline-none">
+                  <div className="bg-black/30 rounded-3xl p-6 md:p-8 border border-white/5 shadow-inner min-h-[300px]">
+                    {lista ? (
+                      <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium">
+                        {lista}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-12">
+                        <ClipboardList className="w-12 h-12 mb-4 opacity-20" />
+                        <p className="font-bold">Sua lista de compras premium está sendo gerada...</p>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </motion.div>
+        )}
 
         <motion.a
           href={whatsappUrl}
@@ -493,38 +493,16 @@ const PremiumDashboard = ({
           onClick={handleWhatsAppClick}
           whileHover={canRequestPlan() || user?.email === ADMIN_EMAIL ? { scale: 1.02, y: -2 } : {}}
           whileTap={canRequestPlan() || user?.email === ADMIN_EMAIL ? { scale: 0.98 } : {}}
-          className={`block w-full relative group transition-all duration-300 ${( (!canRequestPlan() || isBlocked) && user?.email !== ADMIN_EMAIL) ? 'opacity-80' : ''}`}
+          className={`block w-full relative group transition-all duration-300 mt-12 ${( (!canRequestPlan() || isBlocked) && user?.email !== ADMIN_EMAIL) ? 'opacity-80' : ''}`}
         >
           <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${ (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
           <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${ (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
-            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:rotate-12 transition-transform">
-              { (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? <MessageCircle className="w-24 h-24" /> : <CheckCircle2 className="w-24 h-24" />}
-            </div>
-            
             <div className="flex items-center gap-3">
               { (canRequestPlan() && !isBlocked) || user?.email === ADMIN_EMAIL ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
               <h3 className="text-lg font-black uppercase tracking-tight">
                 {user?.email === ADMIN_EMAIL ? "Solicitar Cardápio (Modo Admin)" : isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
               </h3>
             </div>
-
-            {user?.email === ADMIN_EMAIL ? (
-              <p className="text-emerald-100 text-xs font-medium opacity-90 max-w-lg">Acesso administrativo liberado. Clique para solicitar.</p>
-            ) : isSubscriptionInactive ? (
-              <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                <Lock className="w-3 h-3" /> Renove seu plano para solicitar
-              </p>
-            ) : isUnicaDelivered ? (
-              <p className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                <CheckCircle2 className="w-3 h-3" /> Plano já enviado para seu WhatsApp
-              </p>
-            ) : (tipo_assinatura === "Mensal" || plano_semanal === true) && !canRequestPlan() ? (
-              <p className="text-amber-200 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                <Clock className="w-3 h-3" /> Próximo plano disponível em {daysToNextPlan()} dias
-              </p>
-            ) : (
-              <p className="text-emerald-100 text-xs font-medium opacity-90 max-w-lg">Clique para receber seu cardápio de elite e lista de compras agora.</p>
-            )}
           </div>
         </motion.a>
 

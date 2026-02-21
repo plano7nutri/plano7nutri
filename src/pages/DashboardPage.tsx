@@ -10,7 +10,6 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
-  // Tenta pegar do state ou do localStorage se o state sumir no refresh
   const storedWhatsapp = localStorage.getItem("plano7_free_whatsapp");
   const initialData = location.state;
   const whatsappToFetch = initialData?.whatsapp || storedWhatsapp;
@@ -32,7 +31,6 @@ const DashboardPage = () => {
   });
 
   useEffect(() => {
-    // Só redireciona se realmente não tiver nada e o carregamento terminou
     if (!whatsappToFetch && !isLoading) {
       navigate("/", { state: { view: "check-free-plan" }, replace: true });
     }
@@ -40,7 +38,6 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("plano7_free_whatsapp");
-    // Redireciona para a Home com o estado para abrir a tela de login gratuito
     navigate("/", { state: { view: "check-free-plan" }, replace: true });
   };
 
@@ -80,6 +77,8 @@ const DashboardPage = () => {
           preferences={displayData.preferencias}
           avatarUrl={displayData.avatar_url}
           entregue={displayData.entregue}
+          cardapio={displayData.cardápio}
+          lista={displayData.lista}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
           onLogout={handleLogout}
         />

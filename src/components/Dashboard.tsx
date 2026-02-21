@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2 } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
@@ -28,6 +29,8 @@ interface DashboardProps {
   preferences: string;
   avatarUrl?: string;
   entregue?: boolean | null;
+  cardapio?: string | null;
+  lista?: string | null;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
 }
@@ -35,7 +38,7 @@ interface DashboardProps {
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, entregue, onAvatarUpdate, onLogout
+  restrictions, preferences, avatarUrl, entregue, cardapio, lista, onAvatarUpdate, onLogout
 }: DashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
@@ -108,7 +111,6 @@ const Dashboard = ({
     <div className="min-h-screen px-6 py-10">
       <div className="w-full max-w-4xl mx-auto">
         
-        {/* Header com Logout */}
         <div className="flex justify-end mb-4">
           {onLogout && (
             <button 
@@ -121,11 +123,9 @@ const Dashboard = ({
           )}
         </div>
 
-        {/* Novo Lembrete de Saúde Refinado */}
         <HealthReminder />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Perfil - Esquerda */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
@@ -190,10 +190,7 @@ const Dashboard = ({
             </div>
           </motion.div>
 
-          {/* Dados - Direita */}
           <div className="lg:col-span-7 space-y-6">
-            
-            {/* Título de Luxo (Light Mode) */}
             <div className="flex flex-col items-center mb-2">
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
@@ -231,16 +228,6 @@ const Dashboard = ({
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-border">
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase">TMB</span>
-                  <p className="text-sm font-bold">{tmb.toLocaleString("pt-BR")} kcal</p>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase">GET</span>
-                  <p className="text-sm font-bold">{get.toLocaleString("pt-BR")} kcal</p>
-                </div>
-              </div>
             </motion.div>
 
             <motion.div 
@@ -267,34 +254,65 @@ const Dashboard = ({
                 </div>
               </div>
             </motion.div>
-
-            {(restrictions || preferences) && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="glass rounded-3xl p-8 shadow-card grid grid-cols-1 sm:grid-cols-2 gap-8"
-              >
-                {restrictions && (
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                      <UtensilsCrossed className="w-4 h-4 text-red-500" /> Restrições
-                    </span>
-                    <p className="text-sm text-foreground leading-relaxed bg-white/50 p-4 rounded-2xl border border-border">{restrictions}</p>
-                  </div>
-                )}
-                {preferences && (
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Preferências</span>
-                    <p className="text-sm text-foreground leading-relaxed bg-white/50 p-4 rounded-2xl border border-border">{preferences}</p>
-                  </div>
-                )}
-              </motion.div>
-            )}
           </div>
         </div>
 
-        {/* Pricing & CTA */}
+        {/* Nova Seção: Cardápio e Lista de Compras */}
+        {(cardapio || lista) && (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-12 glass rounded-[2.5rem] p-1 shadow-card border border-primary/10 overflow-hidden"
+          >
+            <Tabs defaultValue="cardapio" className="w-full">
+              <div className="px-8 pt-8 pb-4">
+                <TabsList className="grid w-full grid-cols-2 h-14 bg-secondary/50 rounded-2xl p-1">
+                  <TabsTrigger value="cardapio" className="rounded-xl font-bold text-sm data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm flex items-center gap-2">
+                    <Utensils className="w-4 h-4" />
+                    Cardápio Personalizado
+                  </TabsTrigger>
+                  <TabsTrigger value="lista" className="rounded-xl font-bold text-sm data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm flex items-center gap-2">
+                    <ClipboardList className="w-4 h-4" />
+                    Lista de Compras
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <div className="px-8 pb-8">
+                <TabsContent value="cardapio" className="mt-4 focus-visible:outline-none">
+                  <div className="bg-white/80 rounded-3xl p-6 md:p-8 border border-border shadow-inner min-h-[300px]">
+                    {cardapio ? (
+                      <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium">
+                        {cardapio}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-12">
+                        <Utensils className="w-12 h-12 mb-4 opacity-20" />
+                        <p className="font-bold">Seu cardápio está sendo preparado...</p>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="lista" className="mt-4 focus-visible:outline-none">
+                  <div className="bg-white/80 rounded-3xl p-6 md:p-8 border border-border shadow-inner min-h-[300px]">
+                    {lista ? (
+                      <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium">
+                        {lista}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-12">
+                        <ClipboardList className="w-12 h-12 mb-4 opacity-20" />
+                        <p className="font-bold">Sua lista de compras está sendo gerada...</p>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </motion.div>
+        )}
+
         <div className="mt-12 space-y-12">
           <PricingSection />
 
