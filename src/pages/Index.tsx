@@ -128,6 +128,7 @@ const Index = () => {
         carbo_dia: carbo,
         gordura_dia: gordura,
         avatar_url: null,
+        entregue: false,
       };
 
       const { error: insertError } = await supabase
@@ -236,6 +237,3 @@ const Index = () => {
       <Footer />
     </div>
   );
-};
-
-export default Index;

@@ -66,7 +66,7 @@ const DashboardPage = () => {
           age={displayData.idade}
           sex={displayData.sexo_biologico}
           height={displayData.altura}
-          weight={displayData.peso}
+          weight={displayData.weight || displayData.peso}
           activityLabel={displayData.nivel_atividade_fisica}
           goalLabel={displayData.objetivo_semanal}
           tmb={displayData.tmb}
@@ -79,6 +79,7 @@ const DashboardPage = () => {
           restrictions={displayData.restricoes_alimentares}
           preferences={displayData.preferencias}
           avatarUrl={displayData.avatar_url}
+          entregue={displayData.entregue}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
           onLogout={handleLogout}
         />

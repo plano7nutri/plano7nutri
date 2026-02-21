@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Droplets, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ interface DashboardProps {
   restrictions: string;
   preferences: string;
   avatarUrl?: string;
+  entregue?: boolean | null;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
 }
@@ -34,7 +35,7 @@ interface DashboardProps {
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, onAvatarUpdate, onLogout
+  restrictions, preferences, avatarUrl, entregue, onAvatarUpdate, onLogout
 }: DashboardProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
@@ -93,7 +94,15 @@ const Dashboard = ({
     }
   };
 
-  const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Quero Meu Planejamento da Semana Agora*")}`;
+  const isBlocked = entregue === true;
+  const whatsappUrl = isBlocked ? "#" : `https://wa.me/5511910183401?text=${encodeURIComponent("*Quero Meu Planejamento da Semana Agora*")}`;
+
+  const handleWhatsAppClick = (e: React.MouseEvent) => {
+    if (isBlocked) {
+      e.preventDefault();
+      toast.error("Seu plano gratuito já foi entregue. Faça o upgrade para novos planos!");
+    }
+  };
 
   return (
     <div className="min-h-screen px-6 py-10">
@@ -299,17 +308,26 @@ const Dashboard = ({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.02, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-            className="block w-full bg-whatsapp text-whatsapp-foreground rounded-3xl p-6 shadow-whatsapp animate-pulse-glow transition-all duration-300"
+            onClick={handleWhatsAppClick}
+            whileHover={!isBlocked ? { scale: 1.02, y: -5 } : {}}
+            whileTap={!isBlocked ? { scale: 0.98 } : {}}
+            className={`block w-full rounded-3xl p-6 transition-all duration-300 ${
+              isBlocked 
+                ? "bg-zinc-800 text-zinc-400 border border-zinc-700" 
+                : "bg-whatsapp text-whatsapp-foreground shadow-whatsapp animate-pulse-glow"
+            }`}
           >
             <div className="flex flex-col items-center gap-4">
               <div className="flex items-center justify-center gap-3">
-                <MessageCircle className="w-6 h-6" />
-                <span className="text-xl font-black uppercase tracking-tight">Receber Meu Plano Grátis Agora</span>
+                {isBlocked ? <CheckCircle2 className="w-6 h-6 text-emerald-500" /> : <MessageCircle className="w-6 h-6" />}
+                <span className="text-xl font-black uppercase tracking-tight">
+                  {isBlocked ? "Plano Gratuito Entregue" : "Receber Meu Plano Grátis Agora"}
+                </span>
               </div>
               <p className="text-xs font-medium opacity-90 text-center max-w-lg">
-                Seu cardápio de 7 dias e lista de compras serão gerados instantaneamente e enviados para seu celular.
+                {isBlocked 
+                  ? "Seu cardápio de 7 dias já foi enviado para seu WhatsApp. Faça o upgrade para novos planos!"
+                  : "Seu cardápio de 7 dias e lista de compras serão gerados instantaneamente e enviados para seu celular."}
               </p>
             </div>
           </motion.a>
