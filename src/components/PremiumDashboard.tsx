@@ -71,6 +71,17 @@ const PremiumDashboard = ({
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
+  const renderFormattedText = (text: string | null | undefined) => {
+    if (!text) return null;
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-black text-emerald-400">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
   const isSubscriptionInactive = assinatura_ativa === false;
   const isUnicaDelivered = tipo_assinatura === "Unica" && limite_cardapio_unico === 1;
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
@@ -448,7 +459,7 @@ const PremiumDashboard = ({
                 </AccordionTrigger>
                 <AccordionContent className="px-8 pb-8">
                   <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
-                    {cardapio}
+                    {renderFormattedText(cardapio)}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -466,7 +477,7 @@ const PremiumDashboard = ({
                 </AccordionTrigger>
                 <AccordionContent className="px-8 pb-8">
                   <div className="whitespace-pre-wrap text-sm md:text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
-                    {lista}
+                    {renderFormattedText(lista)}
                   </div>
                 </AccordionContent>
               </AccordionItem>

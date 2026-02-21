@@ -54,6 +54,17 @@ const Dashboard = ({
     }
   }, [avatarUrl]);
 
+  const renderFormattedText = (text: string | null | undefined) => {
+    if (!text) return null;
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-black text-primary">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -275,7 +286,7 @@ const Dashboard = ({
                 </AccordionTrigger>
                 <AccordionContent className="px-8 pb-8">
                   <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-6 rounded-2xl border border-border">
-                    {cardapio}
+                    {renderFormattedText(cardapio)}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -293,7 +304,7 @@ const Dashboard = ({
                 </AccordionTrigger>
                 <AccordionContent className="px-8 pb-8">
                   <div className="whitespace-pre-wrap text-sm md:text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-6 rounded-2xl border border-border">
-                    {lista}
+                    {renderFormattedText(lista)}
                   </div>
                 </AccordionContent>
               </AccordionItem>
