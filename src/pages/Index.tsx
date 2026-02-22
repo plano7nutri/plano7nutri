@@ -2,36 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Landing from "@/components/Landing";
-import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, AlertCircle, PlusCircle } from "lucide-react";
 import { formatWhatsApp } from "@/lib/utils";
 
-type View = "landing" | "onboarding" | "check-free-plan";
-
-const activityFactors: Record<string, number> = {
-  sedentary: 1.2,
-  lightly_active: 1.375,
-  moderately_active: 1.55,
-  very_active: 1.725,
-  extremely_active: 1.9,
-};
-
-const activityLabels: Record<string, string> = {
-  sedentary: "Sedentário",
-  lightly_active: "Levemente ativo",
-  moderately_active: "Moderadamente ativo",
-  very_active: "Muito ativo",
-  extremely_active: "Extremamente ativo",
-};
-
-const goalLabels: Record<string, string> = {
-  lose_weight: "Perder Peso / Emagrecer",
-  gain_muscle: "Ganhar Massa Muscular (Hipertrofia)",
-  healthy_eating: "Alimentação Saudável",
-};
+type View = "landing" | "check-free-plan";
 
 const Index = () => {
   const [view, setView] = useState<View>("landing");
@@ -41,7 +18,7 @@ const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Verifica se veio de um redirecionamento de logout
+  // Verifica se veio de um redirecionamento de logout ou estado
   useEffect(() => {
     if (location.state?.view) {
       setView(location.state.view as View);
@@ -82,87 +59,18 @@ const Index = () => {
     }
   };
 
-  const handleComplete = async (data: OnboardingData) => {
-    try {
-      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
-      
-      const tmb =
-        data.sex === "male"
-          ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
-          : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
-
-      const factor = activityFactors[data.activity] || 1.2;
-      const get = Math.round(tmb * factor);
-
-      let metaCalorias = get;
-      if (data.goal === "lose_weight") metaCalorias = Math.round(get * 0.8);
-      else if (data.goal === "gain_muscle") metaCalorias = Math.round(get * 1.15);
-
-      const metaAgua = Math.round((data.weight * 35) / 100) * 100;
-
-      let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
-      if (data.goal === "lose_weight") { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
-      else if (data.goal === "gain_muscle") { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
-
-      const proteina = Math.round((metaCalorias * protRatio) / 4);
-      const carbo = Math.round((metaCalorias * carbRatio) / 4);
-      const gordura = Math.round((metaCalorias * fatRatio) / 9);
-
-      const dashData = {
-        session_id: Math.random().toString(36).substring(7),
-        nome: data.name,
-        whatsapp: cleanWhatsapp,
-        sexo_biologico: data.sex,
-        idade: data.age,
-        altura: data.height,
-        peso: data.weight,
-        nivel_atividade_fisica: activityLabels[data.activity] || data.activity,
-        objetivo_semanal: goalLabels[data.goal] || data.goal,
-        restricoes_alimentares: data.restrictions || "Nenhuma",
-        preferencias: data.preferences || "Nenhuma",
-        meta_calorias: metaCalorias,
-        meta_agua: metaAgua,
-        tmb: Math.round(tmb),
-        get: get,
-        proteina_dia: proteina,
-        carbo_dia: carbo,
-        gordura_dia: gordura,
-        avatar_url: null,
-        entregue: false,
-      };
-
-      const { error: insertError } = await supabase
-        .from("usuarios_planogratis")
-        .insert([dashData]);
-
-      if (insertError) throw new Error(insertError.message);
-
-      toast.success("Plano calculado com sucesso!");
-      localStorage.setItem("plano7_free_whatsapp", dashData.whatsapp);
-      navigate("/dashboard", { state: dashData });
-    } catch (err) {
-      console.error("Erro no processo:", err);
-      toast.error("Erro ao processar dados.");
-    }
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             {view === "landing" && (
-              <Landing onStart={() => setView("onboarding")} onLogin={() => setView("check-free-plan")} />
-            )}
-            
-            {view === "onboarding" && (
-              <OnboardingWizard 
-                onComplete={handleComplete} 
-                onBack={() => setView("landing")} 
-                onGoToLogin={() => setView("check-free-plan")}
+              <Landing 
+                onStart={() => navigate("/cadastro")} 
+                onLogin={() => setView("check-free-plan")} 
               />
             )}
-
+            
             {view === "check-free-plan" && (
               <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
                 <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card">
@@ -201,7 +109,7 @@ const Index = () => {
                         </div>
                         <button
                           type="button"
-                          onClick={() => setView("onboarding")}
+                          onClick={() => navigate("/cadastro")}
                           className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
                         >
                           <PlusCircle className="w-4 h-4" />
