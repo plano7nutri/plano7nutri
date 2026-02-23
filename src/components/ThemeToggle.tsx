@@ -5,11 +5,7 @@ import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import { motion } from "framer-motion";
 
-interface ThemeToggleProps {
-  isPremium: boolean;
-}
-
-const ThemeToggle = ({ isPremium }: ThemeToggleProps) => {
+const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -17,8 +13,7 @@ const ThemeToggle = ({ isPremium }: ThemeToggleProps) => {
     setMounted(true);
   }, []);
 
-  // Se não for premium ou não estiver montado, não renderiza nada
-  if (!isPremium || !mounted) return null;
+  if (!mounted) return null;
 
   const isDark = theme === "dark";
 
@@ -27,8 +22,7 @@ const ThemeToggle = ({ isPremium }: ThemeToggleProps) => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="relative flex items-center gap-2 p-1.5 rounded-2xl bg-secondary border border-border hover:border-primary/30 transition-all shadow-sm"
-      title={isDark ? "Mudar para Modo Claro" : "Mudar para Modo Escuro"}
+      className="relative flex items-center gap-2 p-2 rounded-2xl bg-secondary border border-border hover:border-primary/30 transition-all shadow-sm z-50"
     >
       <div className="relative w-8 h-8 flex items-center justify-center overflow-hidden">
         <motion.div

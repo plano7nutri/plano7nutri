@@ -6,40 +6,7 @@
 
 @layer base {
   :root {
-    /* O PADRÃO AGORA É DARK MODE */
-    --background: 160 60% 4%;
-    --foreground: 0 0% 98%;
-
-    --card: 160 60% 6%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 160 60% 5%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 160 60% 45%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 160 60% 10%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 160 60% 12%;
-    --muted-foreground: 160 10% 65%;
-
-    --accent: 25 90% 60%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 160 60% 15%;
-    --input: 160 60% 15%;
-    --ring: 160 60% 45%;
-
-    --radius: 1rem;
-  }
-
-  /* LIGHT MODE É A EXCEÇÃO (CLASSE .light) */
-  .light {
+    /* PADRÃO É CLARO (O QUE ESTAVA ANTES) */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
@@ -67,6 +34,39 @@
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 160 60% 38%;
+
+    --radius: 1rem;
+  }
+
+  .dark {
+    /* MODO ESCURO (OPCIONAL PARA PREMIUM / FORÇADO PARA FREE) */
+    --background: 160 60% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 160 60% 6%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 160 60% 5%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 160 60% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 160 60% 10%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 160 60% 12%;
+    --muted-foreground: 160 10% 65%;
+
+    --accent: 25 90% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 160 60% 15%;
+    --input: 160 60% 15%;
+    --ring: 160 60% 45%;
   }
 }
 

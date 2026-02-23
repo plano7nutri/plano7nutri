@@ -266,8 +266,8 @@ const PremiumDashboard = ({
               )}
             </div>
             <div className="flex items-center gap-4">
-              {/* Seletor de Tema Premium */}
-              <ThemeToggle isPremium={true} />
+              {/* Seletor de Tema Premium (Aparece apenas aqui) */}
+              <ThemeToggle />
 
               {user?.email === ADMIN_EMAIL && !isAdminView && (
                 <button 
@@ -451,8 +451,8 @@ const PremiumDashboard = ({
                 <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 

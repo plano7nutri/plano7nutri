@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,8 +48,14 @@ const Dashboard = ({
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
   restrictions, preferences, avatarUrl, entregue, cardapio, lista, onAvatarUpdate, onLogout
 }: DashboardProps) => {
+  const { setTheme } = useTheme();
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
+
+  // REGRA: Usuário gratuito é forçado ao Dark Mode
+  useEffect(() => {
+    setTheme("dark");
+  }, [setTheme]);
 
   useEffect(() => {
     if (avatarUrl) {
