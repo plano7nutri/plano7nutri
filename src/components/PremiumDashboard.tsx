@@ -73,7 +73,6 @@ const PremiumDashboard = ({
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
   const queryClient = useQueryClient();
 
-  // Dashboard Pago é Modo Escuro por padrão
   useEffect(() => {
     setTheme("dark");
   }, [setTheme]);
@@ -273,9 +272,7 @@ const PremiumDashboard = ({
               )}
             </div>
             <div className="flex items-center gap-4">
-              {/* Seletor de Tema Premium */}
               <ThemeToggle />
-
               {user?.email === ADMIN_EMAIL && !isAdminView && (
                 <button 
                   onClick={() => navigate('/cadastroadmin')}
@@ -379,23 +376,46 @@ const PremiumDashboard = ({
             </div>
           </div>
 
-          <div className="mt-10 pt-10 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-4 bg-card/50 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-card">
-              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-                <Activity size={24} />
+          <div className="mt-10 pt-10 border-t border-emerald-500/10 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex items-center gap-4 bg-card/50 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-card">
+                <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                  <Activity size={24} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Rotina Ativa</p>
+                  <p className="text-base font-bold text-foreground">{activityLabel || "Não informado"}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Rotina Ativa</p>
-                <p className="text-base font-bold text-foreground">{activityLabel || "Não informado"}</p>
+              <div className="flex items-center gap-4 bg-card/50 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-card">
+                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                  <Target size={24} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Foco Semanal</p>
+                  <p className="text-base font-bold text-foreground">{goalLabel || "Não informado"}</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-card/50 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-card">
-              <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
-                <Target size={24} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-amber-500">
+                  <ShieldAlert className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Restrições Elite</span>
+                </div>
+                <p className="text-sm font-medium text-foreground bg-muted/30 p-5 rounded-2xl border border-emerald-500/5 min-h-[100px]">
+                  {restrictions || "Nenhuma restrição informada."}
+                </p>
               </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Foco Semanal</p>
-                <p className="text-base font-bold text-foreground">{goalLabel || "Não informado"}</p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-emerald-400">
+                  <Heart className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Preferências Elite</span>
+                </div>
+                <p className="text-sm font-medium text-foreground bg-muted/30 p-5 rounded-2xl border border-emerald-500/5 min-h-[100px]">
+                  {preferences || "Nenhuma preferência informada."}
+                </p>
               </div>
             </div>
           </div>
@@ -416,7 +436,6 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        {/* Frase de Impacto Dinâmica */}
         <ImpactPhrase goal={goalLabel} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -460,34 +479,6 @@ const PremiumDashboard = ({
             </div>
           </motion.div>
         </div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="bg-card border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm space-y-6 mb-8"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-amber-500">
-                <ShieldAlert className="w-4 h-4" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Restrições Elite</span>
-              </div>
-              <p className="text-sm font-medium text-foreground bg-muted/50 p-5 rounded-2xl border border-border min-h-[100px]">
-                {restrictions || "Nenhuma restrição informada."}
-              </p>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-emerald-400">
-                <Heart className="w-4 h-4" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Preferências Elite</span>
-              </div>
-              <p className="text-sm font-medium text-foreground bg-muted/50 p-5 rounded-2xl border border-border min-h-[100px]">
-                {preferences || "Nenhuma preferência informada."}
-              </p>
-            </div>
-          </div>
-        </motion.div>
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
