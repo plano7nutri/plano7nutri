@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import PremiumDashboard from "@/components/PremiumDashboard";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
-import { Loader2, ShieldAlert, LogOut } from "lucide-react";
+import { Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 const activityFactors: Record<string, number> = {
@@ -38,47 +38,36 @@ const goalLabels: Record<string, string> = {
 const DashboardPago = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Se houver dados no state (vindo do Admin), usamos eles
+  const adminViewData = location.state?.adminViewData;
+
   const { data: userData, isLoading: dataLoading } = useQuery({
-    queryKey: ["premiumUser", user?.id],
+    queryKey: ["premiumUser", adminViewData?.id || user?.id],
     queryFn: async () => {
+      if (adminViewData) return adminViewData;
       if (!user?.id) return null;
+      
       const { data, error } = await supabase
         .from("clientes_pagos")
         .select("*")
         .eq("id", user.id)
         .maybeSingle();
+      
       if (error) throw error;
-      if (!data && user) {
-        const { error: insertError } = await supabase
-          .from("clientes_pagos")
-          .insert([{
-            id: user.id,
-            email: user.email,
-            nome: user.user_metadata?.nome || user.user_metadata?.full_name || "Usuário",
-            whatsapp: user.user_metadata?.whatsapp || "",
-            tipo_assinatura: user.user_metadata?.tipo_assinatura || null,
-            plano_semanal: user.user_metadata?.plano_semanal ?? null,
-            assinatura_ativa: true
-          }]);
-        if (!insertError) {
-          const { data: newData } = await supabase.from("clientes_pagos").select("*").eq("id", user.id).single();
-          return newData;
-        }
-      }
       return data;
     },
-    enabled: !!user?.id,
-    retry: 1
+    enabled: !!adminViewData || !!user?.id,
   });
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !adminViewData) {
       navigate("/login", { replace: true });
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, navigate, adminViewData]);
 
   const calculateNutrition = (data: any) => {
     const tmb = data.sex === "male" ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5 : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
@@ -98,6 +87,10 @@ const DashboardPago = () => {
   };
 
   const handleUpdateProfile = async (data: any) => {
+    if (adminViewData) {
+      toast.error("Modo visualização: Você não pode editar dados de outros usuários.");
+      return;
+    }
     if (!user?.id) return;
     setIsProcessing(true);
     try {
@@ -183,7 +176,7 @@ const DashboardPago = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
         <ShieldAlert className="text-amber-500 w-16 h-16 mb-6" />
         <h2 className="text-2xl font-bold text-white mb-4">Perfil em Sincronização</h2>
-        <button onClick={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold mb-4">Tentar Novamente</button>
+        <button onClick={() => queryClient.invalidateQueries({ queryKey: ["premiumUser"] })} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold mb-4">Tentar Novamente</button>
         <button onClick={handleLogout} className="text-zinc-500 font-bold">Sair</button>
       </div>
     );
@@ -191,7 +184,7 @@ const DashboardPago = () => {
 
   const isFirstAccess = !userData.idade || !userData.peso;
 
-  if (isFirstAccess) {
+  if (isFirstAccess && !adminViewData) {
     return (
       <div className="min-h-screen bg-background">
         <div className="pt-10 px-6 text-center"><h1 className="text-2xl font-bold">Bem-vindo ao Plano 7 Premium</h1></div>
@@ -202,6 +195,17 @@ const DashboardPago = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#051c14]">
+      {adminViewData && (
+        <div className="bg-amber-500 text-amber-950 py-2 px-6 flex items-center justify-between font-bold text-xs uppercase tracking-widest">
+          <div className="flex items-center gap-2">
+            <ShieldAlert size={16} />
+            Modo Visualização Admin: Vendo dados de {userData.nome}
+          </div>
+          <button onClick={() => navigate('/cadastroadmin')} className="flex items-center gap-1 hover:underline">
+            <ArrowLeft size={14} /> Voltar ao Painel
+          </button>
+        </div>
+      )}
       <main className="flex-1">
         <PremiumDashboard
           name={userData.nome}
@@ -229,7 +233,7 @@ const DashboardPago = () => {
           assinatura_ativa={userData.assinatura_ativa}
           cardapio={userData.cardápio}
           lista={userData.Lista}
-          onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser", user?.id] })}
+          onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser"] })}
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}
           lastUpdateDate={userData.created_at} 
