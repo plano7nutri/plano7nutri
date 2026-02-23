@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 import {
   Dialog,
   DialogContent,
@@ -66,10 +67,16 @@ const PremiumDashboard = ({
 }: PremiumDashboardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { setTheme } = useTheme();
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
   const queryClient = useQueryClient();
+
+  // Dashboard Pago é Modo Escuro por padrão
+  useEffect(() => {
+    setTheme("dark");
+  }, [setTheme]);
 
   useEffect(() => {
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);

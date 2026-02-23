@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -29,6 +31,12 @@ const goalLabels: Record<string, string> = {
 
 const Cadastro = () => {
   const navigate = useNavigate();
+  const { setTheme } = useTheme();
+
+  // Forçar Modo Claro no Cadastro
+  useEffect(() => {
+    setTheme("light");
+  }, [setTheme]);
 
   const handleComplete = async (data: OnboardingData) => {
     try {
@@ -95,7 +103,7 @@ const Cadastro = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background">
       <main className="flex-1">
         <OnboardingWizard 
           onComplete={handleComplete} 

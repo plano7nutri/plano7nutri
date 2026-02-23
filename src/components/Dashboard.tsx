@@ -52,9 +52,9 @@ const Dashboard = ({
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
 
-  // REGRA: Usuário gratuito é forçado ao Dark Mode
+  // Dashboard Gratuito agora é Modo Claro
   useEffect(() => {
-    setTheme("dark");
+    setTheme("light");
   }, [setTheme]);
 
   useEffect(() => {
@@ -140,7 +140,7 @@ const Dashboard = ({
           {onLogout && (
             <button 
               onClick={onLogout}
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider"
+              className="flex items-center gap-2 text-zinc-500 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider"
             >
               <LogOut className="w-4 h-4" />
               Sair do Plano
@@ -155,13 +155,13 @@ const Dashboard = ({
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5 }}
-            className="lg:col-span-5 glass rounded-3xl p-8 shadow-card h-fit"
+            className="lg:col-span-5 bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm h-fit"
           >
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative group">
-                <Avatar key={localAvatarUrl} className="w-32 h-32 border-4 border-white dark:border-zinc-800 shadow-xl overflow-hidden">
+                <Avatar key={localAvatarUrl} className="w-32 h-32 border-4 border-zinc-50 shadow-md overflow-hidden">
                   <AvatarImage src={localAvatarUrl} alt={name} className="object-cover w-full h-full" />
-                  <AvatarFallback className="bg-secondary text-primary text-3xl font-bold">
+                  <AvatarFallback className="bg-zinc-100 text-primary text-3xl font-bold">
                     {name.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -173,42 +173,42 @@ const Dashboard = ({
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold text-foreground">{name}</h2>
-                <p className="text-sm text-muted-foreground">Plano Nutricional Gratuito</p>
+                <h2 className="text-2xl font-bold text-zinc-900">{name}</h2>
+                <p className="text-sm text-zinc-500">Plano Nutricional Gratuito</p>
               </div>
 
-              <div className="w-full grid grid-cols-2 gap-4 text-sm border-y border-border py-6">
+              <div className="w-full grid grid-cols-2 gap-4 text-sm border-y border-zinc-100 py-6">
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Idade</span>
-                  <p className="font-bold text-foreground">{age} anos</p>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Idade</span>
+                  <p className="font-bold text-zinc-900">{age} anos</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Peso</span>
-                  <p className="font-bold text-foreground">{weight} kg</p>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Peso</span>
+                  <p className="font-bold text-zinc-900">{weight} kg</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Altura</span>
-                  <p className="font-bold text-foreground">{(height / 100).toFixed(2).replace(".", ",")} m</p>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Altura</span>
+                  <p className="font-bold text-zinc-900">{(height / 100).toFixed(2).replace(".", ",")} m</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Sexo</span>
-                  <p className="font-bold text-foreground">{sex === "male" ? "Masculino" : "Feminino"}</p>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Sexo</span>
+                  <p className="font-bold text-zinc-900">{sex === "male" ? "Masculino" : "Feminino"}</p>
                 </div>
               </div>
 
               <div className="w-full text-left space-y-4">
                 <div>
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-2">Atividade Física</span>
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-2">Atividade Física</span>
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-zinc-50 border border-zinc-100">
                     <Activity className="w-4 h-4 text-primary" />
-                    <p className="text-sm font-bold text-foreground">{activityLabel}</p>
+                    <p className="text-sm font-bold text-zinc-900">{activityLabel}</p>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-2">Objetivo Semanal</span>
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/10 border border-accent/20">
-                    <Target className="w-4 h-4 text-accent" />
-                    <p className="text-sm font-bold text-foreground">{goalLabel}</p>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-2">Objetivo Semanal</span>
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-orange-50 border border-orange-100">
+                    <Target className="w-4 h-4 text-orange-600" />
+                    <p className="text-sm font-bold text-zinc-900">{goalLabel}</p>
                   </div>
                 </div>
               </div>
@@ -220,13 +220,13 @@ const Dashboard = ({
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-primary/5 via-secondary/20 to-primary/5 border border-primary/20 shadow-sm relative group"
+                className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-zinc-50 border border-zinc-200 shadow-sm"
               >
-                <span className="text-xl drop-shadow-sm">💎</span>
-                <h2 className="text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-600 to-primary uppercase tracking-tight text-center">
+                <span className="text-xl">🥗</span>
+                <h2 className="text-lg md:text-xl font-black text-zinc-900 uppercase tracking-tight text-center">
                   Seu Planejamento Nutricional
                 </h2>
-                <span className="text-xl drop-shadow-sm">✨</span>
+                <span className="text-xl">✨</span>
               </motion.div>
             </div>
 
@@ -237,20 +237,20 @@ const Dashboard = ({
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="glass rounded-3xl p-8 shadow-card"
+              className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm"
             >
               <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
                 <Flame className="w-5 h-5" /> Energia & Hidratação
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground font-medium">Meta Diária de Calorias</span>
+                  <span className="text-sm text-zinc-500 font-medium">Meta Diária de Calorias</span>
                   <p className="text-4xl font-black text-primary leading-none">
                     {metaCalorias.toLocaleString("pt-BR", { minimumFractionDigits: 0 })} <span className="text-lg font-bold">kcal</span>
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground font-medium">Ingestão de Água Diária</span>
+                  <span className="text-sm text-zinc-500 font-medium">Ingestão de Água Diária</span>
                   <p className="text-4xl font-black text-primary leading-none">
                     {metaAgua} <span className="text-lg font-bold">ml</span>
                   </p>
@@ -262,23 +262,23 @@ const Dashboard = ({
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="glass rounded-3xl p-8 shadow-card"
+              className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm"
             >
               <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
                 <Zap className="w-5 h-5" /> Macronutrientes (Meta Diária)
               </h3>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Proteína</span>
-                  <p className="text-2xl font-black text-foreground">{proteina}g</p>
+                <div className="bg-zinc-50 rounded-2xl border border-zinc-100 p-5 text-center">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-2">Proteína</span>
+                  <p className="text-2xl font-black text-zinc-900">{proteina}g</p>
                 </div>
-                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Carbo</span>
-                  <p className="text-2xl font-black text-foreground">{carbo}g</p>
+                <div className="bg-zinc-50 rounded-2xl border border-zinc-100 p-5 text-center">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-2">Carbo</span>
+                  <p className="text-2xl font-black text-zinc-900">{carbo}g</p>
                 </div>
-                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Gordura</span>
-                  <p className="text-2xl font-black text-foreground">{gordura}g</p>
+                <div className="bg-zinc-50 rounded-2xl border border-zinc-100 p-5 text-center">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-2">Gordura</span>
+                  <p className="text-2xl font-black text-zinc-900">{gordura}g</p>
                 </div>
               </div>
             </motion.div>
@@ -287,15 +287,15 @@ const Dashboard = ({
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="glass rounded-3xl p-8 shadow-card space-y-6"
+              className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm space-y-6"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-amber-600">
+                  <div className="flex items-center gap-2 text-orange-600">
                     <ShieldAlert className="w-4 h-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
                   </div>
-                  <p className="text-sm font-medium text-foreground bg-amber-500/5 p-4 rounded-2xl border border-amber-500/10 min-h-[80px]">
+                  <p className="text-sm font-medium text-zinc-700 bg-orange-50 p-4 rounded-2xl border border-orange-100 min-h-[80px]">
                     {restrictions || "Nenhuma restrição informada."}
                   </p>
                 </div>
@@ -304,7 +304,7 @@ const Dashboard = ({
                     <Heart className="w-4 h-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
                   </div>
-                  <p className="text-sm font-medium text-foreground bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/10 min-h-[80px]">
+                  <p className="text-sm font-medium text-zinc-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 min-h-[80px]">
                     {preferences || "Nenhuma preferência informada."}
                   </p>
                 </div>
@@ -317,20 +317,20 @@ const Dashboard = ({
           {cardapio && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-card border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
                   <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Cardápio Personalizado
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
-                <div className="sticky top-0 bg-background border-b border-border p-6 flex items-center justify-between z-10">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
+                <div className="sticky top-0 bg-white border-b border-zinc-100 p-6 flex items-center justify-between z-10">
                   <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <Utensils className="w-6 h-6" />
                     Cardápio Personalizado
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
+                  <div className="whitespace-pre-wrap text-base text-zinc-700 leading-relaxed font-medium bg-zinc-50 p-8 rounded-2xl border border-zinc-100 shadow-inner">
                     {renderFormattedText(cardapio)}
                   </div>
                 </div>
@@ -341,20 +341,20 @@ const Dashboard = ({
           {lista && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-card border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
                   <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Lista de Compras
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
-                <div className="sticky top-0 bg-background border-b border-border p-6 flex items-center justify-between z-10">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
+                <div className="sticky top-0 bg-white border-b border-zinc-100 p-6 flex items-center justify-between z-10">
                   <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <ClipboardList className="w-6 h-6" />
                     Lista de Compras
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
+                  <div className="whitespace-pre-wrap text-base text-zinc-700 leading-relaxed font-medium bg-zinc-50 p-8 rounded-2xl border border-zinc-100 shadow-inner">
                     {renderFormattedText(lista)}
                   </div>
                 </div>
@@ -367,7 +367,7 @@ const Dashboard = ({
           <PricingSection />
 
           <div className="text-center">
-            <p className="text-xs text-muted-foreground font-bold italic tracking-wider uppercase">
+            <p className="text-xs text-zinc-400 font-bold italic tracking-wider uppercase">
               Ou continue com o seu acesso atual
             </p>
           </div>
@@ -381,8 +381,8 @@ const Dashboard = ({
             whileTap={!isBlocked ? { scale: 0.98 } : {}}
             className={`block w-full rounded-3xl p-6 transition-all duration-300 ${
               isBlocked 
-                ? "bg-zinc-800 text-zinc-400 border border-zinc-700" 
-                : "bg-whatsapp text-whatsapp-foreground shadow-whatsapp animate-pulse-glow"
+                ? "bg-zinc-100 text-zinc-400 border border-zinc-200" 
+                : "bg-whatsapp text-whatsapp-foreground shadow-whatsapp"
             }`}
           >
             <div className="flex flex-col items-center gap-4">

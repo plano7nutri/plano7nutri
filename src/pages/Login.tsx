@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from "next-themes";
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +10,7 @@ import { toast } from 'sonner';
 const Login = () => {
   const { session } = useAuth();
   const navigate = useNavigate();
-  // Novos estados: login, forgot_password e agora update_password
+  const { setTheme } = useTheme();
   const [view, setView] = useState<'login' | 'forgot_password' | 'update_password'>('login');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -17,8 +18,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Forçar Modo Claro no Login
   useEffect(() => {
-    // Detecta se o usuário veio pelo link de recuperação de senha
+    setTheme("light");
+  }, [setTheme]);
+
+  useEffect(() => {
     if (window.location.hash.includes('type=recovery')) {
       setView('update_password');
     } else if (session && view !== 'update_password') {
@@ -90,12 +95,12 @@ const Login = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass rounded-2xl p-8 shadow-card border border-primary/10"
+        className="w-full max-w-md bg-white rounded-2xl p-8 shadow-card border border-zinc-200"
       >
         {view !== 'update_password' && (
           <button 
             onClick={() => view === 'login' ? navigate('/') : setView('login')}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 transition-colors font-medium"
+            className="flex items-center gap-2 text-sm text-zinc-500 hover:text-primary mb-8 transition-colors font-medium"
           >
             <ArrowLeft size={16} /> {view === 'login' ? 'Voltar para o início' : 'Voltar para o login'}
           </button>
@@ -105,12 +110,12 @@ const Login = () => {
           <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
             <Zap className="text-primary w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">
+          <h1 className="text-2xl font-bold text-zinc-900">
             {view === 'login' && 'Área do Assinante'}
             {view === 'forgot_password' && 'Recuperar Senha'}
             {view === 'update_password' && 'Nova Senha'}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-zinc-500 mt-1">
             {view === 'login' && 'Acesse seu planejamento elite completo.'}
             {view === 'forgot_password' && 'Enviaremos um link de acesso para o seu e-mail.'}
             {view === 'update_password' && 'Crie uma nova senha segura para o seu acesso.'}
@@ -121,49 +126,49 @@ const Login = () => {
           {view === 'login' && (
             <motion.form key="login" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleLogin} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">E-mail</label>
-                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-card outline-none" />
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">E-mail</label>
+                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
               <div className="relative">
-                <label className="block text-sm font-semibold text-foreground mb-1.5">Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-card outline-none" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-[38px] text-muted-foreground">{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}</button>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Senha</label>
+                <input type={showPassword ? "text" : "password"} required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-[38px] text-zinc-400">{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}</button>
               </div>
-              <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold">{loading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : "Entrar agora"}</button>
+              <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : "Entrar agora"}</button>
             </motion.form>
           )}
 
           {view === 'forgot_password' && (
             <motion.form key="forgot" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleResetPassword} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">E-mail de Cadastro</label>
-                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-card outline-none" />
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">E-mail de Cadastro</label>
+                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
-              <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Mail size={20} /> Enviar Link</>}</button>
+              <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Mail size={20} /> Enviar Link</>}</button>
             </motion.form>
           )}
 
           {view === 'update_password' && (
             <motion.form key="update" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleUpdatePassword} className="space-y-5">
               <div className="relative">
-                <label className="block text-sm font-semibold text-foreground mb-1.5">Nova Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-card outline-none" />
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Nova Senha</label>
+                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">Confirmar Nova Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Repita a nova senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-card outline-none" />
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Confirmar Nova Senha</label>
+                <input type={showPassword ? "text" : "password"} required placeholder="Repita a nova senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
-              <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Lock size={20} /> Salvar Nova Senha</>}</button>
+              <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Lock size={20} /> Salvar Nova Senha</>}</button>
             </motion.form>
           )}
         </AnimatePresence>
 
         {view !== 'update_password' && (
-          <div className="mt-8 text-center pt-6 border-t border-border">
+          <div className="mt-8 text-center pt-6 border-t border-zinc-100">
             {view === 'login' ? (
               <>
-                <p className="text-sm text-muted-foreground">Não tem conta? <button onClick={() => navigate('/', { state: { view: 'onboarding' } })} className="text-primary font-bold hover:underline">Teste grátis</button></p>
-                <button onClick={() => setView('forgot_password')} className="text-xs text-muted-foreground hover:text-foreground mt-4 block mx-auto transition-colors">Esqueceu sua senha?</button>
+                <p className="text-sm text-zinc-500">Não tem conta? <button onClick={() => navigate('/cadastro')} className="text-primary font-bold hover:underline">Teste grátis</button></p>
+                <button onClick={() => setView('forgot_password')} className="text-xs text-zinc-400 hover:text-zinc-600 mt-4 block mx-auto transition-colors">Esqueceu sua senha?</button>
               </>
             ) : (
               <button onClick={() => setView('login')} className="text-sm text-primary font-bold hover:underline">Voltar para o Login</button>
