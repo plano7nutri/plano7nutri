@@ -6,7 +6,6 @@
 
 @layer base {
   :root {
-    /* PADRÃO É CLARO (O QUE ESTAVA ANTES) */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
@@ -35,11 +34,14 @@
     --input: 240 5.9% 90%;
     --ring: 160 60% 38%;
 
+    /* WHATSAPP COLORS */
+    --whatsapp: 142 70% 49%;
+    --whatsapp-foreground: 0 0% 100%;
+
     --radius: 1rem;
   }
 
   .dark {
-    /* MODO ESCURO (OPCIONAL PARA PREMIUM / FORÇADO PARA FREE) */
     --background: 160 60% 4%;
     --foreground: 0 0% 98%;
 
@@ -67,6 +69,9 @@
     --border: 160 60% 15%;
     --input: 160 60% 15%;
     --ring: 160 60% 45%;
+    
+    --whatsapp: 142 70% 49%;
+    --whatsapp-foreground: 0 0% 100%;
   }
 }
 
@@ -92,6 +97,10 @@
 
   .shadow-glow {
     box-shadow: 0 0 30px hsla(160, 60%, 38%, 0.15);
+  }
+
+  .shadow-whatsapp {
+    box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
   }
 
   @keyframes pulse-glow {

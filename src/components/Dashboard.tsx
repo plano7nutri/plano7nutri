@@ -52,15 +52,12 @@ const Dashboard = ({
   const [isUploading, setIsUploading] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
 
-  // Dashboard Gratuito agora é Modo Claro
   useEffect(() => {
     setTheme("light");
   }, [setTheme]);
 
   useEffect(() => {
-    if (avatarUrl) {
-      setLocalAvatarUrl(avatarUrl);
-    }
+    if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
   const renderFormattedText = (text: string | null | undefined) => {
@@ -111,14 +108,12 @@ const Dashboard = ({
       if (updateError) throw updateError;
 
       setLocalAvatarUrl(timestampedUrl);
-      toast.success("Foto atualizada com sucesso!");
+      toast.success("Foto atualizada!");
       if (onAvatarUpdate) onAvatarUpdate();
     } catch (error: any) {
-      console.error("Erro no upload:", error);
       toast.error("Falha ao subir foto.");
     } finally {
       setIsUploading(false);
-      event.target.value = "";
     }
   };
 
@@ -128,7 +123,7 @@ const Dashboard = ({
   const handleWhatsAppClick = (e: React.MouseEvent) => {
     if (isBlocked) {
       e.preventDefault();
-      toast.error("Seu plano gratuito já foi entregue. Faça o upgrade para novos planos!");
+      toast.error("Seu plano gratuito já foi entregue.");
     }
   };
 
@@ -143,7 +138,7 @@ const Dashboard = ({
               className="flex items-center gap-2 text-zinc-500 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider"
             >
               <LogOut className="w-4 h-4" />
-              Sair do Plano
+              Sair
             </button>
           )}
         </div>
@@ -154,19 +149,18 @@ const Dashboard = ({
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5 }}
             className="lg:col-span-5 bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm h-fit"
           >
             <div className="flex flex-col items-center text-center space-y-6">
-              <div className="relative group">
-                <Avatar key={localAvatarUrl} className="w-32 h-32 border-4 border-zinc-50 shadow-md overflow-hidden">
-                  <AvatarImage src={localAvatarUrl} alt={name} className="object-cover w-full h-full" />
+              <div className="relative">
+                <Avatar className="w-32 h-32 border-4 border-zinc-50 shadow-md">
+                  <AvatarImage src={localAvatarUrl} alt={name} className="object-cover" />
                   <AvatarFallback className="bg-zinc-100 text-primary text-3xl font-bold">
-                    {name.substring(0, 2).toUpperCase()}
+                    {name?.substring(0, 2).toUpperCase() || "??"}
                   </AvatarFallback>
                 </Avatar>
                 
-                <label className="absolute bottom-1 right-1 p-3 bg-primary text-white rounded-full cursor-pointer shadow-md hover:bg-primary/90 transition-all hover:scale-110 duration-200">
+                <label className="absolute bottom-1 right-1 p-3 bg-primary text-white rounded-full cursor-pointer shadow-md hover:scale-110 transition-transform">
                   {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
                   <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
                 </label>
@@ -174,7 +168,7 @@ const Dashboard = ({
 
               <div>
                 <h2 className="text-2xl font-bold text-zinc-900">{name}</h2>
-                <p className="text-sm text-zinc-500">Plano Nutricional Gratuito</p>
+                <p className="text-sm text-zinc-500">Membro Plano 7</p>
               </div>
 
               <div className="w-full grid grid-cols-2 gap-4 text-sm border-y border-zinc-100 py-6">
@@ -197,211 +191,113 @@ const Dashboard = ({
               </div>
 
               <div className="w-full text-left space-y-4">
-                <div>
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-2">Atividade Física</span>
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-zinc-50 border border-zinc-100">
-                    <Activity className="w-4 h-4 text-primary" />
-                    <p className="text-sm font-bold text-zinc-900">{activityLabel}</p>
-                  </div>
+                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Atividade</span>
+                  <p className="text-sm font-bold text-zinc-900">{activityLabel}</p>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-2">Objetivo Semanal</span>
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-orange-50 border border-orange-100">
-                    <Target className="w-4 h-4 text-orange-600" />
-                    <p className="text-sm font-bold text-zinc-900">{goalLabel}</p>
-                  </div>
+                <div className="p-3 rounded-xl bg-orange-50 border border-orange-100">
+                  <span className="text-[10px] font-bold text-orange-600 uppercase block mb-1">Objetivo</span>
+                  <p className="text-sm font-bold text-zinc-900">{goalLabel}</p>
                 </div>
               </div>
             </div>
           </motion.div>
 
           <div className="lg:col-span-7 space-y-6">
-            <div className="flex flex-col items-center mb-2">
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-zinc-50 border border-zinc-200 shadow-sm"
-              >
-                <span className="text-xl">🥗</span>
-                <h2 className="text-lg md:text-xl font-black text-zinc-900 uppercase tracking-tight text-center">
-                  Seu Planejamento Nutricional
-                </h2>
-                <span className="text-xl">✨</span>
-              </motion.div>
-            </div>
-
-            {/* Frase de Impacto Dinâmica */}
             <ImpactPhrase goal={goalLabel} />
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm"
-            >
-              <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
-                <Flame className="w-5 h-5" /> Energia & Hidratação
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <span className="text-sm text-zinc-500 font-medium">Meta Diária de Calorias</span>
-                  <p className="text-4xl font-black text-primary leading-none">
-                    {metaCalorias.toLocaleString("pt-BR", { minimumFractionDigits: 0 })} <span className="text-lg font-bold">kcal</span>
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <span className="text-sm text-zinc-500 font-medium">Ingestão de Água Diária</span>
-                  <p className="text-4xl font-black text-primary leading-none">
-                    {metaAgua} <span className="text-lg font-bold">ml</span>
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
+                  <Flame size={16} /> Calorias Diárias
+                </h3>
+                <p className="text-3xl font-black text-zinc-900">
+                  {metaCalorias} <span className="text-sm font-bold text-zinc-400">kcal</span>
+                </p>
               </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm"
-            >
-              <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
-                <Zap className="w-5 h-5" /> Macronutrientes (Meta Diária)
-              </h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-zinc-50 rounded-2xl border border-zinc-100 p-5 text-center">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-2">Proteína</span>
-                  <p className="text-2xl font-black text-zinc-900">{proteina}g</p>
-                </div>
-                <div className="bg-zinc-50 rounded-2xl border border-zinc-100 p-5 text-center">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-2">Carbo</span>
-                  <p className="text-2xl font-black text-zinc-900">{carbo}g</p>
-                </div>
-                <div className="bg-zinc-50 rounded-2xl border border-zinc-100 p-5 text-center">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-2">Gordura</span>
-                  <p className="text-2xl font-black text-zinc-900">{gordura}g</p>
-                </div>
+              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-blue-500 mb-4 flex items-center gap-2">
+                  <Zap size={16} /> Água
+                </h3>
+                <p className="text-3xl font-black text-zinc-900">
+                  {metaAgua} <span className="text-sm font-bold text-zinc-400">ml</span>
+                </p>
               </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm space-y-6"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-orange-600">
-                    <ShieldAlert className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
-                  </div>
-                  <p className="text-sm font-medium text-zinc-700 bg-orange-50 p-4 rounded-2xl border border-orange-100 min-h-[80px]">
-                    {restrictions || "Nenhuma restrição informada."}
-                  </p>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-primary">
-                    <Heart className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
-                  </div>
-                  <p className="text-sm font-medium text-zinc-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 min-h-[80px]">
-                    {preferences || "Nenhuma preferência informada."}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {cardapio && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
-                  <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  Ver Cardápio Personalizado
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
-                <div className="sticky top-0 bg-white border-b border-zinc-100 p-6 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-3 text-primary font-bold text-xl">
-                    <Utensils className="w-6 h-6" />
-                    Cardápio Personalizado
-                  </div>
-                </div>
-                <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-zinc-700 leading-relaxed font-medium bg-zinc-50 p-8 rounded-2xl border border-zinc-100 shadow-inner">
-                    {renderFormattedText(cardapio)}
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
-
-          {lista && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
-                  <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  Ver Lista de Compras
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
-                <div className="sticky top-0 bg-white border-b border-zinc-100 p-6 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-3 text-primary font-bold text-xl">
-                    <ClipboardList className="w-6 h-6" />
-                    Lista de Compras
-                  </div>
-                </div>
-                <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-zinc-700 leading-relaxed font-medium bg-zinc-50 p-8 rounded-2xl border border-zinc-100 shadow-inner">
-                    {renderFormattedText(lista)}
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
-
-        <div className="mt-12 space-y-12">
-          <PricingSection />
-
-          <div className="text-center">
-            <p className="text-xs text-zinc-400 font-bold italic tracking-wider uppercase">
-              Ou continue com o seu acesso atual
-            </p>
-          </div>
-
-          <motion.a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleWhatsAppClick}
-            whileHover={!isBlocked ? { scale: 1.02, y: -5 } : {}}
-            whileTap={!isBlocked ? { scale: 0.98 } : {}}
-            className={`block w-full rounded-3xl p-6 transition-all duration-300 ${
-              isBlocked 
-                ? "bg-zinc-100 text-zinc-400 border border-zinc-200" 
-                : "bg-whatsapp text-whatsapp-foreground shadow-whatsapp"
-            }`}
-          >
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex items-center justify-center gap-3">
-                {isBlocked ? <CheckCircle2 className="w-6 h-6 text-emerald-500" /> : <MessageCircle className="w-6 h-6" />}
-                <span className="text-xl font-black uppercase tracking-tight">
-                  {isBlocked ? "Plano Gratuito Entregue" : "Receber Meu Plano Grátis Agora"}
-                </span>
-              </div>
-              <p className="text-xs font-medium opacity-90 text-center max-w-lg">
-                {isBlocked 
-                  ? "Seu cardápio de 7 dias já foi enviado para seu WhatsApp. Faça o upgrade para novos planos!"
-                  : "Seu cardápio de 7 dias e lista de compras serão gerados instantaneamente e enviados para seu celular."}
-              </p>
             </div>
-          </motion.a>
 
-          <FAQSection />
+            <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
+              <h3 className="text-sm font-bold text-zinc-900 mb-6 uppercase tracking-widest">Macronutrientes</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-zinc-50 rounded-2xl p-4 text-center">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Prot</span>
+                  <p className="text-xl font-black text-zinc-900">{proteina}g</p>
+                </div>
+                <div className="bg-zinc-50 rounded-2xl p-4 text-center">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carb</span>
+                  <p className="text-xl font-black text-zinc-900">{carbo}g</p>
+                </div>
+                <div className="bg-zinc-50 rounded-2xl p-4 text-center">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gord</span>
+                  <p className="text-xl font-black text-zinc-900">{gordura}g</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+              {cardapio && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="w-full bg-white border-2 border-primary/20 p-5 rounded-2xl text-primary font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
+                      <Utensils size={20} /> Ver Cardápio
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader><DialogTitle>Meu Cardápio de 7 Dias</DialogTitle></DialogHeader>
+                    <div className="whitespace-pre-wrap text-zinc-700 bg-zinc-50 p-6 rounded-xl border">{renderFormattedText(cardapio)}</div>
+                  </DialogContent>
+                </Dialog>
+              )}
+              {lista && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="w-full bg-white border-2 border-primary/20 p-5 rounded-2xl text-primary font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
+                      <ClipboardList size={20} /> Ver Lista
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader><DialogTitle>Lista de Compras</DialogTitle></DialogHeader>
+                    <div className="whitespace-pre-wrap text-zinc-700 bg-zinc-50 p-6 rounded-xl border">{renderFormattedText(lista)}</div>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+
+            <motion.a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleWhatsAppClick}
+              whileHover={!isBlocked ? { scale: 1.02 } : {}}
+              whileTap={!isBlocked ? { scale: 0.98 } : {}}
+              className={`block w-full rounded-2xl p-6 text-center transition-all shadow-whatsapp mt-6 ${
+                isBlocked ? "bg-zinc-100 text-zinc-400" : "bg-whatsapp text-white"
+              }`}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-3">
+                  {isBlocked ? <Lock size={20} /> : <MessageCircle size={24} />}
+                  <span className="text-xl font-black uppercase tracking-tight">
+                    {isBlocked ? "Acesso Grátis Finalizado" : "Receber Plano no WhatsApp"}
+                  </span>
+                </div>
+                {!isBlocked && <p className="text-xs font-medium opacity-90">Clique para enviar seu planejamento agora!</p>}
+              </div>
+            </motion.a>
+          </div>
         </div>
+
+        <PricingSection />
+        <FAQSection />
       </div>
     </div>
   );
