@@ -21,7 +21,6 @@ import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
-import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -272,7 +271,6 @@ const PremiumDashboard = ({
               )}
             </div>
             <div className="flex items-center gap-4">
-              <ThemeToggle />
               {user?.email === ADMIN_EMAIL && !isAdminView && (
                 <button 
                   onClick={() => navigate('/cadastroadmin')}
