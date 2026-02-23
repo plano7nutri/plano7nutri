@@ -8,6 +8,8 @@ import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWi
 import { Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
+const ADMIN_EMAIL = "robson_cruz@live.com";
+
 const activityFactors: Record<string, number> = {
   "Sedentário": 1.2,
   "Levemente ativo": 1.375,
@@ -42,8 +44,8 @@ const DashboardPago = () => {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Se houver dados no state (vindo do Admin), usamos eles
-  const adminViewData = location.state?.adminViewData;
+  // Segurança: Só aceita adminViewData se o usuário logado for o Robson
+  const adminViewData = (user?.email === ADMIN_EMAIL) ? location.state?.adminViewData : null;
 
   const { data: userData, isLoading: dataLoading } = useQuery({
     queryKey: ["premiumUser", adminViewData?.id || user?.id],
