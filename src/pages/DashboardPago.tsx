@@ -197,17 +197,6 @@ const DashboardPago = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#051c14]">
-      {adminViewData && (
-        <div className="bg-amber-500 text-amber-950 py-2 px-6 flex items-center justify-between font-bold text-xs uppercase tracking-widest">
-          <div className="flex items-center gap-2">
-            <ShieldAlert size={16} />
-            Modo Visualização Admin: Vendo dados de {userData.nome}
-          </div>
-          <button onClick={() => navigate('/cadastroadmin')} className="flex items-center gap-1 hover:underline">
-            <ArrowLeft size={14} /> Voltar ao Painel
-          </button>
-        </div>
-      )}
       <main className="flex-1">
         <PremiumDashboard
           name={userData.nome}
@@ -239,6 +228,7 @@ const DashboardPago = () => {
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}
           lastUpdateDate={userData.created_at} 
+          isAdminView={!!adminViewData}
         />
       </main>
     </div>
