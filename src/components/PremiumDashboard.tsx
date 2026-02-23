@@ -74,7 +74,6 @@ const PremiumDashboard = ({
 
   const renderFormattedText = (text: string | null | undefined) => {
     if (!text) return null;
-    // Regex para capturar texto entre asteriscos simples: *texto*
     const parts = text.split(/(\*.*?\*)/g);
     return parts.map((part, i) => {
       if (part.startsWith('*') && part.endsWith('*')) {
@@ -447,6 +446,35 @@ const PremiumDashboard = ({
             </div>
           </motion.div>
         </div>
+
+        {/* Nova Seção de Restrições e Preferências Premium */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm space-y-6 mb-8"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-amber-500">
+                <ShieldAlert className="w-4 h-4" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Restrições Elite</span>
+              </div>
+              <p className="text-sm font-medium text-zinc-300 bg-black/20 p-5 rounded-2xl border border-white/5 min-h-[100px]">
+                {restrictions || "Nenhuma restrição informada."}
+              </p>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-emerald-400">
+                <Heart className="w-4 h-4" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Preferências Elite</span>
+              </div>
+              <p className="text-sm font-medium text-zinc-300 bg-black/20 p-5 rounded-2xl border border-white/5 min-h-[100px]">
+                {preferences || "Nenhuma preferência informada."}
+              </p>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Seção Premium de Cardápio e Lista com Popups (Dialog) */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">

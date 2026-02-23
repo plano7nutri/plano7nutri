@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -57,7 +57,6 @@ const Dashboard = ({
 
   const renderFormattedText = (text: string | null | undefined) => {
     if (!text) return null;
-    // Regex para capturar texto entre asteriscos simples: *texto*
     const parts = text.split(/(\*.*?\*)/g);
     return parts.map((part, i) => {
       if (part.startsWith('*') && part.endsWith('*')) {
@@ -269,6 +268,35 @@ const Dashboard = ({
                 <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Gordura</span>
                   <p className="text-2xl font-black text-foreground">{gordura}g</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Nova Seção de Restrições e Preferências */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="glass rounded-3xl p-8 shadow-card space-y-6"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-amber-600">
+                    <ShieldAlert className="w-4 h-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
+                  </div>
+                  <p className="text-sm font-medium text-foreground bg-amber-50/50 p-4 rounded-2xl border border-amber-100 min-h-[80px]">
+                    {restrictions || "Nenhuma restrição informada."}
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-primary">
+                    <Heart className="w-4 h-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
+                  </div>
+                  <p className="text-sm font-medium text-foreground bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 min-h-[80px]">
+                    {preferences || "Nenhuma preferência informada."}
+                  </p>
                 </div>
               </div>
             </motion.div>
