@@ -161,6 +161,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-10">
       <div className="w-full max-w-md mx-auto">
+        {/* Logo Section */}
+        <div className="flex justify-center mb-8">
+          <img 
+            src="/logo-plano7.png" 
+            alt="Plano 7 Logo" 
+            className="h-24 w-auto object-contain"
+          />
+        </div>
+
         <div className="flex items-center gap-2 mb-10">
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
             <div
@@ -235,7 +244,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     <div className="mt-2 flex items-start gap-2 text-destructive">
                       <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                       <p className="text-xs font-semibold leading-tight">
-                        O WhatsApp deve ser verdadeiro para ativação do sistema.
+                        O WhatsApp deve ser verdadeira para ativação do sistema.
                       </p>
                     </div>
                   )}
