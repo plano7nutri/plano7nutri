@@ -19,6 +19,8 @@ import PremiumEditForm from "./PremiumEditForm";
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
+import ImpactPhrase from "./ImpactPhrase";
+import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -219,7 +221,7 @@ const PremiumDashboard = ({
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
   return (
-    <div className="min-h-screen bg-[#051c14] text-zinc-100 px-6 py-10">
+    <div className="min-h-screen bg-background text-foreground px-6 py-10 transition-colors duration-300">
       <div className="w-full max-w-4xl mx-auto">
         
         {isBlocked && !isAdminView && (
@@ -233,7 +235,7 @@ const PremiumDashboard = ({
             </div>
             <div className="space-y-1">
               <h3 className="text-red-500 font-black uppercase tracking-widest text-xs">Acesso Restrito</h3>
-              <p className="text-sm sm:text-base font-medium text-zinc-100 leading-tight">
+              <p className="text-sm sm:text-base font-medium leading-tight">
                 {isSubscriptionInactive 
                   ? (tipo_assinatura === "Mensal" 
                       ? "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."
@@ -264,7 +266,9 @@ const PremiumDashboard = ({
               )}
             </div>
             <div className="flex items-center gap-4">
-              {/* Botão Admin só aparece se NÃO for uma visualização de outro usuário */}
+              {/* Seletor de Tema Premium */}
+              <ThemeToggle isPremium={true} />
+
               {user?.email === ADMIN_EMAIL && !isAdminView && (
                 <button 
                   onClick={() => navigate('/cadastroadmin')}
@@ -277,7 +281,7 @@ const PremiumDashboard = ({
               {onLogout && (
                 <button 
                   onClick={onLogout}
-                  className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-xs font-bold uppercase tracking-wider"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -286,14 +290,14 @@ const PremiumDashboard = ({
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-zinc-900/50 border border-emerald-500/10 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-secondary/50 border border-border backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${isBlocked ? 'bg-zinc-800' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
                 {isBlocked ? <Lock className="w-5 h-5 text-zinc-500" /> : canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
               </div>
               <div>
-                <h4 className="text-sm font-bold text-zinc-100">Controle de Atualização</h4>
-                <p className="text-xs text-zinc-400">
+                <h4 className="text-sm font-bold">Controle de Atualização</h4>
+                <p className="text-xs text-muted-foreground">
                   {isBlocked 
                     ? "Atualização bloqueada. Assinatura Inativa."
                     : canEdit() 
@@ -307,7 +311,7 @@ const PremiumDashboard = ({
               disabled={(!canEdit() || isBlocked) && !isAdminView}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
                 isAdminView || (!isBlocked && canEdit()) 
-                  ? "bg-emerald-50 text-emerald-950 hover:bg-emerald-400 shadow-glow" 
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow" 
                   : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700"
               }`}
             >
@@ -320,7 +324,7 @@ const PremiumDashboard = ({
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/40 to-zinc-900/80 border border-emerald-500/20 p-10 shadow-2xl mb-12 backdrop-blur-xl"
+          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/20 to-secondary/40 border border-primary/10 p-10 shadow-2xl mb-12 backdrop-blur-xl"
         >
           <div className="absolute top-0 right-0 p-6 opacity-10">
             <Star className="w-32 h-32 text-amber-400 rotate-12" />
@@ -329,9 +333,9 @@ const PremiumDashboard = ({
           <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-tr from-amber-400 to-emerald-400 rounded-full blur opacity-30 animate-pulse" />
-              <Avatar className="w-36 h-36 border-2 border-emerald-500/30 shadow-2xl">
+              <Avatar className="w-36 h-36 border-2 border-primary/30 shadow-2xl">
                 <AvatarImage src={localAvatarUrl} className="object-cover" />
-                <AvatarFallback className="bg-emerald-950 text-emerald-400 text-3xl font-bold">
+                <AvatarFallback className="bg-secondary text-primary text-3xl font-bold">
                   {name ? name.substring(0, 2).toUpperCase() : "??"}
                 </AvatarFallback>
               </Avatar>
@@ -343,48 +347,48 @@ const PremiumDashboard = ({
 
             <div className="text-center md:text-left space-y-4">
               <div>
-                <h2 className="text-4xl font-black text-white mb-1 tracking-tight">{name || "Usuário"}</h2>
-                <p className="text-emerald-400/80 font-bold uppercase tracking-widest text-xs">Membro Elite • Plano {tipo_assinatura}</p>
+                <h2 className="text-4xl font-black mb-1 tracking-tight">{name || "Usuário"}</h2>
+                <p className="text-primary font-bold uppercase tracking-widest text-xs">Membro Elite • Plano {tipo_assinatura}</p>
               </div>
               
               <div className="flex flex-wrap justify-center md:justify-start gap-8 text-sm pt-2">
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] font-bold tracking-tighter uppercase">Sexo</span>
-                  <span className="font-bold text-zinc-100">{sex === "male" ? "Masculino" : "Feminino"}</span>
+                  <span className="text-muted-foreground text-[10px] font-bold tracking-tighter uppercase">Sexo</span>
+                  <span className="font-bold">{sex === "male" ? "Masculino" : "Feminino"}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Idade</span>
-                  <span className="font-bold text-zinc-100">{age || 0} anos</span>
+                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-tighter">Idade</span>
+                  <span className="font-bold">{age || 0} anos</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Altura</span>
-                  <span className="font-bold text-zinc-100">{(height ? height/100 : 0).toFixed(2)}m</span>
+                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-tighter">Altura</span>
+                  <span className="font-bold">{(height ? height/100 : 0).toFixed(2)}m</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-tighter">Peso</span>
-                  <span className="font-bold text-zinc-100">{weight || 0}kg</span>
+                  <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-tighter">Peso</span>
+                  <span className="font-bold">{weight || 0}kg</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-10 pt-10 border-t border-emerald-500/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-4 bg-emerald-950/30 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-emerald-950/40">
-              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+          <div className="mt-10 pt-10 border-t border-border grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center gap-4 bg-secondary/30 p-5 rounded-2xl border border-border transition-all hover:bg-secondary/40">
+              <div className="p-3 rounded-xl bg-primary/10 text-primary">
                 <Activity size={24} />
               </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1">Rotina Ativa</p>
-                <p className="text-base font-bold text-zinc-100">{activityLabel || "Não informado"}</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Rotina Ativa</p>
+                <p className="text-base font-bold">{activityLabel || "Não informado"}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-emerald-950/30 p-5 rounded-2xl border border-emerald-500/5 transition-all hover:bg-emerald-950/40">
-              <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+            <div className="flex items-center gap-4 bg-secondary/30 p-5 rounded-2xl border border-border transition-all hover:bg-secondary/40">
+              <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500">
                 <Target size={24} />
               </div>
               <div>
-                <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1">Foco Semanal</p>
-                <p className="text-base font-bold text-zinc-100">{goalLabel || "Não informado"}</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Foco Semanal</p>
+                <p className="text-base font-bold">{goalLabel || "Não informado"}</p>
               </div>
             </div>
           </div>
@@ -398,50 +402,52 @@ const PremiumDashboard = ({
           >
             <div className="absolute -inset-1 bg-amber-500/20 blur opacity-30 group-hover:opacity-50 transition-opacity" />
             <span className="text-2xl drop-shadow-sm">💎</span>
-            <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-emerald-100 to-amber-200 uppercase tracking-tighter text-center">
+            <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-emerald-500 to-amber-500 uppercase tracking-tighter text-center">
               Seu Planejamento Nutricional
             </h2>
             <span className="text-2xl drop-shadow-sm">✨</span>
           </motion.div>
         </div>
 
+        <ImpactPhrase goal={goalLabel} />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="bg-card border border-border rounded-3xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-8">
-              <div className="p-2.5 bg-emerald-500/10 rounded-xl"><Flame className="w-6 h-6 text-emerald-400" /></div>
-              <h3 className="text-xl font-bold text-zinc-100">Energia & Hidratação</h3>
+              <div className="p-2.5 bg-primary/10 rounded-xl"><Flame className="w-6 h-6 text-primary" /></div>
+              <h3 className="text-xl font-bold">Energia & Hidratação</h3>
             </div>
             <div className="space-y-8">
               <div className="flex justify-between items-end">
                 <div className="space-y-2">
-                  <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Meta de Queima</p>
-                  <p className="text-4xl font-black text-emerald-400 tracking-tighter">{(metaCalorias || 0).toLocaleString()} <span className="text-base font-bold text-zinc-500 uppercase tracking-normal">kcal</span></p>
+                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Meta de Queima</p>
+                  <p className="text-4xl font-black text-primary tracking-tighter">{(metaCalorias || 0).toLocaleString()} <span className="text-base font-bold text-muted-foreground uppercase tracking-normal">kcal</span></p>
                 </div>
                 <div className="text-right space-y-2">
-                  <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Água</p>
-                  <p className="text-3xl font-black text-blue-400 tracking-tighter">{metaAgua || 0} <span className="text-base font-bold text-zinc-500 uppercase tracking-normal">ml</span></p>
+                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Água</p>
+                  <p className="text-3xl font-black text-blue-500 tracking-tighter">{metaAgua || 0} <span className="text-base font-bold text-muted-foreground uppercase tracking-normal">ml</span></p>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-card border border-border rounded-3xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-8">
-              <div className="p-2.5 bg-amber-500/10 rounded-xl"><Zap className="w-6 h-6 text-amber-400" /></div>
-              <h3 className="text-xl font-bold text-zinc-100">Macro Distribuição</h3>
+              <div className="p-2.5 bg-amber-500/10 rounded-xl"><Zap className="w-6 h-6 text-amber-500" /></div>
+              <h3 className="text-xl font-bold">Macro Distribuição</h3>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/5 transition-colors hover:bg-emerald-950/30">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-3">Proteína</p>
-                <p className="text-3xl font-black text-zinc-100 tracking-tighter">{proteina || 0}g</p>
+              <div className="text-center p-5 rounded-2xl bg-secondary/20 border border-border transition-colors hover:bg-secondary/30">
+                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Proteína</p>
+                <p className="text-3xl font-black tracking-tighter">{proteina || 0}g</p>
               </div>
-              <div className="text-center p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/5 transition-colors hover:bg-emerald-950/30">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-3">Carbo</p>
-                <p className="text-3xl font-black text-zinc-100 tracking-tighter">{carbo || 0}g</p>
+              <div className="text-center p-5 rounded-2xl bg-secondary/20 border border-border transition-colors hover:bg-secondary/30">
+                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Carbo</p>
+                <p className="text-3xl font-black tracking-tighter">{carbo || 0}g</p>
               </div>
-              <div className="text-center p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/5 transition-colors hover:bg-emerald-950/30">
-                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-3">Gordura</p>
-                <p className="text-3xl font-black text-zinc-100 tracking-tighter">{gordura || 0}g</p>
+              <div className="text-center p-5 rounded-2xl bg-secondary/20 border border-border transition-colors hover:bg-secondary/30">
+                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Gordura</p>
+                <p className="text-3xl font-black tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
           </motion.div>
@@ -451,7 +457,7 @@ const PremiumDashboard = ({
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="bg-zinc-900/50 border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm space-y-6 mb-8"
+          className="bg-card border border-border rounded-3xl p-8 shadow-sm space-y-6 mb-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">
@@ -459,16 +465,16 @@ const PremiumDashboard = ({
                 <ShieldAlert className="w-4 h-4" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Restrições Elite</span>
               </div>
-              <p className="text-sm font-medium text-zinc-300 bg-black/20 p-5 rounded-2xl border border-white/5 min-h-[100px]">
+              <p className="text-sm font-medium text-muted-foreground bg-secondary/20 p-5 rounded-2xl border border-border min-h-[100px]">
                 {restrictions || "Nenhuma restrição informada."}
               </p>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-emerald-400">
+              <div className="flex items-center gap-2 text-primary">
                 <Heart className="w-4 h-4" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Preferências Elite</span>
               </div>
-              <p className="text-sm font-medium text-zinc-300 bg-black/20 p-5 rounded-2xl border border-white/5 min-h-[100px]">
+              <p className="text-sm font-medium text-muted-foreground bg-secondary/20 p-5 rounded-2xl border border-border min-h-[100px]">
                 {preferences || "Nenhuma preferência informada."}
               </p>
             </div>
@@ -479,20 +485,20 @@ const PremiumDashboard = ({
           {cardapio && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-zinc-900/50 border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                <button className="flex items-center justify-center gap-3 bg-card border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-lg group">
                   <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Cardápio Elite
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-[#051c14]">
-                <div className="sticky top-0 bg-[#051c14] border-b border-emerald-500/10 p-6 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-3 text-emerald-400 font-bold text-xl">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
+                <div className="sticky top-0 bg-background border-b border-border p-6 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <Utensils className="w-6 h-6" />
                     Cardápio Personalizado
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-8 rounded-2xl border border-white/5 shadow-inner">
+                  <div className="whitespace-pre-wrap text-base leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
                     {renderFormattedText(cardapio)}
                   </div>
                 </div>
@@ -503,20 +509,20 @@ const PremiumDashboard = ({
           {lista && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-zinc-900/50 border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                <button className="flex items-center justify-center gap-3 bg-card border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-lg group">
                   <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Lista de Compras
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-[#051c14]">
-                <div className="sticky top-0 bg-[#051c14] border-b border-emerald-500/10 p-6 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-3 text-emerald-400 font-bold text-xl">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
+                <div className="sticky top-0 bg-background border-b border-border p-6 flex items-center justify-between z-10">
+                  <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <ClipboardList className="w-6 h-6" />
                     Lista de Compras
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-zinc-200 leading-relaxed font-medium bg-black/30 p-8 rounded-2xl border border-white/5 shadow-inner">
+                  <div className="whitespace-pre-wrap text-base leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
                     {renderFormattedText(lista)}
                   </div>
                 </div>
@@ -549,13 +555,13 @@ const PremiumDashboard = ({
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-16 pt-16 border-t border-emerald-500/10"
+            className="mt-16 pt-16 border-t border-border"
           >
-            <PricingSection isDark={true} />
+            <PricingSection isDark={false} />
           </motion.div>
         )}
 
-        <FAQSection isDark={true} />
+        <FAQSection isDark={false} />
 
         <AnimatePresence>
           {isEditing && (
