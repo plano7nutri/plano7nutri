@@ -48,7 +48,7 @@ const AdminUserList = ({ users, type }: AdminUserListProps) => {
             <TableHead className="font-bold">WhatsApp</TableHead>
             <TableHead className="font-bold">Data</TableHead>
             {type === 'pago' && <TableHead className="font-bold">Plano</TableHead>}
-            <TableHead className="text-right font-bold">Ações</TableHead>
+            {type !== 'lead' && <TableHead className="text-right font-bold">Ações</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -84,17 +84,19 @@ const AdminUserList = ({ users, type }: AdminUserListProps) => {
                   </Badge>
                 </TableCell>
               )}
-              <TableCell className="text-right">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => handleViewDashboard(user)}
-                  className="gap-2 text-xs font-bold border-primary/20 text-primary hover:bg-primary/5"
-                >
-                  <Eye size={14} />
-                  Ver Dash
-                </Button>
-              </TableCell>
+              {type !== 'lead' && (
+                <TableCell className="text-right">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleViewDashboard(user)}
+                    className="gap-2 text-xs font-bold border-primary/20 text-primary hover:bg-primary/5"
+                  >
+                    <Eye size={14} />
+                    Ver Dash
+                  </Button>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
