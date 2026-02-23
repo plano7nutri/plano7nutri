@@ -6,57 +6,67 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 210 20% 12%;
+    /* Light Mode (Padrão do sistema, mas forçaremos Dark para Free) */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 12%;
+    --card-foreground: 240 10% 3.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 12%;
+    --popover-foreground: 240 10% 3.9%;
 
     --primary: 160 60% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 160 30% 95%;
-    --secondary-foreground: 160 60% 28%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 210 10% 50%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
     --accent: 25 90% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 210 15% 91%;
-    --input: 210 15% 91%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
     --ring: 160 60% 38%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
+  }
 
-    --whatsapp: 142 70% 49%;
-    --whatsapp-foreground: 0 0% 100%;
+  .dark {
+    /* Dark Mode (O padrão do app) */
+    --background: 160 60% 4%;
+    --foreground: 0 0% 98%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(160, 60%, 38%), hsl(170, 50%, 45%));
-    --gradient-hero: linear-gradient(135deg, hsl(160, 60%, 38%) 0%, hsl(170, 55%, 48%) 50%, hsl(25, 90%, 60%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsla(0, 0%, 100%, 0.8), hsla(0, 0%, 100%, 0.4));
+    --card: 160 60% 6%;
+    --card-foreground: 0 0% 98%;
 
-    --shadow-sm: 0 1px 2px 0 hsla(210, 20%, 12%, 0.04);
-    --shadow-md: 0 4px 16px -2px hsla(210, 20%, 12%, 0.06), 0 2px 4px -2px hsla(210, 20%, 12%, 0.04);
-    --shadow-lg: 0 12px 40px -8px hsla(210, 20%, 12%, 0.08), 0 4px 12px -4px hsla(210, 20%, 12%, 0.04);
-    --shadow-glow: 0 0 30px hsla(160, 60%, 38%, 0.15);
-    --shadow-whatsapp: 0 0 20px hsla(142, 70%, 49%, 0.3);
+    --popover: 160 60% 5%;
+    --popover-foreground: 0 0% 98%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --primary: 160 60% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 160 60% 10%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 160 60% 12%;
+    --muted-foreground: 160 10% 65%;
+
+    --accent: 25 90% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 160 60% 15%;
+    --input: 160 60% 15%;
+    --ring: 160 60% 45%;
   }
 }
 
@@ -66,49 +76,27 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased transition-colors duration-300;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
 @layer utilities {
   .glass {
-    background: var(--gradient-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid hsla(0, 0%, 100%, 0.5);
+    @apply bg-card/50 backdrop-blur-xl border border-white/10;
   }
 
   .text-gradient-hero {
-    background: var(--gradient-hero);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .shadow-card {
-    box-shadow: var(--shadow-md);
-  }
-
-  .shadow-card-hover {
-    box-shadow: var(--shadow-lg);
+    @apply bg-gradient-to-r from-primary via-emerald-400 to-accent bg-clip-text text-transparent;
   }
 
   .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .shadow-whatsapp {
-    box-shadow: var(--shadow-whatsapp);
+    box-shadow: 0 0 30px hsla(160, 60%, 38%, 0.15);
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 20px hsla(142, 70%, 49%, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 40px hsla(142, 70%, 49%, 0.5), 0 0 60px hsla(142, 70%, 49%, 0.2);
-    }
+    0%, 100% { box-shadow: 0 0 20px hsla(142, 70%, 49%, 0.3); }
+    50% { box-shadow: 0 0 40px hsla(142, 70%, 49%, 0.5); }
   }
 
   .animate-pulse-glow {

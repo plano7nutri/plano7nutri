@@ -14,6 +14,7 @@ import {
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
+import ImpactPhrase from "./ImpactPhrase";
 
 interface DashboardProps {
   name: string;
@@ -125,7 +126,7 @@ const Dashboard = ({
   };
 
   return (
-    <div className="min-h-screen px-6 py-10">
+    <div className="min-h-screen px-6 py-10 bg-background text-foreground">
       <div className="w-full max-w-4xl mx-auto">
         
         <div className="flex justify-end mb-4">
@@ -151,7 +152,7 @@ const Dashboard = ({
           >
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative group">
-                <Avatar key={localAvatarUrl} className="w-32 h-32 border-4 border-white shadow-xl overflow-hidden">
+                <Avatar key={localAvatarUrl} className="w-32 h-32 border-4 border-white dark:border-zinc-800 shadow-xl overflow-hidden">
                   <AvatarImage src={localAvatarUrl} alt={name} className="object-cover w-full h-full" />
                   <AvatarFallback className="bg-secondary text-primary text-3xl font-bold">
                     {name.substring(0, 2).toUpperCase()}
@@ -222,6 +223,9 @@ const Dashboard = ({
               </motion.div>
             </div>
 
+            {/* Frase de Impacto Dinâmica */}
+            <ImpactPhrase goal={goalLabel} />
+
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
@@ -257,22 +261,21 @@ const Dashboard = ({
                 <Zap className="w-5 h-5" /> Macronutrientes (Meta Diária)
               </h3>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
+                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Proteína</span>
                   <p className="text-2xl font-black text-foreground">{proteina}g</p>
                 </div>
-                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
+                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Carbo</span>
                   <p className="text-2xl font-black text-foreground">{carbo}g</p>
                 </div>
-                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
+                <div className="bg-card rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Gordura</span>
                   <p className="text-2xl font-black text-foreground">{gordura}g</p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Nova Seção de Restrições e Preferências */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
@@ -285,7 +288,7 @@ const Dashboard = ({
                     <ShieldAlert className="w-4 h-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
                   </div>
-                  <p className="text-sm font-medium text-foreground bg-amber-50/50 p-4 rounded-2xl border border-amber-100 min-h-[80px]">
+                  <p className="text-sm font-medium text-foreground bg-amber-500/5 p-4 rounded-2xl border border-amber-500/10 min-h-[80px]">
                     {restrictions || "Nenhuma restrição informada."}
                   </p>
                 </div>
@@ -294,7 +297,7 @@ const Dashboard = ({
                     <Heart className="w-4 h-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
                   </div>
-                  <p className="text-sm font-medium text-foreground bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 min-h-[80px]">
+                  <p className="text-sm font-medium text-foreground bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/10 min-h-[80px]">
                     {preferences || "Nenhuma preferência informada."}
                   </p>
                 </div>
@@ -303,18 +306,17 @@ const Dashboard = ({
           </div>
         </div>
 
-        {/* Seção de Cardápio e Lista com Popups (Dialog) */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                <button className="flex items-center justify-center gap-3 bg-card border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
                   <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Cardápio Personalizado
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
-                <div className="sticky top-0 bg-white border-b border-border p-6 flex items-center justify-between z-10">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
+                <div className="sticky top-0 bg-background border-b border-border p-6 flex items-center justify-between z-10">
                   <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <Utensils className="w-6 h-6" />
                     Cardápio Personalizado
@@ -332,13 +334,13 @@ const Dashboard = ({
           {lista && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                <button className="flex items-center justify-center gap-3 bg-card border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
                   <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Lista de Compras
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
-                <div className="sticky top-0 bg-white border-b border-border p-6 flex items-center justify-between z-10">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
+                <div className="sticky top-0 bg-background border-b border-border p-6 flex items-center justify-between z-10">
                   <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <ClipboardList className="w-6 h-6" />
                     Lista de Compras
