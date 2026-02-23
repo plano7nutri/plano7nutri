@@ -19,7 +19,8 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    {/* defaultTheme="dark" e forcedTheme para usuários free é controlado via CSS e componente */}
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} value={{ light: "light", dark: "dark" }}>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />

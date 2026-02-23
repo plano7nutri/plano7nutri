@@ -6,40 +6,7 @@
 
 @layer base {
   :root {
-    /* Light Mode (Padrão do sistema, mas forçaremos Dark para Free) */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-
-    --primary: 160 60% 38%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-
-    --accent: 25 90% 60%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 160 60% 38%;
-
-    --radius: 1rem;
-  }
-
-  .dark {
-    /* Dark Mode (O padrão do app) */
+    /* O PADRÃO AGORA É DARK MODE */
     --background: 160 60% 4%;
     --foreground: 0 0% 98%;
 
@@ -67,6 +34,39 @@
     --border: 160 60% 15%;
     --input: 160 60% 15%;
     --ring: 160 60% 45%;
+
+    --radius: 1rem;
+  }
+
+  /* LIGHT MODE É A EXCEÇÃO (CLASSE .light) */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 160 60% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 25 90% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 160 60% 38%;
   }
 }
 
