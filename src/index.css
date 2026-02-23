@@ -38,36 +38,25 @@
 
     --whatsapp: 142 70% 49%;
     --whatsapp-foreground: 0 0% 100%;
-  }
 
-  .dark {
-    --background: 160 60% 4%;
-    --foreground: 0 0% 98%;
+    --gradient-primary: linear-gradient(135deg, hsl(160, 60%, 38%), hsl(170, 50%, 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(160, 60%, 38%) 0%, hsl(170, 55%, 48%) 50%, hsl(25, 90%, 60%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsla(0, 0%, 100%, 0.8), hsla(0, 0%, 100%, 0.4));
 
-    --card: 160 60% 6%;
-    --card-foreground: 0 0% 98%;
+    --shadow-sm: 0 1px 2px 0 hsla(210, 20%, 12%, 0.04);
+    --shadow-md: 0 4px 16px -2px hsla(210, 20%, 12%, 0.06), 0 2px 4px -2px hsla(210, 20%, 12%, 0.04);
+    --shadow-lg: 0 12px 40px -8px hsla(210, 20%, 12%, 0.08), 0 4px 12px -4px hsla(210, 20%, 12%, 0.04);
+    --shadow-glow: 0 0 30px hsla(160, 60%, 38%, 0.15);
+    --shadow-whatsapp: 0 0 20px hsla(142, 70%, 49%, 0.3);
 
-    --popover: 160 60% 6%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 160 60% 38%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 160 30% 12%;
-    --secondary-foreground: 160 60% 48%;
-
-    --muted: 160 30% 12%;
-    --muted-foreground: 160 10% 60%;
-
-    --accent: 25 90% 60%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 160 30% 15%;
-    --input: 160 30% 15%;
-    --ring: 160 60% 38%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -77,33 +66,52 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased transition-colors duration-300;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-card/80 backdrop-blur-md border border-border/50;
+    background: var(--gradient-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsla(0, 0%, 100%, 0.5);
   }
 
   .text-gradient-hero {
-    background: linear-gradient(135deg, hsl(160, 60%, 38%) 0%, hsl(170, 55%, 48%) 50%, hsl(25, 90%, 60%) 100%);
+    background: var(--gradient-hero);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  .shadow-card {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-card-hover {
+    box-shadow: var(--shadow-lg);
+  }
+
   .shadow-glow {
-    box-shadow: 0 0 30px hsla(160, 60%, 38%, 0.15);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-whatsapp {
+    box-shadow: var(--shadow-whatsapp);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsla(142, 70%, 49%, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px hsla(142, 70%, 49%, 0.5), 0 0 60px hsla(142, 70%, 49%, 0.2);
+    }
   }
 
   .animate-pulse-glow {
     animation: pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 20px hsla(142, 70%, 49%, 0.3); }
-    50% { box-shadow: 0 0 40px hsla(142, 70%, 49%, 0.5), 0 0 60px hsla(142, 70%, 49%, 0.2); }
   }
 }

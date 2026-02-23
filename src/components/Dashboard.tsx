@@ -14,7 +14,6 @@ import {
 import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
-import ImpactPhrase from "./ImpactPhrase";
 
 interface DashboardProps {
   name: string;
@@ -223,8 +222,6 @@ const Dashboard = ({
               </motion.div>
             </div>
 
-            <ImpactPhrase goal={goalLabel} />
-
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
@@ -260,21 +257,22 @@ const Dashboard = ({
                 <Zap className="w-5 h-5" /> Macronutrientes (Meta Diária)
               </h3>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-border p-5 text-center shadow-sm">
+                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Proteína</span>
                   <p className="text-2xl font-black text-foreground">{proteina}g</p>
                 </div>
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-border p-5 text-center shadow-sm">
+                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Carbo</span>
                   <p className="text-2xl font-black text-foreground">{carbo}g</p>
                 </div>
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-border p-5 text-center shadow-sm">
+                <div className="bg-white rounded-2xl border border-border p-5 text-center shadow-sm">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-2">Gordura</span>
                   <p className="text-2xl font-black text-foreground">{gordura}g</p>
                 </div>
               </div>
             </motion.div>
 
+            {/* Nova Seção de Restrições e Preferências */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
@@ -287,7 +285,7 @@ const Dashboard = ({
                     <ShieldAlert className="w-4 h-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
                   </div>
-                  <p className="text-sm font-medium text-foreground bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-2xl border border-amber-100 dark:border-amber-500/20 min-h-[80px]">
+                  <p className="text-sm font-medium text-foreground bg-amber-50/50 p-4 rounded-2xl border border-amber-100 min-h-[80px]">
                     {restrictions || "Nenhuma restrição informada."}
                   </p>
                 </div>
@@ -296,7 +294,7 @@ const Dashboard = ({
                     <Heart className="w-4 h-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
                   </div>
-                  <p className="text-sm font-medium text-foreground bg-emerald-50/50 dark:bg-emerald-500/5 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-500/20 min-h-[80px]">
+                  <p className="text-sm font-medium text-foreground bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 min-h-[80px]">
                     {preferences || "Nenhuma preferência informada."}
                   </p>
                 </div>
@@ -305,24 +303,25 @@ const Dashboard = ({
           </div>
         </div>
 
+        {/* Seção de Cardápio e Lista com Popups (Dialog) */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-white dark:bg-zinc-900 border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
                   <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Cardápio Personalizado
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white dark:bg-zinc-900">
-                <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-border p-6 flex items-center justify-between z-10">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
+                <div className="sticky top-0 bg-white border-b border-border p-6 flex items-center justify-between z-10">
                   <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <Utensils className="w-6 h-6" />
                     Cardápio Personalizado
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 dark:bg-secondary/5 p-8 rounded-2xl border border-border shadow-inner">
+                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
                     {renderFormattedText(cardapio)}
                   </div>
                 </div>
@@ -333,20 +332,20 @@ const Dashboard = ({
           {lista && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-white dark:bg-zinc-900 border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
+                <button className="flex items-center justify-center gap-3 bg-white border-2 border-primary/20 p-6 rounded-3xl text-primary font-bold hover:bg-primary/5 transition-all shadow-sm group">
                   <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Lista de Compras
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white dark:bg-zinc-900">
-                <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-border p-6 flex items-center justify-between z-10">
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-white">
+                <div className="sticky top-0 bg-white border-b border-border p-6 flex items-center justify-between z-10">
                   <div className="flex items-center gap-3 text-primary font-bold text-xl">
                     <ClipboardList className="w-6 h-6" />
                     Lista de Compras
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 dark:bg-secondary/5 p-8 rounded-2xl border border-border shadow-inner">
+                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-secondary/20 p-8 rounded-2xl border border-border shadow-inner">
                     {renderFormattedText(lista)}
                   </div>
                 </div>
