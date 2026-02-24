@@ -243,6 +243,27 @@ const Dashboard = ({
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-orange-600">
+                  <ShieldAlert className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
+                </div>
+                <p className="text-sm font-medium text-zinc-700 bg-zinc-50 p-5 rounded-2xl border border-zinc-100 min-h-[100px]">
+                  {restrictions || "Nenhuma restrição informada."}
+                </p>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-primary">
+                  <Heart className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
+                </div>
+                <p className="text-sm font-medium text-zinc-700 bg-zinc-50 p-5 rounded-2xl border border-zinc-100 min-h-[100px]">
+                  {preferences || "Nenhuma preferência informada."}
+                </p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
               {cardapio && (
                 <Dialog>
