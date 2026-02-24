@@ -537,8 +537,8 @@ const PremiumDashboard = ({
           whileTap={canRequestPlan() || isAdminView ? { scale: 0.98 } : {}}
           className={`block w-full relative group transition-all duration-300 mt-12 ${( (!canRequestPlan() || isBlocked) && !isAdminView) ? 'opacity-80' : ''}`}
         >
-          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-gradient-to-r from-emerald-500 to-amber-500 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-whatsapp/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-whatsapp text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="flex items-center gap-3">
               { (canRequestPlan() && !isBlocked) || isAdminView ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
               <h3 className="text-lg font-black uppercase tracking-tight">
