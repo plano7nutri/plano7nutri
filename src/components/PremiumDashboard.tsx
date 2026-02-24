@@ -225,6 +225,17 @@ const PremiumDashboard = ({
 
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
+  const getButtonText = () => {
+    if (isAdminView) return "Solicitar Cardápio (Modo Admin)";
+    if (isSubscriptionInactive) return "Acesso Bloqueado";
+    if (isUnicaDelivered) return "Cardápio Entregue";
+    if (!canRequestPlan()) {
+      const days = daysToNextPlan();
+      return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
+    }
+    return "Solicitar Cardápio de Elite";
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground px-6 py-10">
       <div className="w-full max-w-4xl mx-auto">
@@ -475,8 +486,8 @@ const PremiumDashboard = ({
                 <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
@@ -542,7 +553,7 @@ const PremiumDashboard = ({
             <div className="flex items-center gap-3">
               { (canRequestPlan() && !isBlocked) || isAdminView ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
               <h3 className="text-lg font-black uppercase tracking-tight">
-                {isAdminView ? "Solicitar Cardápio (Modo Admin)" : isSubscriptionInactive ? "Acesso Bloqueado" : isUnicaDelivered ? "Cardápio Entregue" : "Solicitar Cardápio de Elite"}
+                {getButtonText()}
               </h3>
             </div>
           </div>
