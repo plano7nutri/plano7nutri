@@ -188,7 +188,7 @@ const PremiumDashboard = ({
       setLocalAvatarUrl(timestampedUrl);
       toast.success("Foto de perfil atualizada!");
       if (onAvatarUpdate) onAvatarUpdate();
-    } catch (error: any)) {
+    } catch (error: any) {
       toast.error("Erro ao atualizar foto.");
     } finally {
       setIsUploading(false);
