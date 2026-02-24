@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Flame, Dumbbell, Sparkles } from "lucide-react";
+import { Flame, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ImpactPhraseProps {
@@ -11,8 +11,16 @@ interface ImpactPhraseProps {
 }
 
 const ImpactPhrase = ({ goal, className }: ImpactPhraseProps) => {
-  const isWeightLoss = goal.toLowerCase().includes("perder") || goal.toLowerCase().includes("emagrecer") || goal === "lose_weight";
-  const isHypertrophy = goal.toLowerCase().includes("ganhar") || goal.toLowerCase().includes("hipertrofia") || goal === "gain_muscle";
+  // Verificação de segurança para evitar crash se goal for nulo ou indefinido
+  const safeGoal = goal || "";
+  
+  const isWeightLoss = safeGoal.toLowerCase().includes("perder") || 
+                       safeGoal.toLowerCase().includes("emagrecer") || 
+                       safeGoal === "lose_weight";
+                       
+  const isHypertrophy = safeGoal.toLowerCase().includes("ganhar") || 
+                        safeGoal.toLowerCase().includes("hipertrofia") || 
+                        safeGoal === "gain_muscle";
 
   if (!isWeightLoss && !isHypertrophy) {
     return (
