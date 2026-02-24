@@ -66,6 +66,22 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     preferences: "",
   });
 
+  const saveInitialLead = async () => {
+    try {
+      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
+      await supabase
+        .from("usuarios_planogratis_registro_inicial")
+        .insert([{
+          nome: data.name.trim(),
+          whatsapp: cleanWhatsapp,
+          cliente_gratis: true,
+          primeiro_contato: true
+        }]);
+    } catch (err) {
+      console.error("Erro ao salvar registro inicial:", err);
+    }
+  };
+
   const checkDuplicate = async () => {
     if (hideLoginLink) return false; 
     
@@ -96,6 +112,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     if (step === 0) {
       const isDuplicate = await checkDuplicate();
       if (isDuplicate) return;
+      // Salva na tabela de registro inicial ao passar do primeiro passo
+      await saveInitialLead();
     }
     setDir(1); 
     setStep((s) => s + 1);
@@ -128,7 +146,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const stepHeight = (increment: number) => {
-    const currentHeight = data.height; // em cm (ex: 170)
+    const currentHeight = data.height; 
     const nextHeight = Math.max(50, Math.min(250, currentHeight + increment));
     
     setData(prev => ({ ...prev, height: nextHeight }));
@@ -161,7 +179,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-10">
       <div className="w-full max-w-md mx-auto">
-        {/* Logo Section */}
         <div className="flex justify-center mb-8">
           <img 
             src="/logo-plano7.png" 
@@ -244,7 +261,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     <div className="mt-2 flex items-start gap-2 text-destructive">
                       <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                       <p className="text-xs font-semibold leading-tight">
-                        O WhatsApp deve ser verdadeira para ativação do sistema.
+                        O WhatsApp deve ser verdadeiro para ativação do sistema.
                       </p>
                     </div>
                   )}
