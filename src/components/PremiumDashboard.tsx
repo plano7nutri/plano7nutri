@@ -188,7 +188,7 @@ const PremiumDashboard = ({
       setLocalAvatarUrl(timestampedUrl);
       toast.success("Foto de perfil atualizada!");
       if (onAvatarUpdate) onAvatarUpdate();
-    } catch (error: any) {
+    } catch (error: any)) {
       toast.error("Erro ao atualizar foto.");
     } finally {
       setIsUploading(false);
@@ -546,7 +546,7 @@ const PremiumDashboard = ({
           onClick={handleWhatsAppClick}
           whileHover={canRequestPlan() || isAdminView ? { scale: 1.02, y: -2 } : {}}
           whileTap={canRequestPlan() || isAdminView ? { scale: 0.98 } : {}}
-          className={`block w-full relative group transition-all duration-300 mt-12 ${( (!canRequestPlan() || isBlocked) && !isAdminView) ? 'opacity-80' : ''}`}
+          className={`block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${( (!canRequestPlan() || isBlocked) && !isAdminView) ? 'opacity-80' : ''}`}
         >
           <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
           <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>

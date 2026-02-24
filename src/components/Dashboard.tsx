@@ -300,7 +300,7 @@ const Dashboard = ({
               onClick={handleWhatsAppClick}
               whileHover={!isBlocked ? { scale: 1.02 } : {}}
               whileTap={!isBlocked ? { scale: 0.98 } : {}}
-              className={`block w-full rounded-2xl p-6 text-center transition-all shadow-whatsapp mt-6 ${
+              className={`block w-full md:max-w-md md:mx-auto rounded-2xl p-6 text-center transition-all shadow-whatsapp mt-6 ${
                 isBlocked ? "bg-zinc-100 text-zinc-400" : "bg-whatsapp text-white"
               }`}
             >
