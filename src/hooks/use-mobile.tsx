@@ -7,12 +7,29 @@ export function useIsMobile() {
 
   React.useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    
     const onChange = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
-    mql.addEventListener("change", onChange);
+
+    // Suporte para navegadores antigos (Safari < 14)
+    if (mql.addEventListener) {
+      mql.addEventListener("change", onChange);
+    } else {
+      // @ts-ignore - fallback para navegadores antigos
+      mql.addListener(onChange);
+    }
+
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
+
+    return () => {
+      if (mql.removeEventListener) {
+        mql.removeEventListener("change", onChange);
+      } else {
+        // @ts-ignore - fallback para navegadores antigos
+        mql.removeListener(onChange);
+      }
+    };
   }, []);
 
   return !!isMobile;
