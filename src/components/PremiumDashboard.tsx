@@ -486,8 +486,8 @@ const PremiumDashboard = ({
                 <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
