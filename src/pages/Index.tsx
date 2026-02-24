@@ -20,7 +20,6 @@ const Index = () => {
   const location = useLocation();
   const { setTheme } = useTheme();
 
-  // Forçar Modo Claro na Landing Page
   useEffect(() => {
     setTheme("light");
   }, [setTheme]);
@@ -34,8 +33,6 @@ const Index = () => {
 
   const handleLoginFree = async () => {
     const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
-    
-    // Aceita números com 10 ou 11 dígitos (DDD + número com ou sem o 9)
     if (cleanWhatsapp.length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
       return;
@@ -67,7 +64,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-[100dvh] bg-background text-foreground">
       <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
@@ -79,7 +76,7 @@ const Index = () => {
             )}
             
             {view === "check-free-plan" && (
-              <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
+              <div className="min-h-[100dvh] flex flex-col items-center justify-center px-6 py-12">
                 <div className="w-full max-w-md glass rounded-2xl p-8 shadow-card bg-white border-zinc-200">
                   <h2 className="text-2xl font-bold text-zinc-900 mb-2">Acessar meu plano grátis</h2>
                   <p className="text-zinc-500 mb-8">Informe seu WhatsApp para ver seu planejamento.</p>
