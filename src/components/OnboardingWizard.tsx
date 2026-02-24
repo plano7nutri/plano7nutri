@@ -52,6 +52,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const [loading, setLoading] = useState(false);
   const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
   const [duplicateFound, setDuplicateFound] = useState(false);
+  const [whatsappError, setWhatsappError] = useState("");
   const [heightInput, setHeightInput] = useState("1,70");
   const [data, setData] = useState<OnboardingData>({
     name: "", 
@@ -65,6 +66,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     restrictions: "",
     preferences: "",
   });
+
+  const validateWhatsapp = (val: string) => {
+    const formatted = formatWhatsApp(val);
+    if (formatted.length === 0) return "";
+    if (formatted.length !== 12 && formatted.length !== 13) {
+      return "Número inválido. Digite com DDD: 11987654321 ou 1187654321";
+    }
+    return "";
+  };
 
   const saveInitialLead = async () => {
     try {
@@ -110,9 +120,13 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const next = async () => {
     if (step === 0) {
+      const error = validateWhatsapp(data.whatsapp);
+      if (error) {
+        setWhatsappError(error);
+        return;
+      }
       const isDuplicate = await checkDuplicate();
       if (isDuplicate) return;
-      // Salva na tabela de registro inicial ao passar do primeiro passo
       await saveInitialLead();
     }
     setDir(1); 
@@ -131,9 +145,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         formatted = formatted.charAt(0) + "," + formatted.slice(1);
       }
     }
-    
     setHeightInput(formatted);
-    
     const numericString = formatted.replace(",", ".");
     const numericVal = parseFloat(numericString);
     if (!isNaN(numericVal)) {
@@ -146,9 +158,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const stepHeight = (increment: number) => {
-    const currentHeight = data.height; 
-    const nextHeight = Math.max(50, Math.min(250, currentHeight + increment));
-    
+    const nextHeight = Math.max(50, Math.min(250, data.height + increment));
     setData(prev => ({ ...prev, height: nextHeight }));
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
   };
@@ -158,7 +168,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const canProceed = () => {
-    if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 10 && !isCheckingDuplicate;
+    if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 8 && !isCheckingDuplicate;
     if (step === 1) return data.age > 0 && data.sex !== "" && data.height > 50 && data.weight > 20;
     if (step === 2) return data.activity !== "";
     if (step === 3) return data.goal !== "";
@@ -174,27 +184,16 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     });
   };
 
-  const isLastStep = step === TOTAL_STEPS - 1;
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-10">
       <div className="w-full max-w-md mx-auto">
         <div className="flex justify-center mb-8">
-          <img 
-            src="/logo-plano7.png" 
-            alt="Plano 7 Logo" 
-            className="h-24 w-auto object-contain"
-          />
+          <img src="/logo-plano7.png" alt="Plano 7 Logo" className="h-24 w-auto object-contain" />
         </div>
 
         <div className="flex items-center gap-2 mb-10">
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                i <= step ? "bg-primary" : "bg-border"
-              }`}
-            />
+            <div key={i} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${i <= step ? "bg-primary" : "bg-border"}`} />
           ))}
         </div>
 
@@ -204,66 +203,49 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
               <p className="text-muted-foreground mb-1">Informe seu nome e WhatsApp para receber seu plano.</p>
               <p className="text-destructive text-sm font-semibold mb-8 uppercase">
-                {hideLoginLink 
-                  ? "AS INFORMAÇÕES SÓ PODERÃO SER EDITADAS APÓS 7 DIAS PREENCHA COM CUIDADO" 
-                  : "As informações não poderão ser editadas, preencha com cuidado."
-                }
+                {hideLoginLink ? "AS INFORMAÇÕES SÓ PODERÃO SER EDITADAS APÓS 7 DIAS PREENCHA COM CUIDADO" : "As informações não poderão ser editadas, preencha com cuidado."}
               </p>
 
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Nome Completo</label>
-                  <input
-                    type="text"
-                    placeholder="Seu nome"
-                    value={data.name}
-                    onChange={(e) => setData({ ...data, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
+                  <input type="text" placeholder="Seu nome" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
                   <input
                     type="tel"
-                    placeholder="(11) 99999-9999"
+                    placeholder="11 99999-9999"
                     value={data.whatsapp}
                     onChange={(e) => {
                       setData({ ...data, whatsapp: e.target.value });
                       setDuplicateFound(false);
+                      setWhatsappError("");
                     }}
                     className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
-                      duplicateFound ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
+                      duplicateFound || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
                     }`}
                   />
                   
+                  {whatsappError && (
+                    <p className="mt-2 text-xs font-bold text-destructive flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {whatsappError}
+                    </p>
+                  )}
+
                   {duplicateFound && !hideLoginLink && (
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
                       <div className="flex items-start gap-2 text-destructive mb-3">
                         <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                        <p className="text-sm font-bold leading-tight">
-                          Este WhatsApp já possui um plano cadastrado em nosso sistema.
-                        </p>
+                        <p className="text-sm font-bold leading-tight">Este WhatsApp já possui um plano cadastrado.</p>
                       </div>
                       {onGoToLogin && (
-                        <button
-                          onClick={onGoToLogin}
-                          className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors"
-                        >
-                          <UserCheck className="w-4 h-4" />
-                          Acessar meu plano existente
+                        <button onClick={onGoToLogin} className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors">
+                          <UserCheck className="w-4 h-4" /> Acessar meu plano existente
                         </button>
                       )}
                     </motion.div>
-                  )}
-
-                  {!duplicateFound && (
-                    <div className="mt-2 flex items-start gap-2 text-destructive">
-                      <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                      <p className="text-xs font-semibold leading-tight">
-                        O WhatsApp deve ser verdadeiro para ativação do sistema.
-                      </p>
-                    </div>
                   )}
                 </div>
               </div>
@@ -273,65 +255,35 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
           {step === 1 && (
             <motion.div key="step1" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Seus dados</h2>
-              <p className="text-muted-foreground mb-6">Informações para calcular seu metabolismo.</p>
-
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Idade</label>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setData(prev => ({...prev, age: Math.max(1, prev.age - 1)}))} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
-                      <Minus className="w-4 h-4 text-primary" />
-                    </button>
-                    <input type="number" value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })}
-                      className="w-full px-2 py-3 rounded-xl border bg-card text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring" />
-                    <button onClick={() => setData(prev => ({...prev, age: Math.min(120, prev.age + 1)}))} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
-                      <Plus className="w-4 h-4 text-primary" />
-                    </button>
+                    <button onClick={() => setData(prev => ({...prev, age: Math.max(1, prev.age - 1)}))} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
+                    <input type="number" value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })} className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
+                    <button onClick={() => setData(prev => ({...prev, age: Math.min(120, prev.age + 1)}))} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Altura (m)</label>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => stepHeight(-1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
-                      <Minus className="w-4 h-4 text-primary" />
-                    </button>
-                    <input 
-                      type="text" 
-                      placeholder="1,70" 
-                      value={heightInput} 
-                      onChange={(e) => handleHeightChange(e.target.value)}
-                      className="w-full px-2 py-3 rounded-xl border bg-card text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring" 
-                    />
-                    <button onClick={() => stepHeight(1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
-                      <Plus className="w-4 h-4 text-primary" />
-                    </button>
+                    <button onClick={() => stepHeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
+                    <input type="text" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)} className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
+                    <button onClick={() => stepHeight(1)} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                   </div>
                 </div>
               </div>
-
               <div className="mb-6">
                 <label className="block text-sm font-medium text-foreground mb-2">Peso (kg)</label>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => stepWeight(-1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
-                    <Minus className="w-4 h-4 text-primary" />
-                  </button>
-                  <input type="number" value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring" />
-                  <button onClick={() => stepWeight(1)} className="p-3 bg-secondary rounded-xl hover:bg-primary/20 transition-colors">
-                    <Plus className="w-4 h-4 text-primary" />
-                  </button>
+                  <button onClick={() => stepWeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
+                  <input type="number" value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })} className="w-full px-4 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
+                  <button onClick={() => stepWeight(1)} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                 </div>
               </div>
-
-              <label className="block text-sm font-medium text-foreground mb-3">Sexo Biológico</label>
               <div className="grid grid-cols-2 gap-3">
                 {[{ id: "male", label: "Masculino" }, { id: "female", label: "Feminino" }].map((opt) => (
-                  <button key={opt.id} onClick={() => setData({ ...data, sex: opt.id as "male" | "female" })}
-                    className={`p-4 rounded-xl border-2 text-center font-semibold transition-all duration-200 ${
-                      data.sex === opt.id ? "border-primary bg-secondary text-secondary-foreground shadow-glow" : "border-border bg-card text-foreground hover:border-primary/40"
-                    }`}>
-                    {opt.label}
-                  </button>
+                  <button key={opt.id} onClick={() => setData({ ...data, sex: opt.id as "male" | "female" })} className={`p-4 rounded-xl border-2 font-semibold ${data.sex === opt.id ? "border-primary bg-secondary shadow-glow" : "border-border bg-card"}`}>{opt.label}</button>
                 ))}
               </div>
             </motion.div>
@@ -339,16 +291,12 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
           {step === 2 && (
             <motion.div key="step2" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Nível de atividade</h2>
-              <p className="text-muted-foreground mb-6">Qual sua frequência de exercícios?</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Atividade</h2>
               <div className="flex flex-col gap-3">
-                {activityLevels.map((level) => (
-                  <button key={level.id} onClick={() => setData({ ...data, activity: level.id })}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
-                      data.activity === level.id ? "border-primary bg-secondary shadow-glow" : "border-border bg-card hover:border-primary/40"
-                    }`}>
-                    <div className="font-semibold text-foreground">{level.label}</div>
-                    <div className="text-sm text-muted-foreground">{level.desc}</div>
+                {activityLevels.map((l) => (
+                  <button key={l.id} onClick={() => setData({ ...data, activity: l.id })} className={`p-4 rounded-xl border-2 text-left ${data.activity === l.id ? "border-primary bg-secondary shadow-glow" : "border-border bg-card"}`}>
+                    <div className="font-semibold">{l.label}</div>
+                    <div className="text-sm text-muted-foreground">{l.desc}</div>
                   </button>
                 ))}
               </div>
@@ -357,15 +305,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
           {step === 3 && (
             <motion.div key="step3" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Seu objetivo</h2>
-              <p className="text-muted-foreground mb-6">O que você quer alcançar?</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Objetivo</h2>
               <div className="flex flex-col gap-3">
                 {goals.map((g) => (
-                  <button key={g.id} onClick={() => setData({ ...data, goal: g.id })}
-                    className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
-                      data.goal === g.id ? "border-primary bg-secondary shadow-glow" : "border-border bg-card hover:border-primary/40"
-                    }`}>
-                    <div className="font-semibold text-foreground">{g.label}</div>
+                  <button key={g.id} onClick={() => setData({ ...data, goal: g.id })} className={`p-4 rounded-xl border-2 text-left ${data.goal === g.id ? "border-primary bg-secondary shadow-glow" : "border-border bg-card"}`}>
+                    <div className="font-semibold">{g.label}</div>
                     <div className="text-sm text-muted-foreground">{g.desc}</div>
                   </button>
                 ))}
@@ -376,57 +320,18 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
           {step === 4 && (
             <motion.div key="step4" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Preferências</h2>
-              <p className="text-muted-foreground mb-6">Personalize seu cardápio.</p>
-              
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Restrições Alimentares</label>
-                  <textarea 
-                    placeholder="Ex: Intolerância a lactose..."
-                    value={data.restrictions}
-                    onChange={(e) => setData({ ...data, restrictions: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-base focus:outline-none focus:ring-2 focus:ring-ring min-h-[100px] resize-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Preferências Alimentares</label>
-                  <textarea 
-                    placeholder="Ex: Gosto muito de ovos..."
-                    value={data.preferences}
-                    onChange={(e) => setData({ ...data, preferences: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-base focus:outline-none focus:ring-2 focus:ring-ring min-h-[100px] resize-none"
-                  />
-                </div>
-              </div>
+              <textarea placeholder="Restrições..." value={data.restrictions} onChange={(e) => setData({ ...data, restrictions: e.target.value })} className="w-full p-4 rounded-xl border bg-card mb-4 min-h-[100px] resize-none" />
+              <textarea placeholder="Preferências..." value={data.preferences} onChange={(e) => setData({ ...data, preferences: e.target.value })} className="w-full p-4 rounded-xl border bg-card min-h-[100px] resize-none" />
             </motion.div>
           )}
         </AnimatePresence>
 
         <div className="flex items-center justify-between mt-10">
-          <button onClick={prev} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Voltar
-          </button>
-
+          <button onClick={prev} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft className="w-4 h-4" /> Voltar</button>
           {!isLastStep ? (
-            <motion.button 
-              whileHover={{ scale: 1.02 }} 
-              whileTap={{ scale: 0.98 }} 
-              disabled={!canProceed()} 
-              onClick={next}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40 disabled:pointer-events-none transition-all"
-            >
-              {isCheckingDuplicate ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Verificando...</>
-              ) : (
-                <>Próximo <ArrowRight className="w-4 h-4" /></>
-              )}
-            </motion.button>
+            <button disabled={!canProceed()} onClick={next} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40">{isCheckingDuplicate ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Próximo <ArrowRight className="w-4 h-4" /></>}</button>
           ) : (
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={!canProceed() || loading} onClick={handleFinish}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40 disabled:pointer-events-none transition-all">
-              {loading ? (<><Loader2 className="w-4 h-4 animate-spin" /> Calculando...</>) : "Quero meu Plano de 7 dias agora!"}
-            </motion.button>
+            <button disabled={!canProceed() || loading} onClick={handleFinish} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40">{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Quero meu Plano!"}</button>
           )}
         </div>
       </div>

@@ -33,14 +33,14 @@ const Cadastro = () => {
   const navigate = useNavigate();
   const { setTheme } = useTheme();
 
-  // Forçar Modo Claro no Cadastro
   useEffect(() => {
     setTheme("light");
   }, [setTheme]);
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
+      // Aplica a formatação robusta na camada de banco
+      const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
       const tmb =
         data.sex === "male"
@@ -67,7 +67,7 @@ const Cadastro = () => {
       const dashData = {
         session_id: Math.random().toString(36).substring(7),
         nome: data.name,
-        whatsapp: cleanWhatsapp,
+        whatsapp: finalWhatsapp,
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
@@ -96,9 +96,9 @@ const Cadastro = () => {
       toast.success("Plano calculado com sucesso!");
       localStorage.setItem("plano7_free_whatsapp", dashData.whatsapp);
       navigate("/dashboard", { state: dashData });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro no processo:", err);
-      toast.error("Erro ao processar dados.");
+      toast.error(err.message || "Erro ao processar dados.");
     }
   };
 
