@@ -199,6 +199,25 @@ const Dashboard = ({
                   <span className="text-[10px] font-bold text-orange-600 uppercase block mb-1">Objetivo</span>
                   <p className="text-sm font-bold text-zinc-900">{goalLabel}</p>
                 </div>
+                {/* Restrições e Preferências movidas para cá */}
+                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
+                  <div className="flex items-center gap-2 text-orange-600 mb-1">
+                    <ShieldAlert className="w-3 h-3" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
+                  </div>
+                  <p className="text-xs font-medium text-zinc-700">
+                    {restrictions || "Nenhuma restrição informada."}
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
+                  <div className="flex items-center gap-2 text-primary mb-1">
+                    <Heart className="w-3 h-3" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
+                  </div>
+                  <p className="text-xs font-medium text-zinc-700">
+                    {preferences || "Nenhuma preferência informada."}
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -240,27 +259,6 @@ const Dashboard = ({
                   <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gord</span>
                   <p className="text-xl font-black text-zinc-900">{gordura}g</p>
                 </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-orange-600">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
-                </div>
-                <p className="text-sm font-medium text-zinc-700 bg-zinc-50 p-5 rounded-2xl border border-zinc-100 min-h-[100px]">
-                  {restrictions || "Nenhuma restrição informada."}
-                </p>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-primary">
-                  <Heart className="w-4 h-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
-                </div>
-                <p className="text-sm font-medium text-zinc-700 bg-zinc-50 p-5 rounded-2xl border border-zinc-100 min-h-[100px]">
-                  {preferences || "Nenhuma preferência informada."}
-                </p>
               </div>
             </div>
 
