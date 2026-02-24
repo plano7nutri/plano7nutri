@@ -39,8 +39,11 @@ const Cadastro = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
+      // Aplica a formatação robusta na camada de banco
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
-      const tmb = data.sex === "male"
+      
+      const tmb =
+        data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
           : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
 
@@ -94,12 +97,13 @@ const Cadastro = () => {
       localStorage.setItem("plano7_free_whatsapp", dashData.whatsapp);
       navigate("/dashboard", { state: dashData });
     } catch (err: any) {
+      console.error("Erro no processo:", err);
       toast.error(err.message || "Erro ao processar dados.");
     }
   };
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <main className="flex-1">
         <OnboardingWizard 
           onComplete={handleComplete} 
