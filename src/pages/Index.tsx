@@ -34,7 +34,9 @@ const Index = () => {
 
   const handleLoginFree = async () => {
     const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
-    if (cleanWhatsapp.length < 12) {
+    
+    // Aceita números com 10 ou 11 dígitos (DDD + número com ou sem o 9)
+    if (cleanWhatsapp.length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
       return;
     }
