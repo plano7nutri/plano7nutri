@@ -35,11 +35,9 @@ serve(async (req) => {
 
     const finalMetadata = { ...metadata, ...user_metadata };
     const fullName = body.nome || finalMetadata?.nome || finalMetadata?.full_name || "Usuário Elite";
-    let rawPhone = (body.phone || finalMetadata?.whatsapp || "").replace(/\D/g, "");
     
-    if ((rawPhone.length === 10 || rawPhone.length === 11) && !rawPhone.startsWith("55")) {
-      rawPhone = "55" + rawPhone;
-    }
+    // Mantém apenas os dígitos, sem adicionar prefixos ou forçar o 9
+    let rawPhone = (body.phone || finalMetadata?.whatsapp || "").replace(/\D/g, "");
 
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) throw listError;
@@ -77,8 +75,6 @@ serve(async (req) => {
       userId = authData.user.id;
     }
 
-    // 2. Sincronizar dados na tabela clientes_pagos
-    // Deixamos tipo_assinatura e plano_semanal como NULL se não vierem no metadata
     const { error: dbError } = await supabaseAdmin
       .from('clientes_pagos')
       .upsert({

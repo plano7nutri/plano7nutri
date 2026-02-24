@@ -6,18 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Padroniza o número de WhatsApp para o formato 55DDDNÚMERO
- * Remove caracteres não numéricos e garante o prefixo 55.
+ * Limpa o número de WhatsApp mantendo apenas os dígitos.
+ * Não adiciona prefixos (como 55) nem altera a estrutura do número (como o 9º dígito).
  */
 export function formatWhatsApp(phone: string): string {
-  let clean = phone.replace(/\D/g, "");
-  
-  if (clean.length === 0) return "";
-
-  // Se o número não começa com 55, adicionamos o prefixo
-  if (!clean.startsWith("55")) {
-    clean = "55" + clean;
-  }
-  
-  return clean;
+  // Apenas remove caracteres não numéricos
+  return phone.replace(/\D/g, "");
 }
