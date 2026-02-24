@@ -67,6 +67,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     preferences: "",
   });
 
+  const isLastStep = step === TOTAL_STEPS - 1;
+
   const validateWhatsapp = (val: string) => {
     const formatted = formatWhatsApp(val);
     if (formatted.length === 0) return "";
