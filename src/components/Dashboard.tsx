@@ -262,13 +262,18 @@ const Dashboard = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
               {cardapio && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <button className="w-full bg-primary text-white p-5 rounded-2xl font-black uppercase tracking-tight shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-                      <Utensils size={22} /> Ver Cardápio
-                    </button>
+                    <motion.button 
+                      animate={{ scale: [1, 1.02, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="w-full bg-gradient-to-r from-primary to-emerald-500 text-white p-6 rounded-[2rem] font-black uppercase tracking-tighter shadow-[0_15px_30px_-5px_rgba(16,185,129,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(16,185,129,0.5)] hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center justify-center gap-3 border-b-4 border-emerald-700"
+                    >
+                      <Utensils size={24} className="drop-shadow-md" />
+                      <span className="text-lg">Ver Cardápio</span>
+                    </motion.button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader><DialogTitle>Meu Cardápio de 7 Dias</DialogTitle></DialogHeader>
@@ -279,9 +284,14 @@ const Dashboard = ({
               {lista && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <button className="w-full bg-primary text-white p-5 rounded-2xl font-black uppercase tracking-tight shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-                      <ClipboardList size={22} /> Ver Lista
-                    </button>
+                    <motion.button 
+                      animate={{ scale: [1, 1.02, 1] }}
+                      transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}
+                      className="w-full bg-gradient-to-r from-primary to-emerald-500 text-white p-6 rounded-[2rem] font-black uppercase tracking-tighter shadow-[0_15px_30px_-5px_rgba(16,185,129,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(16,185,129,0.5)] hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center justify-center gap-3 border-b-4 border-emerald-700"
+                    >
+                      <ClipboardList size={24} className="drop-shadow-md" />
+                      <span className="text-lg">Ver Lista</span>
+                    </motion.button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader><DialogTitle>Lista de Compras</DialogTitle></DialogHeader>
