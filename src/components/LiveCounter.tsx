@@ -64,7 +64,7 @@ const LiveCounter = () => {
             <Zap size={12} className="fill-current" />
             Atividade em Tempo Real
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">Nossa comunidade em movimento</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">Nossa comunidade em movimento.</h2>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
