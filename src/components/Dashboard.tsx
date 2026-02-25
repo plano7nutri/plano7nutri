@@ -266,8 +266,8 @@ const Dashboard = ({
               {cardapio && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <button className="w-full bg-white border-2 border-primary/20 p-5 rounded-2xl text-primary font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
-                      <Utensils size={20} /> Ver Cardápio
+                    <button className="w-full bg-primary text-white p-5 rounded-2xl font-black uppercase tracking-tight shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                      <Utensils size={22} /> Ver Cardápio
                     </button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -279,8 +279,8 @@ const Dashboard = ({
               {lista && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <button className="w-full bg-white border-2 border-primary/20 p-5 rounded-2xl text-primary font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
-                      <ClipboardList size={20} /> Ver Lista
+                    <button className="w-full bg-primary text-white p-5 rounded-2xl font-black uppercase tracking-tight shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                      <ClipboardList size={22} /> Ver Lista
                     </button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
