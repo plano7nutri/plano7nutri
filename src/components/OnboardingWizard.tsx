@@ -73,7 +73,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     const formatted = formatWhatsApp(val);
     if (formatted.length === 0) return "";
     if (formatted.length !== 12 && formatted.length !== 13) {
-      return "Número inválido. Digite com DDD: 11987654321 ou 1187654321";
+      return "Número inválido. Digite com DDD.";
     }
     return "";
   };
@@ -218,7 +218,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
                   <input
                     type="tel"
-                    placeholder="11 99999-9999"
+                    placeholder=""
                     value={data.whatsapp}
                     onChange={(e) => {
                       setData({ ...data, whatsapp: e.target.value });
@@ -229,6 +229,10 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                       duplicateFound || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
                     }`}
                   />
+                  
+                  <p className="mt-2 text-xs font-medium text-muted-foreground">
+                    Digite seu WhatsApp com DDD. Se seu número tiver 9 após o DDD, inclua-o. Se não tiver, não coloque.
+                  </p>
                   
                   {whatsappError && (
                     <p className="mt-2 text-xs font-bold text-destructive flex items-center gap-1">
