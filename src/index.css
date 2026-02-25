@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 160 60% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 25 90% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 160 60% 38%;
+    --whatsapp: 142 70% 49%;
+    --whatsapp-foreground: 0 0% 100%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 160 60% 4%;
+    --foreground: 0 0% 98%;
+    --card: 160 60% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 160 60% 5%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 160 60% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 60% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 160 60% 12%;
+    --muted-foreground: 160 10% 65%;
+    --accent: 25 90% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 160 60% 15%;
+    --input: 160 60% 15%;
+    --ring: 160 60% 45%;
+    --whatsapp: 142 70% 49%;
+    --whatsapp-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased transition-colors duration-300;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    /* Correção para altura no mobile */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+@layer utilities {
+  /* Utilitários de altura dinâmicos para mobile */
+  .min-h-screen-dynamic {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  
+  .h-screen-dynamic {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .glass {
+    @apply bg-card/50 backdrop-blur-xl border border-white/10;
+  }
+
+  .text-gradient-hero {
+    @apply bg-gradient-to-r from-primary via-emerald-400 to-accent bg-clip-text text-transparent;
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 30px hsla(160, 60%, 38%, 0.15);
+  }
+
+  .shadow-whatsapp {
+    box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
+  }
+}
