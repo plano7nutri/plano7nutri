@@ -2,10 +2,11 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>Plano 7 - Seu Plano Nutricional em 7 Dias</title>
     <meta name="description" content="Descubra seu metabolismo real e receba um cardápio semanal com a lista de compras baseados em alimentos brasileiros acessíveis, sem invenções respeitando suas restrições, preferências e objetivo semanal. Tudo em segundos." />
     <meta name="author" content="Plano 7" />
+    <meta name="theme-color" content="#4CAF50" />
     <meta name="facebook-domain-verification" content="unp7345u4ha0m3m2yp2mxk8g6dz720" />
 
     <!-- Favicon -->
@@ -28,7 +29,25 @@
     <meta name="twitter:description" content="Seu plano nutricional personalizado de 7 dias, direto no WhatsApp." />
     <meta name="twitter:image" content="https://plano7.inventiia.com.br/og-image.png" />
 
-    <!-- Meta Pixel Code (Script part) -->
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Plano 7",
+      "url": "https://plano7.inventiia.com.br/",
+      "description": "Planejamento nutricional personalizado de 7 dias enviado via WhatsApp.",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "BRL"
+      }
+    }
+    </script>
+
+    <!-- Meta Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -41,11 +60,9 @@
     fbq('init', '1256944279711432');
     fbq('track', 'PageView');
     </script>
-    <!-- End Meta Pixel Code -->
   </head>
 
   <body>
-    <!-- Meta Pixel Code (Noscript part) -->
     <noscript>
       <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1256944279711432&ev=PageView&noscript=1" />
     </noscript>
