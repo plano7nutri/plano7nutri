@@ -230,9 +230,12 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     }`}
                   />
                   
-                  <p className="mt-2 text-xs font-medium text-muted-foreground">
-                    Digite seu WhatsApp com DDD. Se seu número tiver 9 após o DDD, inclua-o. Se não tiver, não coloque.
-                  </p>
+                  <div className="mt-3 p-4 rounded-xl bg-amber-50 border border-amber-200">
+                    <p className="text-sm font-bold text-amber-800 leading-relaxed">
+                      ATENÇÃO: Digite seu WhatsApp com DDD. Se seu número tiver 9 após o DDD, inclua-o. Se não tiver, não coloque. <br />
+                      <span className="text-destructive uppercase mt-1 block">Se não digitar corretamente, o sistema não será ativado.</span>
+                    </p>
+                  </div>
                   
                   {whatsappError && (
                     <p className="mt-2 text-xs font-bold text-destructive flex items-center gap-1">
