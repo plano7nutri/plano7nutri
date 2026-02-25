@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -167,6 +167,9 @@ const Dashboard = ({
               </div>
 
               <div>
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-2">
+                  Plano Gratuito
+                </div>
                 <h2 className="text-2xl font-bold text-zinc-900">{name}</h2>
                 <p className="text-sm text-zinc-500">Membro Plano 7</p>
               </div>
@@ -199,7 +202,6 @@ const Dashboard = ({
                   <span className="text-[10px] font-bold text-orange-600 uppercase block mb-1">Objetivo</span>
                   <p className="text-sm font-bold text-zinc-900">{goalLabel}</p>
                 </div>
-                {/* Restrições e Preferências movidas para cá */}
                 <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
                   <div className="flex items-center gap-2 text-orange-600 mb-1">
                     <ShieldAlert className="w-3 h-3" />
@@ -226,38 +228,50 @@ const Dashboard = ({
             <ImpactPhrase goal={goalLabel} />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group">
+                <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Flame size={80} />
+                </div>
                 <h3 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
                   <Flame size={16} /> Calorias Diárias
                 </h3>
-                <p className="text-3xl font-black text-zinc-900">
-                  {metaCalorias} <span className="text-sm font-bold text-zinc-400">kcal</span>
+                <p className="text-4xl font-black text-zinc-900 tracking-tighter">
+                  {metaCalorias} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </p>
               </div>
-              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group">
+                <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Droplets size={80} />
+                </div>
                 <h3 className="text-sm font-bold text-blue-500 mb-4 flex items-center gap-2">
-                  <Zap size={16} /> Água
+                  <Droplets size={16} /> Meta de Água
                 </h3>
-                <p className="text-3xl font-black text-zinc-900">
-                  {metaAgua} <span className="text-sm font-bold text-zinc-400">ml</span>
+                <p className="text-4xl font-black text-zinc-900 tracking-tighter">
+                  {metaAgua} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">ml</span>
                 </p>
               </div>
             </div>
 
             <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
-              <h3 className="text-sm font-bold text-zinc-900 mb-6 uppercase tracking-widest">Macronutrientes</h3>
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Macronutrientes</h3>
+                <div className="h-px flex-1 bg-zinc-100 ml-4" />
+              </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-zinc-50 rounded-2xl p-4 text-center">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Prot</span>
-                  <p className="text-xl font-black text-zinc-900">{proteina}g</p>
+                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
+                  <Beef className="w-5 h-5 text-red-500 mx-auto mb-3" />
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Proteína</span>
+                  <p className="text-2xl font-black text-zinc-900 tracking-tighter">{proteina}g</p>
                 </div>
-                <div className="bg-zinc-50 rounded-2xl p-4 text-center">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carb</span>
-                  <p className="text-xl font-black text-zinc-900">{carbo}g</p>
+                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
+                  <Wheat className="w-5 h-5 text-amber-600 mx-auto mb-3" />
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carbo</span>
+                  <p className="text-2xl font-black text-zinc-900 tracking-tighter">{carbo}g</p>
                 </div>
-                <div className="bg-zinc-50 rounded-2xl p-4 text-center">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gord</span>
-                  <p className="text-xl font-black text-zinc-900">{gordura}g</p>
+                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
+                  <Pizza className="w-5 h-5 text-orange-500 mx-auto mb-3" />
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gordura</span>
+                  <p className="text-2xl font-black text-zinc-900 tracking-tighter">{gordura}g</p>
                 </div>
               </div>
             </div>
@@ -306,10 +320,12 @@ const Dashboard = ({
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleWhatsAppClick}
-              whileHover={!isBlocked ? { scale: 1.02 } : {}}
+              whileHover={!isBlocked ? { scale: 1.02, y: -2 } : {}}
               whileTap={!isBlocked ? { scale: 0.98 } : {}}
-              className={`block w-full md:max-w-md md:mx-auto rounded-2xl p-6 text-center transition-all shadow-whatsapp mt-6 ${
-                isBlocked ? "bg-zinc-100 text-zinc-400" : "bg-whatsapp text-white"
+              className={`block w-full md:max-w-md md:mx-auto rounded-[2rem] p-6 text-center transition-all shadow-whatsapp mt-6 border-b-4 ${
+                isBlocked 
+                  ? "bg-zinc-100 text-zinc-400 border-zinc-200" 
+                  : "bg-whatsapp text-white border-[#128C7E] hover:shadow-[0_15px_30px_-5px_rgba(37,211,102,0.4)]"
               }`}
             >
               <div className="flex flex-col items-center gap-2">
