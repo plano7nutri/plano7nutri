@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -315,6 +315,18 @@ const Dashboard = ({
               )}
             </div>
 
+            {/* Mensagem de Alerta Piscante */}
+            {!isBlocked && (
+              <motion.div 
+                animate={{ opacity: [1, 0.4, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="flex items-center justify-center gap-2 text-destructive font-black text-center uppercase tracking-tight text-sm sm:text-base mt-8"
+              >
+                <AlertCircle className="w-5 h-5" />
+                Para pedir seu plano 7 chame a Vivi no botão abaixo
+              </motion.div>
+            )}
+
             <motion.a
               href={whatsappUrl}
               target="_blank"
@@ -322,7 +334,7 @@ const Dashboard = ({
               onClick={handleWhatsAppClick}
               whileHover={!isBlocked ? { scale: 1.02, y: -2 } : {}}
               whileTap={!isBlocked ? { scale: 0.98 } : {}}
-              className={`block w-full md:max-w-md md:mx-auto rounded-[2rem] p-6 text-center transition-all shadow-whatsapp mt-6 border-b-4 ${
+              className={`block w-full md:max-w-md md:mx-auto rounded-[2rem] p-6 text-center transition-all shadow-whatsapp mt-4 border-b-4 ${
                 isBlocked 
                   ? "bg-zinc-100 text-zinc-400 border-zinc-200" 
                   : "bg-whatsapp text-white border-[#128C7E] hover:shadow-[0_15px_30px_-5px_rgba(37,211,102,0.4)]"
