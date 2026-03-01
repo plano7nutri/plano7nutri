@@ -323,7 +323,7 @@ const Dashboard = ({
                 className="flex items-center justify-center gap-2 text-destructive font-black text-center uppercase tracking-tight text-sm sm:text-base mt-8"
               >
                 <AlertCircle className="w-5 h-5" />
-                Para pedir seu plano 7 chame a Vivi no botão abaixo
+                Para receber GRÁTIS seu Plano 7, chame a Vivi no botão abaixo👇
               </motion.div>
             )}
 
