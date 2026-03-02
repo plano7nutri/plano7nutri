@@ -17,6 +17,7 @@ import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
 import EasterBonus from "./EasterBonus";
+import DashboardLiveCounter from "./DashboardLiveCounter";
 
 interface DashboardProps {
   name: string;
@@ -145,6 +146,8 @@ const Dashboard = ({
         </div>
 
         <HealthReminder />
+        
+        <DashboardLiveCounter />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <motion.div 
