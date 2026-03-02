@@ -103,7 +103,7 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-[2rem] font-black uppercase tracking-tighter shadow-[0_15px_30px_-5px_rgba(124,58,237,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(124,58,237,0.5)] transition-all flex items-center justify-center gap-3 border-b-4 border-purple-800 relative overflow-hidden group"
+            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-[2rem] font-black uppercase tracking-tight shadow-[0_15px_30px_-5px_rgba(124,58,237,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(124,58,237,0.5)] transition-all flex items-center justify-center gap-3 border-b-4 border-purple-800 relative overflow-hidden group"
           >
             <div className="absolute -right-4 -top-4 opacity-10 group-hover:rotate-12 transition-transform">
               <Rabbit size={80} />
@@ -115,7 +115,7 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
         </DialogTrigger>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem] p-0 border-none bg-white">
           <div className="sticky top-0 bg-purple-600 p-6 flex items-center justify-between z-10 text-white">
-            <div className="flex items-center gap-3 font-black text-xl uppercase tracking-tighter">
+            <div className="flex items-center gap-3 font-black text-xl uppercase tracking-normal">
               <Rabbit className="w-6 h-6" />
               Presente de Páscoa
             </div>
@@ -134,14 +134,14 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
 
             {/* Título da Receita */}
             <div className="text-center">
-              <h2 className="text-2xl md:text-3xl font-black text-zinc-900 uppercase tracking-tighter">
+              <h2 className="text-2xl md:text-3xl font-black text-zinc-900 uppercase tracking-tight leading-tight">
                 {recipe.title}
               </h2>
             </div>
 
             {/* Ingredientes */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
+              <h3 className="text-sm font-black text-zinc-900 uppercase tracking-wide flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-purple-600 rounded-full" />
                 📝 INGREDIENTES:
               </h3>
@@ -157,7 +157,7 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
 
             {/* Modo de Preparo */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
+              <h3 className="text-sm font-black text-zinc-900 uppercase tracking-wide flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-purple-600 rounded-full" />
                 🔪 MODO DE PREPARO:
               </h3>
@@ -177,7 +177,7 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
 
             {/* Rodapé da Receita */}
             <div className="text-center p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-              <p className="text-sm font-black text-zinc-900 uppercase tracking-widest">
+              <p className="text-sm font-black text-zinc-900 uppercase tracking-wide">
                 {recipe.footer}
               </p>
             </div>
