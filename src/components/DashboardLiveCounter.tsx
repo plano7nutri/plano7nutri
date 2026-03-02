@@ -77,13 +77,13 @@ const DashboardLiveCounter = () => {
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -10, opacity: 0 }}
-                    className="text-sm font-black text-zinc-900 tabular-nums block"
+                    className="text-sm font-bold text-zinc-900 tabular-nums block tracking-normal"
                   >
                     {item.value}
                   </motion.span>
                 </AnimatePresence>
               </div>
-              <span className="text-[9px] font-bold uppercase tracking-tighter text-zinc-400 truncate">{item.label}</span>
+              <span className="text-[9px] font-semibold uppercase tracking-normal text-zinc-400 truncate">{item.label}</span>
             </div>
           </div>
         ))}
