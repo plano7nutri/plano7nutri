@@ -38,7 +38,7 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
         ],
         prep: [
           "Derreta o chocolate 70% no micro-ondas de 30 em 30 segundos.",
-          "Espalhe o chocolate derretido em uma forminha de ovo de páscoa (250g) e leve ao congelador por 15 minutos até endurecer.",
+          "Espalhe o chocolate derretido em uma forminha de ovo de páscoa (250g) and leve ao congelador por 15 minutos até endurecer.",
           "Em uma tigela, misture o iogurte desnatado, a baunilha e o adoçante para criar o creme.",
           "Desenforme a casca de chocolate, preencha com o creme de iogurte e decore com os morangos picados por cima.",
           "Deixe na geladeira por 10 minutos antes de comer."
@@ -103,13 +103,13 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-[2rem] font-black uppercase tracking-tight shadow-[0_15px_30px_-5px_rgba(124,58,237,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(124,58,237,0.5)] transition-all flex items-center justify-center gap-3 border-b-4 border-purple-800 relative overflow-hidden group"
+            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-[2rem] font-bold tracking-normal shadow-[0_15px_30px_-5px_rgba(124,58,237,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(124,58,237,0.5)] transition-all flex items-center justify-center gap-3 border-b-4 border-purple-800 relative overflow-hidden group"
           >
             <div className="absolute -right-4 -top-4 opacity-10 group-hover:rotate-12 transition-transform">
               <Rabbit size={80} />
             </div>
             <Gift size={24} className="drop-shadow-md animate-bounce" />
-            <span className="text-lg">Presente de Páscoa da Vivi</span>
+            <span className="text-lg">Presente de Páscoa da Vivi Clique Aqui</span>
             <Sparkles size={20} className="text-amber-300 animate-pulse" />
           </motion.button>
         </DialogTrigger>
