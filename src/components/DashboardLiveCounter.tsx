@@ -44,20 +44,23 @@ const DashboardLiveCounter = () => {
   }, []);
 
   const items = [
-    { label: "Premium", value: stats.premiumOnline, icon: Crown, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-100" },
-    { label: "Online", value: stats.freeOnline, icon: Users, color: "text-primary", bg: "bg-emerald-50", border: "border-emerald-100" },
-    { label: "Hoje", value: stats.menusToday, icon: Utensils, color: "text-orange-500", bg: "bg-orange-50", border: "border-orange-100" },
-    { label: "Mês", value: stats.menusMonth.toLocaleString("pt-BR"), icon: Calendar, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100" }
+    { label: "Premium Online", value: stats.premiumOnline, icon: Crown, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-100" },
+    { label: "Usuários Grátis", value: stats.freeOnline, icon: Users, color: "text-primary", bg: "bg-emerald-50", border: "border-emerald-100" },
+    { label: "Plano 7 Hoje", value: stats.menusToday, icon: Utensils, color: "text-orange-500", bg: "bg-orange-50", border: "border-orange-100" },
+    { label: "Plano 7 este mês", value: stats.menusMonth.toLocaleString("pt-BR"), icon: Calendar, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100" }
   ];
 
   return (
     <div className="mb-10">
-      <div className="flex items-center gap-2 mb-4 px-2">
-        <div className="flex h-2 w-2 relative">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      <div className="flex flex-col gap-1 mb-4 px-2">
+        <div className="flex items-center gap-2">
+          <div className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Atividade em Tempo Real</span>
         </div>
-        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Atividade em Tempo Real</span>
+        <p className="text-xs font-bold text-zinc-500">Nossa comunidade em movimento.</p>
       </div>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
