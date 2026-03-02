@@ -16,6 +16,7 @@ import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
+import EasterBonus from "./EasterBonus";
 
 interface DashboardProps {
   name: string;
@@ -350,6 +351,9 @@ const Dashboard = ({
                 {!isBlocked && <p className="text-xs font-medium opacity-90">Clique para enviar seu planejamento agora!</p>}
               </div>
             </motion.a>
+
+            {/* Bônus de Páscoa da Vivi */}
+            <EasterBonus goal={goalLabel} />
           </div>
         </div>
 
