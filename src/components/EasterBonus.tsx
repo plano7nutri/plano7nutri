@@ -2,12 +2,10 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Gift, Rabbit, Utensils, Clock, CheckCircle2, Sparkles, Info } from "lucide-react";
+import { Gift, Rabbit, Sparkles, Info, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
@@ -29,8 +27,8 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
   const getRecipe = () => {
     if (isWeightLoss) {
       return {
-        title: "Ovo de Colher Fit de Morango",
-        message: "💬 Oi! Aqui é a Vivi! 🐰 Como estamos na época de Páscoa, preparei um presente especial para o seu Plano 7: um Ovo de Páscoa de colher que encaixa perfeitamente no seu déficit calórico. Dá pra matar a vontade de doce e continuar secando!",
+        intro: "💬 Oi! Aqui é a Vivi! 🐰 Como estamos na época de Páscoa, preparei um presente especial para o seu Plano 7: um Ovo de Páscoa de colher que encaixa perfeitamente no seu déficit calórico. Dá pra matar a vontade de doce e continuar secando!",
+        title: "👩‍🍳 RECEITA: Ovo de Colher Fit de Morango",
         ingredients: [
           "80g de Chocolate 70% cacau (para a casca)",
           "1 pote (170g) de Iogurte natural desnatado consistente",
@@ -45,16 +43,15 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
           "Desenforme a casca de chocolate, preencha com o creme de iogurte e decore com os morangos picados por cima.",
           "Deixe na geladeira por 10 minutos antes de comer."
         ],
-        time: "30 minutos",
-        portions: "1 porção",
-        tip: "Essa receita é flexível! Se você tiver alguma restrição ou preferência, pode substituir o iogurte por creme de ricota light e o morango por qualquer outra fruta vermelha da sua preferência."
+        footer: "⏱️ TEMPO: 30 minutos | 🍽️ PORÇÕES: 1 porção",
+        tip: "🔄 Dica da Vivi: Essa receita é flexível! Se você tiver alguma restrição ou preferência, pode substituir o iogurte por creme de ricota light e o morango por qualquer outra fruta vermelha da sua preferência."
       };
     }
 
     if (isHypertrophy) {
       return {
-        title: "Ovo Proteico de Amendoim e Whey",
-        message: "💬 Oi! Aqui é a Vivi! 🐰 Páscoa não é desculpa para perder os macros. Preparei um presente especial para o seu Plano 7: um Ovo de Páscoa proteico e calórico, perfeito para bater sua meta de construção muscular de forma deliciosa!",
+        intro: "💬 Oi! Aqui é a Vivi! 🐰 Páscoa não é desculpa para perder os macros. Preparei um presente especial para o seu Plano 7: um Ovo de Páscoa proteico e calórico, perfeito para bater sua meta de construção muscular de forma deliciosa!",
+        title: "👩‍🍳 RECEITA: Ovo Proteico de Amendoim e Whey",
         ingredients: [
           "100g de Chocolate meio amargo (para a casca)",
           "2 scoops (60g) de Whey Protein (sabor chocolate ou baunilha)",
@@ -69,16 +66,15 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
           "Preencha a casca de chocolate com esse creme proteico.",
           "Salpique a aveia ou o amendoim triturado por cima para dar crocância e deixe gelar por 10 minutos."
         ],
-        time: "25 minutos",
-        portions: "1 porção",
-        tip: "Essa receita é flexível! Se você tiver alguma restrição ou preferência, pode substituir o Whey por proteína vegetal, a pasta de amendoim por pasta de castanhas, e usar o leite da sua preferência."
+        footer: "⏱️ TEMPO: 25 minutos | 🍽️ PORÇÕES: 1 porção",
+        tip: "🔄 Dica da Vivi: Essa receita é flexível! Se você tiver alguma restrição ou preferência, pode substituir o Whey por proteína vegetal, a pasta de amendoim por pasta de castanhas, e usar o leite da sua preferência."
       };
     }
 
     // Default: Vida Saudável
     return {
-      title: "Ovo Funcional de Coco e Castanhas",
-      message: "💬 Oi! Aqui é a Vivi! 🐰 Quem disse que Páscoa não combina com saúde? Preparei um presente especial para o seu Plano 7: um Ovo de Páscoa funcional, feito com comida de verdade, para você aproveitar sem sair da rotina saudável!",
+      intro: "💬 Oi! Aqui é a Vivi! 🐰 Quem disse que Páscoa não combina com saúde? Preparei um presente especial para o seu Plano 7: um Ovo de Páscoa funcional, feito com comida de verdade, para você aproveitar sem sair da rotina saudável!",
+      title: "👩‍🍳 RECEITA: Ovo Funcional de Coco e Castanhas",
       ingredients: [
         "100g de Chocolate 50% ou 70% cacau (para a casca)",
         "4 colheres de sopa de Leite de coco em pó ou leite em pó desnatado",
@@ -93,9 +89,8 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
         "Cubra tudo com o creme de coco.",
         "Finalize com mais um pouco de coco ralado por cima e deixe gelar por 10 minutos."
       ],
-      time: "25 minutos",
-      portions: "1 porção",
-      tip: "Essa receita é flexível! Se você tiver alguma restrição ou preferência, pode substituir as castanhas por sementes (como abóbora ou girassol) e usar o chocolate que melhor se adaptar à sua digestão."
+      footer: "⏱️ TEMPO: 25 minutos | 🍽️ PORÇÕES: 1 porção",
+      tip: "🔄 Dica da Vivi: Essa receita é flexível! Se você tiver alguma restrição ou preferência, pode substituir as castanhas por sementes (como abóbora ou girassol) e usar o chocolate que melhor se adaptar à sua digestão."
     };
   };
 
@@ -133,26 +128,22 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
                 <Rabbit size={24} />
               </div>
               <p className="text-sm md:text-base font-medium text-purple-900 leading-relaxed italic">
-                {recipe.message}
+                {recipe.intro}
               </p>
             </div>
 
             {/* Título da Receita */}
-            <div className="text-center space-y-2">
+            <div className="text-center">
               <h2 className="text-2xl md:text-3xl font-black text-zinc-900 uppercase tracking-tighter">
                 {recipe.title}
               </h2>
-              <div className="flex items-center justify-center gap-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">
-                <span className="flex items-center gap-1"><Clock size={14} /> {recipe.time}</span>
-                <span className="flex items-center gap-1"><Utensils size={14} /> {recipe.portions}</span>
-              </div>
             </div>
 
             {/* Ingredientes */}
             <div className="space-y-4">
               <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-purple-600 rounded-full" />
-                Ingredientes
+                📝 INGREDIENTES:
               </h3>
               <div className="grid grid-cols-1 gap-2">
                 {recipe.ingredients.map((ing, i) => (
@@ -168,7 +159,7 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
             <div className="space-y-4">
               <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-purple-600 rounded-full" />
-                Modo de Preparo
+                🔪 MODO DE PREPARO:
               </h3>
               <div className="space-y-4">
                 {recipe.prep.map((step, i) => (
@@ -184,17 +175,21 @@ const EasterBonus = ({ goal }: EasterBonusProps) => {
               </div>
             </div>
 
+            {/* Rodapé da Receita */}
+            <div className="text-center p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+              <p className="text-sm font-black text-zinc-900 uppercase tracking-widest">
+                {recipe.footer}
+              </p>
+            </div>
+
             {/* Dica da Vivi */}
             <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl flex gap-4 items-start">
               <div className="p-2 rounded-xl bg-amber-100 text-amber-600 shrink-0">
                 <Info size={20} />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-xs font-black text-amber-800 uppercase tracking-widest">Dica da Vivi</h4>
-                <p className="text-sm font-medium text-amber-900 leading-relaxed">
-                  {recipe.tip}
-                </p>
-              </div>
+              <p className="text-sm font-bold text-amber-900 leading-relaxed">
+                {recipe.tip}
+              </p>
             </div>
           </div>
         </DialogContent>
