@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils, X } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils, X, Droplets } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -446,6 +446,28 @@ const PremiumDashboard = ({
         </div>
 
         <ImpactPhrase goal={goalLabel} />
+
+        {/* Metabolismo de Base (TMB e GET) - PREMIUM */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="bg-card/40 border border-emerald-500/10 p-5 rounded-3xl backdrop-blur-sm">
+            <h4 className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+              <Activity size={12} />
+              Metabolismo Basal (TMB)
+            </h4>
+            <p className="text-2xl font-black text-foreground tracking-tighter">
+              {tmb} <span className="text-xs font-bold text-muted-foreground uppercase tracking-normal">kcal</span>
+            </p>
+          </div>
+          <div className="bg-card/40 border border-emerald-500/10 p-5 rounded-3xl backdrop-blur-sm">
+            <h4 className="text-[10px] font-black text-amber-500/60 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+              <Zap size={12} />
+              Gasto Total (GET)
+            </h4>
+            <p className="text-2xl font-black text-foreground tracking-tighter">
+              {get} <span className="text-xs font-bold text-muted-foreground uppercase tracking-normal">kcal</span>
+            </p>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="bg-card border border-emerald-500/10 rounded-3xl p-8 backdrop-blur-sm">

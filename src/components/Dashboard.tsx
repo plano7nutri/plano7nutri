@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -242,6 +242,28 @@ const Dashboard = ({
                 </h3>
                 <p className="text-4xl font-black text-zinc-900 tracking-tighter">
                   {metaAgua} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">ml</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Metas Basais (TMB e GET) */}
+            <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-6 shadow-sm grid grid-cols-2 gap-6">
+              <div>
+                <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                  <Activity size={12} className="text-zinc-400" />
+                  Taxa Basal (TMB)
+                </h4>
+                <p className="text-2xl font-black text-zinc-800 tracking-tight">
+                  {tmb} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
+                </p>
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                  <Zap size={12} className="text-primary" />
+                  Gasto Total (GET)
+                </h4>
+                <p className="text-2xl font-black text-zinc-800 tracking-tight">
+                  {get} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </p>
               </div>
             </div>
