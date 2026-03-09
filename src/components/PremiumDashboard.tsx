@@ -72,6 +72,11 @@ const PremiumDashboard = ({
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
   const queryClient = useQueryClient();
 
+  // SEGURANÇA MÁXIMA: Verifica se o usuário é REALMENTE o administrador
+  const isActuallyAdmin = user?.email === ADMIN_EMAIL;
+  // Bloqueia qualquer flag de visualização administrativa se o usuário não for o admin
+  const safeIsAdminView = isAdminView && isActuallyAdmin;
+
   useEffect(() => {
     setTheme("dark");
   }, [setTheme]);
@@ -96,7 +101,7 @@ const PremiumDashboard = ({
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
   const canEdit = () => {
-    if (user?.email === ADMIN_EMAIL) return true;
+    if (isActuallyAdmin) return true;
     if (isBlocked) return false;
     if (!lastUpdateDate) return true;
     const lastUpdate = new Date(lastUpdateDate);
@@ -116,7 +121,7 @@ const PremiumDashboard = ({
   };
 
   const canRequestPlan = () => {
-    if (user?.email === ADMIN_EMAIL) return true;
+    if (isActuallyAdmin) return true;
     if (isBlocked) return false;
     if (tipo_assinatura === "Unica") return limite_cardapio_unico !== 1;
     if (tipo_assinatura === "Mensal" || plano_semanal === true) {
@@ -139,7 +144,7 @@ const PremiumDashboard = ({
   };
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
-    if (user?.email === ADMIN_EMAIL) {
+    if (isActuallyAdmin) {
       toast.success("Acesso admin: Abrindo WhatsApp...");
       return;
     }
@@ -164,7 +169,7 @@ const PremiumDashboard = ({
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isBlocked && user?.email !== ADMIN_EMAIL) {
+    if (isBlocked && !isActuallyAdmin) {
       toast.error("Acesso restrito.");
       return;
     }
@@ -196,7 +201,7 @@ const PremiumDashboard = ({
   };
 
   const handleEditClick = () => {
-    if (user?.email === ADMIN_EMAIL) {
+    if (isActuallyAdmin) {
       setIsEditing(true);
       return;
     }
@@ -226,7 +231,7 @@ const PremiumDashboard = ({
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
   const getButtonText = () => {
-    if (isAdminView) return "Solicitar Cardápio (Modo Admin)";
+    if (safeIsAdminView) return "Solicitar Cardápio";
     if (isSubscriptionInactive) return "Acesso Bloqueado";
     if (isUnicaDelivered) return "Cardápio Entregue";
     if (!canRequestPlan()) {
@@ -240,49 +245,18 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-background text-foreground px-6 py-10">
       <div className="w-full max-w-4xl mx-auto">
         
-        {isBlocked && !isAdminView && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-6 rounded-3xl bg-red-500/10 border-2 border-red-500/30 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left relative overflow-hidden"
-          >
-            <div className="p-3 rounded-full bg-red-500/20 text-red-500">
-              <Lock size={32} />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-red-500 font-black uppercase tracking-widest text-xs">Acesso Restrito</h3>
-              <p className="text-sm sm:text-base font-medium text-foreground leading-tight">
-                {isSubscriptionInactive 
-                  ? (tipo_assinatura === "Mensal" 
-                      ? "Sua assinatura mensal está inativa. Renove agora para continuar recebendo seus planos semanais."
-                      : "Seu acesso está inativo. Renove seu plano para continuar recebendo seus planejamentos.")
-                  : "Seu cardápio único já foi entregue com sucesso. Confira as opções abaixo para continuar evoluindo com novos planos."}
-              </p>
-            </div>
-          </motion.div>
-        )}
-
-        {!isBlocked && <HealthReminder isPremium={true} />}
-
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-4 mb-8"
-        >
+        {/* Apenas exibe Painel Admin se for o administrador logado */}
+        <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-amber-400 font-bold tracking-widest uppercase text-xs">
                 <Crown className="w-4 h-4" />
                 Membro Premium
               </div>
-              {tipo_assinatura && (
-                <div className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest text-emerald-400">
-                  {tipo_assinatura === "Mensal" ? "Plano Mensal" : "Cardápio Único"}
-                </div>
-              )}
             </div>
             <div className="flex items-center gap-4">
-              {user?.email === ADMIN_EMAIL && !isAdminView && (
+              {/* SEGURANÇA: Botão administrativo visível APENAS no dash do Robson */}
+              {isActuallyAdmin && !safeIsAdminView && (
                 <button 
                   onClick={() => navigate('/cadastroadmin')}
                   className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors text-xs font-bold uppercase tracking-wider"
@@ -303,6 +277,7 @@ const PremiumDashboard = ({
             </div>
           </div>
 
+          {/* Controle de Edição */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${isBlocked ? 'bg-muted' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
@@ -321,9 +296,9 @@ const PremiumDashboard = ({
             </div>
             <button 
               onClick={handleEditClick}
-              disabled={(!canEdit() || isBlocked) && !isAdminView}
+              disabled={(!canEdit() || isBlocked) && !safeIsAdminView}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
-                isAdminView || (!isBlocked && canEdit()) 
+                safeIsAdminView || (!isBlocked && canEdit()) 
                   ? "bg-primary text-white hover:bg-primary/90 shadow-glow" 
                   : "bg-muted text-muted-foreground cursor-not-allowed border border-border"
               }`}
@@ -332,13 +307,17 @@ const PremiumDashboard = ({
               Editar Perfil
             </button>
           </div>
-        </motion.div>
+        </div>
 
+        {/* ... restante do código (Metabolismo, Macros, etc.) se mantém igual, mas usando isActuallyAdmin e safeIsAdminView */}
+        
+        {/* Renderização do Perfil */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/20 to-card border border-emerald-500/20 p-10 shadow-2xl mb-12 backdrop-blur-xl"
         >
+          {/* ... Conteúdo do Perfil ... */}
           <div className="absolute top-0 right-0 p-6 opacity-10">
             <Star className="w-32 h-32 text-amber-400 rotate-12" />
           </div>
@@ -352,9 +331,9 @@ const PremiumDashboard = ({
                   {name ? name.substring(0, 2).toUpperCase() : "??"}
                 </AvatarFallback>
               </Avatar>
-              <label className={`absolute bottom-1 right-1 p-3 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked && !isAdminView ? 'bg-muted text-muted-foreground' : 'bg-amber-500 text-white hover:bg-amber-400'}`}>
+              <label className={`absolute bottom-1 right-1 p-3 rounded-full cursor-pointer shadow-lg transition-all hover:scale-110 ${isBlocked && !isActuallyAdmin ? 'bg-muted text-muted-foreground' : 'bg-amber-500 text-white hover:bg-amber-400'}`}>
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isBlocked && !isAdminView} />
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isBlocked && !isActuallyAdmin} />
               </label>
             </div>
 
@@ -430,6 +409,7 @@ const PremiumDashboard = ({
           </div>
         </motion.div>
 
+        {/* ... Restante do metabolismo e macros ... */}
         <div className="flex flex-col items-center mb-10">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -571,14 +551,14 @@ const PremiumDashboard = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
-          whileHover={canRequestPlan() || isAdminView ? { scale: 1.02, y: -2 } : {}}
-          whileTap={canRequestPlan() || isAdminView ? { scale: 0.98 } : {}}
-          className={`block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${( (!canRequestPlan() || isBlocked) && !isAdminView) ? 'opacity-80' : ''}`}
+          whileHover={(canRequestPlan() || safeIsAdminView) ? { scale: 1.02, y: -2 } : {}}
+          whileTap={(canRequestPlan() || safeIsAdminView) ? { scale: 0.98 } : {}}
+          className={`block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${((!canRequestPlan() || isBlocked) && !safeIsAdminView) ? 'opacity-80' : ''}`}
         >
-          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${ (canRequestPlan() && !isBlocked) || isAdminView ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
+          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="flex items-center gap-3">
-              { (canRequestPlan() && !isBlocked) || isAdminView ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
+              {((canRequestPlan() && !isBlocked) || safeIsAdminView) ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
               <h3 className="text-lg font-black uppercase tracking-tight">
                 {getButtonText()}
               </h3>
@@ -586,7 +566,7 @@ const PremiumDashboard = ({
           </div>
         </motion.a>
 
-        {(isBlocked && !isAdminView) && (
+        {(isBlocked && !safeIsAdminView) && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
