@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Testimonials from "./Testimonials";
 import Features from "./Features";
 import LiveCounter from "./LiveCounter";
+import WhatsAppMockup from "./WhatsAppMockup";
 
 const steps = [
   {
@@ -126,6 +127,9 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
 
       {/* Seção Como Funciona / Benefícios */}
       <Features />
+
+      {/* Mockup do WhatsApp */}
+      <WhatsAppMockup />
 
       {/* Prova Social */}
       <Testimonials onStart={onStart} onLogin={onLogin} />
