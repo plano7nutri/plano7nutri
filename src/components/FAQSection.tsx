@@ -49,7 +49,7 @@ const FAQSection = ({ isDark = false }: FAQSectionProps) => {
     {
       id: "subs",
       question: "Posso substituir os alimentos sugeridos?",
-      answer: "Sim! O Plano 7 foca em macronutrientes (proteínas, carboidratos e gorduras). Se o plano sugere frango, você pode substituir por outra proteína equivalente (como ovo ou carne magra) mantendo as quantidades. O objetivo é dar flexibilidade usando o que você já tem na geladeira.",
+      answer: "Não! Resultados reais exigem o seguimento exato do protocolo gerado. Cada alimento e porção no seu Plano 7 foi matematicamente calculado especificamente para o seu metabolismo e objetivo. Alterar ingredientes ou quantidades invalida a estratégia nutricional e compromete o resultado final esperado em 7 dias. Aqui, não negociamos o método.",
       icon: <Utensils className="w-5 h-5" />
     },
     {
