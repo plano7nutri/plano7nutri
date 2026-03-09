@@ -52,13 +52,18 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "Mantenha o foco e a disciplina, *Amanda*! Cada refeição é um passo em direção aos seus objetivos. 💪\n\n🛍️ *Sua lista de compras personalizada está pronta!*\nCalculei cada quantidade com base no seu cardápio dos 7 dias. 💪",
+    text: "Mantenha o foco e a disciplina, *Amanda*! Cada refeição é um passo em direção aos seus objetivos. 💪",
     time: "12:09"
   },
   {
     sender: "vivi",
-    text: "🛒 *LISTA DE COMPRAS SEMANAL*\n\n🥩 *PROTEÍNAS*:\n- Frango — 1130 g\n- Carne Bovina — 1100 g\n- Peixe — 360 g\n- Atum em água — 230 g\n- Carne Seca — 180 g\n\n🍞 *CARBOIDRATOS & GRÃOS*:\n- Arroz integral — 500 g\n- Arroz branco — 500 g\n- Feijão — 500 g\n- Lentilha — 500 g\n- Macarrão integral — 500 g\n- Aveia — 500 g\n- Granola — 250 g\n- Pão integral — 1 pacote\n- Pão francês integral — 2 unidades\n- Tapioca — 1 pacote (500g)\n\n🥦 *LEGUMES, VERDURAS & FRUTAS*:\n- Frutas vermelhas — 200 g\n- Banana — 2 unidades\n- Maçã — 2 unidades\n- Pera — 1 unidade\n- Mamão — 1 unidade\n- E muito mais...",
+    text: "🛍️ *Sua lista de compras personalizada está pronta!*\nCalculei cada quantidade com base no seu cardápio dos 7 dias. 💪",
     time: "12:09"
+  },
+  {
+    sender: "vivi",
+    text: "🛒 *LISTA DE COMPRAS SEMANAL*\n\n🥩 *PROTEÍNAS*:\n- Frango — 1130 g\n- Carne Bovina — 1100 g\n- Peixe — 360 g\n- Atum em água — 230 g\n- Carne Seca — 180 g\n\n🍞 *CARBOIDRATOS & GRÃOS*:\n- Arroz integral — 500 g\n- Arroz branco — 500 g\n- Feijão — 500 g\n- Lentilha — 500 g\n- Macarrão integral — 500 g\n- Aveia — 500 g\n- Granola — 250 g\n- Pão integral — 1 pacote\n- Pão francês integral — 2 unidades\n- Tapioca — 1 pacote (500g)\n\n🥦 *LEGUMES, VERDURAS & FRUTAS*:\n- Frutas vermelhas — 200 g\n- Banana — 2 unidades\n- Maçã — 2 unidades\n- Pera — 1 unidade\n- Mamão — 1 unidade\n- Laranja — 1 unidade\n- Kiwi — 1 unidade\n- Tomate — 4 unidades\n- Cenoura — 2 unidades\n- Brócolis — 1 unidade\n- Pepino — 1 unidade\n- Abóbora — 1 unidade\n- Abobrinha — 1 unidade\n- Vagem — 1 unidade\n- Beterraba — 1 unidade\n- Couve-flor — 1 unidade\n- Aspargos — 1 maço\n- Batata doce — 2 unidades\n- Batata — 2 unidades\n- Mandioca — 1 unidade\n- Alface — 2 maços\n- Couve — 1 maço\n- Espinafre — 1 maço\n- Rúcula — 1 maço\n\n🥛 *LATICÍNIOS & OVOS*:\n- Ovos — 24 unidades\n- Queijo minas frescal — 250 g\n- Iogurte natural — 850 g\n- Leite desnatado — 1000 ml\n- Requeijão light — 1 pote (200g)\n\n🫙 *TEMPEROS, ÓLEOS & OUTROS*:\nA gosto mas com moderação\n- Azeite de oliva\n- Sal\n- Vinagre\n- Alho\n- Cebola\n- Pimenta-do-reino\n- Limão\n- Castanhas — 30 g\n- Pasta de amendoim — 1 pote (200g)\n- Geleia diet — 1 pote (200g)\n- Mel — 1 pote (200g)\n- Gengibre — 1 unidade\n- Farofa — 1 pacote (250g)\n- Whey protein — 1 pote (900g)",
+    time: "12:10"
   },
   {
     sender: "vivi",
@@ -82,7 +87,7 @@ const WhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
-          // 5 segundos de animação de digitação
+          // 5 segundos de animação de digitação conforme solicitado
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
@@ -93,7 +98,7 @@ const WhatsAppMockup = () => {
           setMsgIndex(prev => prev + 1);
         }
       } else {
-        // 6 segundos de espera antes de recomeçar
+        // 6 segundos de espera antes de recomeçar conforme solicitado
         timeout = setTimeout(() => {
           setCurrentMessages([]);
           setMsgIndex(0);
