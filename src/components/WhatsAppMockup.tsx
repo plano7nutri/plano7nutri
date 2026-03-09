@@ -101,10 +101,14 @@ const WhatsAppMockup = () => {
   const [currentMessages, setCurrentMessages] = useState<typeof messages>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
+
+    // Se estiver pausado, não faz nada
+    if (isPaused) return;
 
     const processNextMessage = () => {
       if (msgIndex < messages.length) {
@@ -112,7 +116,7 @@ const WhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
-          // 5 segundos de animação de digitação conforme solicitado
+          // 5 segundos de animação de digitação
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
@@ -123,7 +127,7 @@ const WhatsAppMockup = () => {
           setMsgIndex(prev => prev + 1);
         }
       } else {
-        // 6 segundos de espera antes de recomeçar conforme solicitado
+        // 6 segundos de espera antes de recomeçar
         timeout = setTimeout(() => {
           setCurrentMessages([]);
           setMsgIndex(0);
@@ -137,16 +141,16 @@ const WhatsAppMockup = () => {
       clearTimeout(timeout);
       clearTimeout(actionTimeout);
     };
-  }, [msgIndex]);
+  }, [msgIndex, isPaused]);
 
   useEffect(() => {
-    if (scrollRef.current) {
+    if (scrollRef.current && !isPaused) {
       scrollRef.current.scrollTo({
         top: scrollRef.current.scrollHeight,
         behavior: 'smooth'
       });
     }
-  }, [currentMessages, isTyping]);
+  }, [currentMessages, isTyping, isPaused]);
 
   const formatText = (text: string) => {
     const parts = text.split(/(\*.*?\*)/g);
@@ -205,7 +209,10 @@ const WhatsAppMockup = () => {
           {/* Chat Background */}
           <div 
             ref={scrollRef}
-            className="flex-1 p-3 overflow-y-auto space-y-3 relative scroll-area-mockup"
+            onPointerDown={() => setIsPaused(true)}
+            onPointerUp={() => setIsPaused(false)}
+            onPointerLeave={() => setIsPaused(false)}
+            className="flex-1 p-3 overflow-y-auto space-y-3 relative scroll-area-mockup cursor-pointer active:cursor-grabbing"
             style={{ 
               backgroundColor: "#E5DDD5",
               backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')",
