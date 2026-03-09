@@ -231,7 +231,7 @@ const PremiumDashboard = ({
   const whatsappUrl = `https://wa.me/5511910183401?text=${encodeURIComponent("*Olá, sou cliente Premium e quero meu planejamento completo da semana*")}`;
 
   const getButtonText = () => {
-    if (safeIsAdminView) return "Solicitar Cardápio";
+    if (safeIsAdminView) return "Solicitar Cardápio de Elite";
     if (isSubscriptionInactive) return "Acesso Bloqueado";
     if (isUnicaDelivered) return "Cardápio Entregue";
     if (!canRequestPlan()) {
@@ -309,15 +309,12 @@ const PremiumDashboard = ({
           </div>
         </div>
 
-        {/* ... restante do código (Metabolismo, Macros, etc.) se mantém igual, mas usando isActuallyAdmin e safeIsAdminView */}
-        
         {/* Renderização do Perfil */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/20 to-card border border-emerald-500/20 p-10 shadow-2xl mb-12 backdrop-blur-xl"
         >
-          {/* ... Conteúdo do Perfil ... */}
           <div className="absolute top-0 right-0 p-6 opacity-10">
             <Star className="w-32 h-32 text-amber-400 rotate-12" />
           </div>
@@ -409,7 +406,6 @@ const PremiumDashboard = ({
           </div>
         </motion.div>
 
-        {/* ... Restante do metabolismo e macros ... */}
         <div className="flex flex-col items-center mb-10">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -559,7 +555,7 @@ const PremiumDashboard = ({
           <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
             <div className="flex items-center gap-3">
               {((canRequestPlan() && !isBlocked) || safeIsAdminView) ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
-              <h3 className="text-lg font-black uppercase tracking-tight">
+              <h3 className="text-lg font-black uppercase tracking-normal">
                 {getButtonText()}
               </h3>
             </div>
