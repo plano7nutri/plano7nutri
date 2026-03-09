@@ -7,6 +7,11 @@ const freeItems = [
     emoji: "🔥",
     title: "Cálculo do seu metabolismo",
     description: "TMB e GET calculados com precisão científica baseados nos seus dados reais"
+  },
+  {
+    emoji: "🔐",
+    title: "Área de membros grátis",
+    description: "Acesse seus cálculos e histórico a qualquer momento usando apenas seu WhatsApp"
   }
 ];
 
@@ -35,6 +40,11 @@ const planItems = [
     emoji: "🎯",
     title: "Respeitando seus objetivos",
     description: "Emagrecer, ganhar massa ou manter o peso — o plano é ajustado para você"
+  },
+  {
+    emoji: "🎁",
+    title: "Bônus e Receitas da Vivi",
+    description: "Dicas exclusivas e receitas sazonais para variar seu planejamento com saúde"
   }
 ];
 
