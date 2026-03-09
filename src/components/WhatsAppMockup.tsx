@@ -12,7 +12,7 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "Olá *Você*, aqui é a *Vivi* novamente! 😊\n\nVou te enviar agora seu cardápio semanal baseado em:\n✅ *Objetivo Semanal*: Ganhar Massa Muscular (Hipertrofia)\n✅ *Restrições*: Nenhuma\n✅ *Preferências*: Nenhuma\n✅ *Meta de Calorias*: 1930 kcal\n✅ *Meta de água*: 2000 ml\n✅ *TMB*: 1220 kcal\n✅ *GET*: 1678 kcal\n✅ *Proteína dia*: 145g\n✅ *Carboidrato dia*: 241g\n✅ *Gordura do dia*: 43g\n━━━━━━━━━━━━━━━━━━━━",
+    text: "Olá *Você*, aqui é a *Vivi* novamente! 😊\n\nVou te enviar agora seu cardápio semanal baseado em:\n✅ *Objetivo Semanal*: Ganhar Massa Muscular (Hipertrofia)\n✅ *Restrições*: Nenhuma\n✅ *Preferências*: Nenhuma\n✅ *Meta de Calorias*: 1930 kcal\n✅ *Meta de água*: 2000 ml\n✅ *TMB*: 1220 kcal\n✅ *GET*: 1678 kcal\n✅ *Proteína dia*: 145g\n✅ *Carboidrato dia*: 241g\n✅ *Gordura do dia*: 43g",
     time: "12:05"
   },
   {
@@ -27,12 +27,12 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "━━━━━━━━━━━━━━━━━━━━\nMantenha o foco e a disciplina, *Você*! Cada refeição é um passo em direção aos seus objetivos. 💪\n\n🛍️ *Sua lista de compras personalizada está pronta!*\nCalculei cada quantidade com base no seu cardápio dos 7 dias. 💪",
+    text: "Mantenha o foco e a disciplina, *Você*! Cada refeição é um passo em direção aos seus objetivos. 💪\n\n🛍️ *Sua lista de compras personalizada está pronta!*\nCalculei cada quantidade com base no seu cardápio dos 7 dias. 💪",
     time: "12:08"
   },
   {
     sender: "vivi",
-    text: "🛒 *LISTA DE COMPRAS SEMANAL*\n\n🥩 *PROTEÍNAS*:\n- Frango — 1130 g\n- Carne Bovina — 1100 g\n- Peixe — 360 g\n- Atum em água — 230 g\n- Carne Seca — 180 g\n\n🥦 *LEGUMES, VERDURAS & FRUTAS*:\n- Ovos — 24 unidades\n- Batata Doce — 2 unidades\n- E muito mais...\n\n━━━━━━━━━━━━━━━━━━━━",
+    text: "🛒 *LISTA DE COMPRAS SEMANAL*\n\n🥩 *PROTEÍNAS*:\n- Frango — 1130 g\n- Carne Bovina — 1100 g\n- Peixe — 360 g\n- Atum em água — 230 g\n- Carne Seca — 180 g\n\n🥦 *LEGUMES, VERDURAS & FRUTAS*:\n- Ovos — 24 unidades\n- Batata Docas — 2 unidades\n- E muito mais...",
     time: "12:08"
   },
   {
@@ -57,24 +57,26 @@ const WhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
+          // 5 segundos de animação de digitação conforme solicitado
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
             setMsgIndex(prev => prev + 1);
-          }, 2000);
+          }, 5000);
         } else {
           setCurrentMessages(prev => [...prev, nextMsg]);
           setMsgIndex(prev => prev + 1);
         }
       } else {
+        // 6 segundos de espera antes de recomeçar conforme solicitado
         timeout = setTimeout(() => {
           setCurrentMessages([]);
           setMsgIndex(0);
-        }, 5000);
+        }, 6000);
       }
     };
 
-    const actionTimeout = setTimeout(processNextMessage, msgIndex === 0 ? 500 : 4000);
+    const actionTimeout = setTimeout(processNextMessage, msgIndex === 0 ? 500 : 2000);
 
     return () => {
       clearTimeout(timeout);
@@ -148,7 +150,7 @@ const WhatsAppMockup = () => {
           {/* Chat Background */}
           <div 
             ref={scrollRef}
-            className="flex-1 p-3 overflow-y-auto space-y-3 relative scrollbar-visible"
+            className="flex-1 p-3 overflow-y-auto space-y-3 relative scroll-area-mockup"
             style={{ 
               backgroundColor: "#E5DDD5",
               backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')",
@@ -218,14 +220,14 @@ const WhatsAppMockup = () => {
       </div>
 
       <style jsx global>{`
-        .scrollbar-visible::-webkit-scrollbar {
-          width: 4px;
+        .scroll-area-mockup::-webkit-scrollbar {
+          width: 5px;
         }
-        .scrollbar-visible::-webkit-scrollbar-track {
+        .scroll-area-mockup::-webkit-scrollbar-track {
           background: transparent;
         }
-        .scrollbar-visible::-webkit-scrollbar-thumb {
-          background: rgba(0, 0, 0, 0.1);
+        .scroll-area-mockup::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.15);
           border-radius: 10px;
         }
       `}</style>
