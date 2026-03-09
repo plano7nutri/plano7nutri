@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap, Info } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -226,23 +226,25 @@ const Dashboard = ({
                 <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
                   <Flame size={80} />
                 </div>
-                <h3 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-primary mb-1 flex items-center gap-2">
                   <Flame size={16} /> Calorias Diárias
                 </h3>
-                <p className="text-4xl font-black text-zinc-900 tracking-tighter">
+                <p className="text-4xl font-black text-zinc-900 tracking-tighter mb-1">
                   {metaCalorias} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </p>
+                <p className="text-[10px] text-zinc-400 font-medium">Energia ideal para o seu objetivo semanal.</p>
               </div>
               <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group">
                 <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
                   <Droplets size={80} />
                 </div>
-                <h3 className="text-sm font-bold text-blue-500 mb-4 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-blue-500 mb-1 flex items-center gap-2">
                   <Droplets size={16} /> Meta de Água
                 </h3>
-                <p className="text-4xl font-black text-zinc-900 tracking-tighter">
+                <p className="text-4xl font-black text-zinc-900 tracking-tighter mb-1">
                   {metaAgua} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">ml</span>
                 </p>
+                <p className="text-[10px] text-zinc-400 font-medium">Hidratação baseada no seu peso corporal.</p>
               </div>
             </div>
 
@@ -253,24 +255,29 @@ const Dashboard = ({
                   <Activity size={12} className="text-zinc-400" />
                   Taxa Basal (TMB)
                 </h4>
-                <p className="text-2xl font-black text-zinc-800 tracking-tight">
+                <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1">
                   {tmb} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </p>
+                <p className="text-[9px] text-zinc-400 leading-tight">Gasto calórico em repouso absoluto.</p>
               </div>
               <div>
                 <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
                   <Zap size={12} className="text-primary" />
                   Gasto Total (GET)
                 </h4>
-                <p className="text-2xl font-black text-zinc-800 tracking-tight">
+                <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1">
                   {get} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </p>
+                <p className="text-[9px] text-zinc-400 leading-tight">Total gasto no dia incluindo atividades.</p>
               </div>
             </div>
 
             <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Macronutrientes</h3>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Macronutrientes</h3>
+                  <p className="text-[10px] text-zinc-400 font-medium">Distribuição ideal de nutrientes para seu corpo.</p>
+                </div>
                 <div className="h-px flex-1 bg-zinc-100 ml-4" />
               </div>
               <div className="grid grid-cols-3 gap-4">

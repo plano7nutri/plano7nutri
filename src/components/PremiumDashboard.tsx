@@ -454,18 +454,20 @@ const PremiumDashboard = ({
               <Activity size={12} />
               Metabolismo Basal (TMB)
             </h4>
-            <p className="text-2xl font-black text-foreground tracking-tighter">
+            <p className="text-2xl font-black text-foreground tracking-tighter mb-1">
               {tmb} <span className="text-xs font-bold text-muted-foreground uppercase tracking-normal">kcal</span>
             </p>
+            <p className="text-[9px] text-zinc-400 leading-tight">Energia gasta pelo corpo para manter funções vitais.</p>
           </div>
           <div className="bg-card/40 border border-emerald-500/10 p-5 rounded-3xl backdrop-blur-sm">
             <h4 className="text-[10px] font-black text-amber-500/60 uppercase tracking-widest mb-1 flex items-center gap-1.5">
               <Zap size={12} />
               Gasto Total (GET)
             </h4>
-            <p className="text-2xl font-black text-foreground tracking-tighter">
+            <p className="text-2xl font-black text-foreground tracking-tighter mb-1">
               {get} <span className="text-xs font-bold text-muted-foreground uppercase tracking-normal">kcal</span>
             </p>
+            <p className="text-[9px] text-zinc-400 leading-tight">Gasto calórico total diário incluindo suas atividades.</p>
           </div>
         </div>
 
@@ -478,12 +480,14 @@ const PremiumDashboard = ({
             <div className="space-y-8">
               <div className="flex justify-between items-end">
                 <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Meta de Queima</p>
-                  <p className="text-4xl font-black text-emerald-400 tracking-tighter">{(metaCalorias || 0).toLocaleString()} <span className="text-base font-bold text-muted-foreground uppercase tracking-normal">kcal</span></p>
+                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-1">Meta de Queima</p>
+                  <p className="text-4xl font-black text-emerald-400 tracking-tighter mb-1">{(metaCalorias || 0).toLocaleString()} <span className="text-base font-bold text-muted-foreground uppercase tracking-normal">kcal</span></p>
+                  <p className="text-[9px] text-zinc-500 italic">Meta calórica ajustada para o seu objetivo.</p>
                 </div>
                 <div className="text-right space-y-2">
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Água</p>
-                  <p className="text-3xl font-black text-blue-400 tracking-tighter">{metaAgua || 0} <span className="text-base font-bold text-muted-foreground uppercase tracking-normal">ml</span></p>
+                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-1">Água</p>
+                  <p className="text-3xl font-black text-blue-400 tracking-tighter mb-1">{metaAgua || 0} <span className="text-base font-bold text-muted-foreground uppercase tracking-normal">ml</span></p>
+                  <p className="text-[9px] text-zinc-500 italic">Consumo diário recomendado.</p>
                 </div>
               </div>
             </div>
@@ -508,6 +512,7 @@ const PremiumDashboard = ({
                 <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}g</p>
               </div>
             </div>
+            <p className="mt-4 text-[9px] text-zinc-500 text-center italic">Gramas recomendadas por dia para cada nutriente.</p>
           </motion.div>
         </div>
 
