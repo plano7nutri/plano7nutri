@@ -139,8 +139,9 @@ const WhatsAppMockup = () => {
       }
     };
 
-    // 3000ms especificamente para a primeira resposta da Vivi (index 1)
-    const delay = msgIndex === 1 ? 3000 : 1200;
+    // O delay de 3000ms ocorre QUANDO o msgIndex é 2 (após o card de dados já ter aparecido)
+    // Para todas as outras transições, usamos 1200ms.
+    const delay = msgIndex === 2 ? 3000 : 1200;
     const actionTimeout = setTimeout(processNextMessage, delay);
 
     return () => {
