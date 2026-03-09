@@ -45,7 +45,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <UserCheck className="w-4 h-4" />
-            Já tenho um plano
+            Login Plano Pago
           </button>
         </div>
       </nav>
