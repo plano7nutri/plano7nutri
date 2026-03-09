@@ -120,24 +120,27 @@ const WhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
+          // Reduzi o tempo de digitação para os balões normais para ser mais fluido
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
             setMsgIndex(prev => prev + 1);
-          }, 5000);
+          }, 1500);
         } else {
           setCurrentMessages(prev => [...prev, nextMsg]);
           setMsgIndex(prev => prev + 1);
         }
       } else {
+        // Delay de 5000ms no final da sequência antes de reiniciar
         timeout = setTimeout(() => {
           setCurrentMessages([]);
           setMsgIndex(0);
-        }, 6000);
+        }, 5000);
       }
     };
 
-    const actionTimeout = setTimeout(processNextMessage, msgIndex === 0 ? 500 : 1200);
+    // Delay de 1200ms para a primeira interação e mensagens subsequentes
+    const actionTimeout = setTimeout(processNextMessage, 1200);
 
     return () => {
       clearTimeout(timeout);
