@@ -42,7 +42,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </div>
           <button
             onClick={() => navigate('/login')}
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+            className="text-xs font-bold bg-emerald-600 text-white px-4 py-2 rounded-full hover:bg-emerald-700 transition-all flex items-center gap-2 shadow-sm uppercase tracking-wider"
           >
             <UserCheck className="w-4 h-4" />
             Login Plano Pago
