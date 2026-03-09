@@ -62,7 +62,7 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "🛒 *LISTA DE COMPRAS SEMANAL*",
+    text: "🛒 *LISTA DE COMPRAS*",
     time: "12:10"
   },
   {
