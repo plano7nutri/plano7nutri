@@ -27,6 +27,16 @@ const planItems = [
     description: "Todos os ingredientes da semana em uma lista simples para você ir ao mercado"
   },
   {
+    emoji: "💎",
+    title: "Cálculo metabólico dinâmico",
+    description: "Recalcule seu metabolismo sempre que seu peso mudar para manter o plano 100% eficiente"
+  },
+  {
+    emoji: "🔑",
+    title: "Área VIP exclusiva",
+    description: "Seu histórico completo de cardápios e listas sempre disponíveis na palma da mão"
+  },
+  {
     emoji: "🇧🇷",
     title: "Alimentos brasileiros acessíveis",
     description: "Arroz, feijão, frango, ovo — sem ingredientes importados ou caros"
