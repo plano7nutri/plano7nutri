@@ -60,17 +60,25 @@
     @apply border-border;
   }
 
+  html, body {
+    @apply overflow-x-hidden w-full m-0 p-0;
+  }
+
   body {
     @apply bg-background text-foreground antialiased transition-colors duration-300;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    /* Correção para altura no mobile */
     min-height: 100vh;
     min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #root {
+    @apply w-full flex-1 flex flex-col items-center;
   }
 }
 
 @layer utilities {
-  /* Utilitários de altura dinâmicos para mobile */
   .min-h-screen-dynamic {
     min-height: 100vh;
     min-height: 100dvh;
