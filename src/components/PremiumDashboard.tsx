@@ -21,6 +21,7 @@ import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
+import EasterBonus from "./EasterBonus";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -541,6 +542,9 @@ const PremiumDashboard = ({
             </Dialog>
           )}
         </div>
+
+        {/* Bônus de Páscoa da Vivi - Agora no Premium também */}
+        <EasterBonus goal={goalLabel} />
 
         <motion.a
           href={whatsappUrl}
