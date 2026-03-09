@@ -139,8 +139,9 @@ const WhatsAppMockup = () => {
       }
     };
 
-    // Delay de 1200ms para a primeira interação e mensagens subsequentes
-    const actionTimeout = setTimeout(processNextMessage, 1200);
+    // 3000ms especificamente para a primeira resposta da Vivi (index 1)
+    const delay = msgIndex === 1 ? 3000 : 1200;
+    const actionTimeout = setTimeout(processNextMessage, delay);
 
     return () => {
       clearTimeout(timeout);
