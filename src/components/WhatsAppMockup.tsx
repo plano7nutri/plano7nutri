@@ -94,6 +94,11 @@ const messages = [
     sender: "vivi",
     text: "🎉 *Mariah Andrade Justus* Seu cardápio personalizado está pronto!\n\n💬 *Quem cuida da alimentação cuida do futuro.*\nVocê já tomou a decisão mais importante — agora é só executar! 🔥\nFoco total em *Ganhar Massa Muscular (Hipertrofia)*! 💪",
     time: "12:12"
+  },
+  {
+    sender: "vivi",
+    text: "TE VEJO EM 7 DIAS!🚀",
+    time: "12:13"
   }
 ];
 
