@@ -2,12 +2,15 @@
 
 import { motion } from "framer-motion";
 
-const items = [
+const freeItems = [
   {
     emoji: "🔥",
     title: "Cálculo do seu metabolismo",
     description: "TMB e GET calculados com precisão científica baseados nos seus dados reais"
-  },
+  }
+];
+
+const planItems = [
   {
     emoji: "🥗",
     title: "Cardápio de 7 dias completo",
@@ -59,28 +62,66 @@ const Features = () => {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {items.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              whileHover={{ y: -5 }}
-              className="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-300"
-            >
-              <div className="w-16 h-16 rounded-full bg-[#E8F5E9] flex items-center justify-center text-[2rem] mb-6">
-                {item.emoji}
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                {item.title}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed font-medium">
-                {item.description}
-              </p>
-            </motion.div>
-          ))}
+        {/* Grupo Grátis */}
+        <div className="mb-12">
+          <h3 className="text-sm font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
+            <span className="w-8 h-px bg-primary/30"></span>
+            Grátis
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {freeItems.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                whileHover={{ y: -5 }}
+                className="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-primary/10 transition-all duration-300"
+              >
+                <div className="w-16 h-16 rounded-full bg-[#E8F5E9] flex items-center justify-center text-[2rem] mb-6">
+                  {item.emoji}
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+                  {item.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Grupo No seu plano */}
+        <div>
+          <h3 className="text-sm font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
+            <span className="w-8 h-px bg-zinc-200"></span>
+            No seu plano
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {planItems.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ y: -5 }}
+                className="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-300"
+              >
+                <div className="w-16 h-16 rounded-full bg-[#E8F5E9] flex items-center justify-center text-[2rem] mb-6">
+                  {item.emoji}
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+                  {item.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

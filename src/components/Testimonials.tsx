@@ -107,7 +107,7 @@ const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
             whileTap={{ scale: 0.98 }}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
           >
-            Criar Meu Plano 7 Grátis
+            Calcular Meu Metabolismo Grátis
             <ArrowRight className="w-5 h-5" />
           </motion.button>
           

@@ -18,8 +18,8 @@ const steps = [
   },
   {
     icon: MessageCircle,
-    title: "Receba no WhatsApp",
-    description: "Seu plano de 7 dias chega direto no WhatsApp.",
+    title: "Receba seu Cálculo na Hora",
+    description: "Seu TMB, GET e macros calculados com precisão científica direto na tela, em segundos.",
   },
 ];
 
@@ -59,7 +59,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold mb-8 tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            100% Gratuito
+            Cálculo Grátis
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight mb-6">
@@ -78,7 +78,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
               whileTap={{ scale: 0.98 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
             >
-              Criar Meu Plano 7 Grátis
+              Calcular Meu Metabolismo Grátis
               <ArrowRight className="w-5 h-5" />
             </motion.button>
             
