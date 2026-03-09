@@ -12,7 +12,7 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "Olá *Amanda Cristina dos santos silva*, aqui é a *Vivi* novamente! 😊\n\nVou te enviar agora seu cardápio semanal baseado em:\n✅ *Objetivo Semanal*: Ganhar Massa Muscular (Hipertrofia)\n✅ *Restrições*: Nenhuma\n✅ *Preferências*: Nenhuma\n✅ *Meta de Calorias*: 1930 kcal\n✅ *Meta de água*: 2000 ml\n✅ *TMB*: 1220 kcal\n✅ *GET*: 1678 kcal\n✅ *Proteína dia*: 145g\n✅ *Carboidrato dia*: 241g\n✅ *Gordura do dia*: 43g",
+    text: "Olá *Mariah Andrade Justus*, aqui é a *Vivi* novamente! 😊\n\nVou te enviar agora seu cardápio semanal baseado em:\n✅ *Objetivo Semanal*: Ganhar Massa Muscular (Hipertrofia)\n✅ *Restrições*: Nenhuma\n✅ *Preferências*: Nenhuma\n✅ *Meta de Calorias*: 1930 kcal\n✅ *Meta de água*: 2000 ml\n✅ *TMB*: 1220 kcal\n✅ *GET*: 1678 kcal\n✅ *Proteína dia*: 145g\n✅ *Carboidrato dia*: 241g\n✅ *Gordura do dia*: 43g",
     time: "12:05"
   },
   {
@@ -52,7 +52,7 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "Mantenha o foco e a disciplina, *Amanda*! Cada refeição é um passo em direção aos seus objetivos. 💪",
+    text: "Mantenha o foco e a disciplina, *Mariah*! Cada refeição é um passo em direção aos seus objetivos. 💪",
     time: "12:09"
   },
   {
@@ -92,7 +92,7 @@ const messages = [
   },
   {
     sender: "vivi",
-    text: "🎉 *Amanda Cristina dos santos silva* Seu cardápio personalizado está pronto!\n\n💬 *Quem cuida da alimentação cuida do futuro.*\nVocê já tomou a decisão mais importante — agora é só executar! 🔥\nFoco total em *Ganhar Massa Muscular (Hipertrofia)*! 💪",
+    text: "🎉 *Mariah Andrade Justus* Seu cardápio personalizado está pronto!\n\n💬 *Quem cuida da alimentação cuida do futuro.*\nVocê já tomou a decisão mais importante — agora é só executar! 🔥\nFoco total em *Ganhar Massa Muscular (Hipertrofia)*! 💪",
     time: "12:12"
   }
 ];
@@ -107,7 +107,6 @@ const WhatsAppMockup = () => {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
-    // Se estiver pausado, não faz nada
     if (isPaused) return;
 
     const processNextMessage = () => {
@@ -116,7 +115,6 @@ const WhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
-          // 5 segundos de animação de digitação
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
@@ -127,7 +125,6 @@ const WhatsAppMockup = () => {
           setMsgIndex(prev => prev + 1);
         }
       } else {
-        // 6 segundos de espera antes de recomeçar
         timeout = setTimeout(() => {
           setCurrentMessages([]);
           setMsgIndex(0);
