@@ -103,11 +103,11 @@ const Features = () => {
           </div>
         </div>
 
-        {/* Grupo No seu plano */}
+        {/* Grupo No seu plano pago */}
         <div>
           <h3 className="text-sm font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
             <span className="w-8 h-px bg-zinc-200"></span>
-            No seu plano
+            No seu plano pago
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {planItems.map((item, index) => (
