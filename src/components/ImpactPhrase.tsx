@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Flame, Dumbbell } from "lucide-react";
+import { Flame, Dumbbell, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ImpactPhraseProps {
@@ -11,7 +11,6 @@ interface ImpactPhraseProps {
 }
 
 const ImpactPhrase = ({ goal, className }: ImpactPhraseProps) => {
-  // Verificação de segurança para evitar crash se goal for nulo ou indefinido
   const safeGoal = goal || "";
   
   const isWeightLoss = safeGoal.toLowerCase().includes("perder") || 
@@ -22,19 +21,29 @@ const ImpactPhrase = ({ goal, className }: ImpactPhraseProps) => {
                         safeGoal.toLowerCase().includes("hipertrofia") || 
                         safeGoal === "gain_muscle";
 
-  if (!isWeightLoss && !isHypertrophy) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={cn("p-6 rounded-3xl bg-primary/5 border border-primary/10 mb-8", className)}
-      >
-        <p className="text-sm md:text-base text-center font-medium leading-relaxed">
-          ✨ <span className="font-bold">Equilíbrio Vital:</span> Nutrição é a base de tudo. Siga seu plano por 7 dias e sinta a clareza mental e a energia que um corpo bem nutrido pode proporcionar.
-        </p>
-      </motion.div>
-    );
-  }
+  const phrase = useMemo(() => {
+    const weightLossPhrases = [
+      "Você já tentou de tudo e o peso não sai — porque nenhuma dieta foi calculada pro SEU metabolismo. Agora você tem os números reais do seu corpo. O Plano 7 transforma isso em 7 dias de refeições exatas pra seu corpo finalmente perder gordura de verdade. Pega seu cardápio agora.",
+      "Sabe aquela sensação de fazer tudo certo e a balança não mover? É porque sem um plano feito pro seu déficit específico, seu corpo não tem motivo pra mudar. Resolve isso hoje com o Plano 7.",
+      "Você não precisa passar fome. Precisa comer certo pro seu corpo. Seus números estão calculados — o Plano 7 monta 7 dias de refeições que forçam seu corpo a usar gordura como energia. Começa agora."
+    ];
+
+    const hypertrophyPhrases = [
+      "Você treina pesado mas o músculo não aparece como deveria. O problema não é o treino — é que sem bater os macros certos todo dia seu corpo não tem material pra construir. Pega o Plano 7 e faz seu esforço virar resultado.",
+      "Cada treino sem a nutrição certa é esforço jogado fora. Seu corpo precisa bater as metas de macro todos os dias — e sem um plano isso não acontece. O Plano 7 resolve isso agora.",
+      "Músculo se constrói na cozinha, não só na academia. Você já tem os macros — agora o Plano 7 coloca isso no prato refeição por refeição pelos próximos 7 dias. Fecha esse ciclo hoje."
+    ];
+
+    const healthyEatingPhrases = [
+      "Todo dia a mesma dúvida: o que eu vou comer? Sem um plano você acaba comendo qualquer coisa e seu corpo sente. O Plano 7 organiza sua semana inteira com refeições simples calculadas pro seu metabolismo. Resolve sua semana agora.",
+      "Inchaço, cansaço sem motivo e disposição zero têm um motivo — sua alimentação não está alinhada com o que seu corpo precisa. Seus números estão calculados. O Plano 7 muda isso ainda essa semana.",
+      "Comer bem não é complicado quando alguém organiza por você. Seus números estão prontos — o Plano 7 transforma isso em 7 dias de refeições reais com lista de compras pronta no seu WhatsApp. Começa hoje."
+    ];
+
+    if (isWeightLoss) return weightLossPhrases[Math.floor(Math.random() * weightLossPhrases.length)];
+    if (isHypertrophy) return hypertrophyPhrases[Math.floor(Math.random() * hypertrophyPhrases.length)];
+    return healthyEatingPhrases[Math.floor(Math.random() * healthyEatingPhrases.length)];
+  }, [isWeightLoss, isHypertrophy]);
 
   return (
     <motion.div 
@@ -43,28 +52,22 @@ const ImpactPhrase = ({ goal, className }: ImpactPhraseProps) => {
       className={cn(
         "p-6 rounded-3xl mb-8 border transition-all duration-300",
         isWeightLoss 
-          ? "bg-orange-500/5 border-orange-500/20 text-orange-700 dark:text-orange-400" 
-          : "bg-emerald-500/5 border-emerald-500/20 text-emerald-700 dark:text-emerald-400",
+          ? "bg-orange-500/5 border-orange-500/20 text-orange-700" 
+          : isHypertrophy 
+            ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-700"
+            : "bg-primary/5 border-primary/20 text-zinc-700",
         className
       )}
     >
       <div className="flex items-start gap-4">
         <div className={cn(
           "p-3 rounded-2xl shrink-0",
-          isWeightLoss ? "bg-orange-500/10" : "bg-emerald-500/10"
+          isWeightLoss ? "bg-orange-500/10" : isHypertrophy ? "bg-emerald-500/10" : "bg-primary/10"
         )}>
-          {isWeightLoss ? <Flame size={24} /> : <Dumbbell size={24} />}
+          {isWeightLoss ? <Flame size={24} /> : isHypertrophy ? <Dumbbell size={24} /> : <Sparkles size={24} className="text-primary" />}
         </div>
         <p className="text-sm md:text-base font-medium leading-relaxed">
-          {isWeightLoss ? (
-            <>
-              <span className="font-black uppercase tracking-tight">Desafio de 7 Dias:</span> Siga este cardápio à risca e elimine até <span className="font-black">2kg de retenção e gordura</span> já nesta primeira semana. O seu resultado não é chute, é matemática.
-            </>
-          ) : (
-            <>
-              <span className="font-black uppercase tracking-tight">Construção Acelerada:</span> Músculo não cresce por acaso, cresce com cálculo. Bata essas <span className="font-black">metas diárias por 7 dias</span> e sinta a diferença real no volume e na força.
-            </>
-          )}
+          {phrase}
         </p>
       </div>
     </motion.div>

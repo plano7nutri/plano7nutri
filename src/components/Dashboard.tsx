@@ -343,6 +343,13 @@ const Dashboard = ({
           </div>
         </div>
 
+        {/* Bloco de Urgência */}
+        <div className="mt-12 bg-amber-50 border border-amber-200 p-8 rounded-[2rem] text-center shadow-sm">
+          <p className="text-base sm:text-lg font-bold text-zinc-800 leading-relaxed max-w-2xl mx-auto">
+            Seus números estão prontos. Mas número sem plano não muda nada. O Plano 7 transforma seu TMB e GET em 7 dias de refeições exatas com lista de compras pronta — direto no seu WhatsApp. Escolha seu plano abaixo e começa hoje.
+          </p>
+        </div>
+
         <PricingSection />
         <FAQSection />
       </div>
