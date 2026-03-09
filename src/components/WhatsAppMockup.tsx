@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, Video, MoreVertical, CheckCheck, ChevronLeft, MessageCircle } from "lucide-react";
+import { Phone, Video, MoreVertical, CheckCheck, ChevronLeft, Search } from "lucide-react";
 
 const messages = [
   {
@@ -38,32 +38,64 @@ const messages = [
 ];
 
 const WhatsAppMockup = () => {
-  const [visibleCount, setVisibleCount] = useState(0);
+  const [currentMessages, setCurrentMessages] = useState<typeof messages>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [msgIndex, setMsgIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setVisibleCount((prev) => {
-        if (prev >= messages.length) {
-          return 0; // Restart loop
+    let timeout: NodeJS.Timeout;
+
+    const processNextMessage = () => {
+      if (msgIndex < messages.length) {
+        const nextMsg = messages[msgIndex];
+        
+        if (nextMsg.sender === "vivi") {
+          setIsTyping(true);
+          // 2 segundos digitando
+          timeout = setTimeout(() => {
+            setIsTyping(false);
+            setCurrentMessages(prev => [...prev, nextMsg]);
+            setMsgIndex(prev => prev + 1);
+          }, 2000);
+        } else {
+          // Mensagem do usuário aparece direto
+          setCurrentMessages(prev => [...prev, nextMsg]);
+          setMsgIndex(prev => prev + 1);
         }
-        return prev + 1;
-      });
-    }, 2000);
+      } else {
+        // Reinicia o loop após 5 segundos
+        timeout = setTimeout(() => {
+          setCurrentMessages([]);
+          setMsgIndex(0);
+        }, 5000);
+      }
+    };
 
-    return () => clearInterval(interval);
-  }, []);
+    // Delay de 4 segundos entre as ações (ou o tempo total que queremos)
+    // Se não estiver digitando nem reiniciando, espera o intervalo
+    const actionTimeout = setTimeout(processNextMessage, msgIndex === 0 ? 500 : 2000);
 
+    return () => {
+      clearTimeout(timeout);
+      clearTimeout(actionTimeout);
+    };
+  }, [msgIndex]);
+
+  // Scroll automático suave
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
-  }, [visibleCount]);
+  }, [currentMessages, isTyping]);
 
   return (
     <section className="py-20 bg-zinc-50 overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">
             Veja como chega no seu WhatsApp
           </h2>
@@ -72,67 +104,101 @@ const WhatsAppMockup = () => {
           </p>
         </div>
 
-        <div className="max-w-[420px] mx-auto bg-[#E5DDD5] rounded-[2.5rem] border-[8px] border-zinc-900 shadow-2xl h-[650px] flex flex-col relative overflow-hidden">
-          {/* Status Bar Mockup */}
-          <div className="bg-[#075E54] pt-4 pb-2 px-6 flex items-center justify-between text-white">
-            <div className="flex items-center gap-3">
-              <ChevronLeft size={20} />
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
-                <img src="/favicon.svg" alt="Vivi" className="w-full h-full object-cover p-1" />
+        <div className="max-w-[390px] mx-auto bg-[#E5DDD5] rounded-[2.5rem] border-[8px] border-zinc-900 shadow-2xl h-[600px] flex flex-col relative overflow-hidden">
+          {/* Header Realista do WhatsApp */}
+          <div className="bg-[#075E54] pt-10 pb-3 px-3 flex items-center justify-between text-white shadow-md">
+            <div className="flex items-center gap-2">
+              <ChevronLeft size={20} className="cursor-pointer" />
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden border border-white/10">
+                  <img src="/favicon.svg" alt="Vivi" className="w-full h-full object-cover p-1" />
+                </div>
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#075E54] rounded-full"></div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-sm">Vivi - Plano 7</span>
-                <span className="text-[10px] opacity-80">online</span>
+              <div className="flex flex-col ml-1">
+                <span className="font-bold text-sm flex items-center gap-1">
+                  Vivi 🤖
+                </span>
+                <span className="text-[10px] opacity-90 leading-tight">
+                  {isTyping ? "digitando..." : "online"}
+                </span>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Video size={18} />
-              <Phone size={18} />
-              <MoreVertical size={18} />
+            <div className="flex items-center gap-4 mr-1">
+              <Video size={18} className="opacity-90" />
+              <Phone size={18} className="opacity-90" />
+              <MoreVertical size={18} className="opacity-90" />
             </div>
           </div>
 
-          {/* Chat Content */}
+          {/* Área do Chat com Textura */}
           <div 
             ref={scrollRef}
-            className="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar"
-            style={{ backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')", backgroundSize: "contain" }}
+            className="flex-1 p-3 overflow-y-auto space-y-2 relative"
+            style={{ 
+              backgroundColor: "#ECE5DD",
+              backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')",
+              backgroundBlendMode: "overlay",
+              backgroundSize: "400px"
+            }}
           >
             <AnimatePresence>
-              {messages.slice(0, visibleCount).map((msg, idx) => (
+              {currentMessages.map((msg, idx) => (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[85%] p-3 rounded-lg shadow-sm text-sm relative ${
+                  <div className={`max-w-[85%] px-3 py-1.5 rounded-lg shadow-[0_1px_0.5px_rgba(0,0,0,0.13)] text-sm relative ${
                     msg.sender === 'user' 
                       ? 'bg-[#DCF8C6] rounded-tr-none' 
                       : 'bg-white rounded-tl-none'
                   }`}>
-                    <p className="whitespace-pre-wrap text-zinc-800 leading-relaxed font-medium">
+                    {/* Triângulo do Balão */}
+                    <div className={`absolute top-0 w-2 h-2 ${
+                      msg.sender === 'user' 
+                        ? '-right-1.5 border-l-[10px] border-l-[#DCF8C6] border-b-[10px] border-b-transparent' 
+                        : '-left-1.5 border-r-[10px] border-r-white border-b-[10px] border-b-transparent'
+                    }`} />
+                    
+                    <p className="whitespace-pre-wrap text-[#303030] leading-relaxed font-medium pb-1 pr-12">
                       {msg.text}
                     </p>
-                    <div className="flex items-center justify-end gap-1 mt-1">
-                      <span className="text-[10px] text-zinc-400">{msg.time}</span>
-                      {msg.sender === 'user' && <CheckCheck size={14} className="text-blue-500" />}
+                    
+                    <div className="absolute bottom-1 right-1.5 flex items-center gap-1">
+                      <span className="text-[10px] text-zinc-400 font-medium">{msg.time}</span>
+                      {msg.sender === 'user' && <CheckCheck size={14} className="text-[#34B7F1]" />}
                     </div>
                   </div>
                 </motion.div>
               ))}
+
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-none shadow-sm">
+                    <div className="flex gap-1">
+                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 bg-zinc-400 rounded-full" />
+                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 bg-zinc-400 rounded-full" />
+                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 bg-zinc-400 rounded-full" />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
-          {/* Input Bar Mockup */}
-          <div className="bg-[#F0F0F0] p-3 flex items-center gap-3">
-            <div className="flex-1 bg-white rounded-full px-4 py-2 text-zinc-400 text-sm">
-              Mensagem
+          {/* Footer Mockup do WhatsApp */}
+          <div className="bg-[#F0F0F0] px-2 py-3 flex items-center gap-2 border-t border-zinc-200">
+            <div className="flex-1 bg-white rounded-full px-4 py-2 text-zinc-400 text-sm shadow-sm flex items-center justify-between">
+              <span>Mensagem</span>
             </div>
-            <div className="w-10 h-10 rounded-full bg-[#075E54] flex items-center justify-center text-white">
-              <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
-                <MessageCircle size={20} className="fill-current" />
-              </motion.div>
+            <div className="w-11 h-11 rounded-full bg-[#00897B] flex items-center justify-center text-white shadow-sm">
+              <Phone size={20} className="fill-current" />
             </div>
           </div>
         </div>
