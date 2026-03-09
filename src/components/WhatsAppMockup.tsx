@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, Video, MoreVertical, CheckCheck, ChevronLeft } from "lucide-react";
+import { Phone, Video, MoreVertical, CheckCheck, ChevronLeft, MessageCircle } from "lucide-react";
 
 const messages = [
   {
