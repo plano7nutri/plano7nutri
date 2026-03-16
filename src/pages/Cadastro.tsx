@@ -42,6 +42,16 @@ const Cadastro = () => {
       // Aplica a formatação robusta na camada de banco
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
+      // Disparo do Webhook solicitado
+      await fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: data.name.trim(),
+          whatsapp: finalWhatsapp
+        })
+      });
+
       const tmb =
         data.sex === "male"
           ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5
