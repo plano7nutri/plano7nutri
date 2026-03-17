@@ -343,7 +343,7 @@ const Dashboard = ({
             {/* Bônus de Páscoa da Vivi */}
             <EasterBonus goal={goalLabel} />
 
-            {/* Botão WhatsApp Grátis */}
+            {/* Botão WhatsApp Grátis - Sempre sólido e acessível */}
             <motion.a
               href={whatsappUrl}
               target="_blank"
