@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap, Info } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap, Info, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -118,6 +118,8 @@ const Dashboard = ({
       setIsUploading(false);
     }
   };
+
+  const whatsappUrl = `https://wa.me/5511933735838?text=${encodeURIComponent("Quero receber meu *Cálculo de Metabolismo Personalizado* aqui no meu Whatsapp!")}`;
 
   return (
     <div className="min-h-screen px-6 py-10 bg-background text-foreground">
@@ -340,6 +342,26 @@ const Dashboard = ({
 
             {/* Bônus de Páscoa da Vivi */}
             <EasterBonus goal={goalLabel} />
+
+            {/* Botão WhatsApp Grátis */}
+            <motion.a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className="block w-full relative group transition-all duration-300 mt-6"
+            >
+              <div className="absolute -inset-1 rounded-[2rem] bg-[#25D366]/30 blur opacity-25 group-hover:opacity-50 transition duration-1000" />
+              <div className="relative rounded-[2rem] p-6 shadow-xl flex flex-col items-center text-center gap-3 overflow-hidden bg-[#25D366] text-white">
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="w-6 h-6" />
+                  <h3 className="text-xl font-black uppercase tracking-normal">
+                    Receber Cálculo no WhatsApp
+                  </h3>
+                </div>
+              </div>
+            </motion.a>
           </div>
         </div>
 
