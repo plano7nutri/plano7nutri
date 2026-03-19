@@ -69,7 +69,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const isLastStep = step === TOTAL_STEPS - 1;
 
-  const validateWhatsapp = (val: string) => {
+  const validateWhatsApp = (val: string) => {
     const formatted = formatWhatsApp(val);
     if (formatted.length === 0) return "";
     if (formatted.length !== 12 && formatted.length !== 13) {
@@ -122,7 +122,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const next = async () => {
     if (step === 0) {
-      const error = validateWhatsapp(data.whatsapp);
+      const error = validateWhatsApp(data.whatsapp);
       if (error) {
         setWhatsappError(error);
         return;
@@ -328,9 +328,29 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
           {step === 4 && (
             <motion.div key="step4" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Preferências</h2>
-              <textarea placeholder="Restrições..." value={data.restrictions} onChange={(e) => setData({ ...data, restrictions: e.target.value })} className="w-full p-4 rounded-xl border bg-card mb-4 min-h-[100px] resize-none" />
-              <textarea placeholder="Preferências..." value={data.preferences} onChange={(e) => setData({ ...data, preferences: e.target.value })} className="w-full p-4 rounded-xl border bg-card min-h-[100px] resize-none" />
+              <h2 className="text-2xl font-bold text-foreground mb-6">Preferências e Restrições</h2>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2 uppercase tracking-wide">Restrições Alimentares</label>
+                  <textarea 
+                    placeholder="Ex: Não como carne, sou intolerante a lactose, não gosto de coentro, evito açúcar..." 
+                    value={data.restrictions} 
+                    onChange={(e) => setData({ ...data, restrictions: e.target.value })} 
+                    className="w-full p-4 rounded-xl border bg-card min-h-[100px] resize-none focus:ring-2 focus:ring-primary/20 outline-none" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2 uppercase tracking-wide">Preferências Alimentares</label>
+                  <textarea 
+                    placeholder="Ex: Gosto muito de ovos, prefiro arroz integral, amo frutas, gosto de café da manhã reforçado..." 
+                    value={data.preferences} 
+                    onChange={(e) => setData({ ...data, preferences: e.target.value })} 
+                    className="w-full p-4 rounded-xl border bg-card min-h-[100px] resize-none focus:ring-2 focus:ring-primary/20 outline-none" 
+                  />
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
