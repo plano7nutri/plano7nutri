@@ -182,7 +182,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     setLoading(true);
     onComplete({
       ...data,
-      whatsapp: formatWhatsApp(data.whatsapp)
+      whatsapp: formatWhatsApp(data.whatsapp),
+      restrictions: data.restrictions.trim() === "" ? "Nenhuma" : data.restrictions,
+      preferences: data.preferences.trim() === "" ? "Nenhuma" : data.preferences,
     });
   };
 
