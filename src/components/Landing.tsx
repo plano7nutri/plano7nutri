@@ -31,6 +31,7 @@ interface LandingProps {
 
 const Landing = ({ onStart, onLogin }: LandingProps) => {
   const navigate = useNavigate();
+  const whatsappUrl = `https://wa.me/5511933735838?text=${encodeURIComponent("Quero calcular meu metabolismo, grátis. Vim do seu site!")}`;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -73,15 +74,17 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <motion.button
-              onClick={onStart}
+            <motion.a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
             >
               Calcular Meu Metabolismo Grátis
               <ArrowRight className="w-5 h-5" />
-            </motion.button>
+            </motion.a>
             
             <motion.button
               onClick={onLogin}
