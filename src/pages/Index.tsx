@@ -37,6 +37,11 @@ const Index = () => {
     }
   }, [location]);
 
+  const handleStart = () => {
+    const message = encodeURIComponent("Quero calcular meu metabolismo, grátis. Vim do seu site!");
+    window.open(`https://wa.me/5511933735838?text=${message}`, "_blank");
+  };
+
   const handleLoginFree = async () => {
     const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
     
@@ -91,7 +96,7 @@ const Index = () => {
           >
             {view === "landing" ? (
               <Landing 
-                onStart={() => navigate("/cadastro")} 
+                onStart={handleStart} 
                 onLogin={() => setView("check-free-plan")} 
               />
             ) : (
@@ -132,7 +137,7 @@ const Index = () => {
                         </div>
                         <button
                           type="button"
-                          onClick={() => navigate("/cadastro")}
+                          onClick={handleStart}
                           className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
                         >
                           <PlusCircle className="w-4 h-4" />
