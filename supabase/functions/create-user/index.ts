@@ -36,12 +36,8 @@ serve(async (req) => {
     const finalMetadata = { ...metadata, ...user_metadata };
     const fullName = body.nome || finalMetadata?.nome || finalMetadata?.full_name || "Usuário Elite";
     
-    // NOVA LÓGICA DE FORMATAÇÃO (Sincronizada com utils.ts)
-    // 1. Limpa não numéricos
+    // LÓGICA ESTRITA DE WHATSAPP
     let rawPhone = (body.phone || finalMetadata?.whatsapp || "").replace(/\D/g, "");
-    // 2. Remove zeros à esquerda
-    rawPhone = rawPhone.replace(/^0+/, "");
-    // 3. Garante prefixo 55 sem injetar o dígito 9
     if (!rawPhone.startsWith("55") && rawPhone.length > 0) {
       rawPhone = "55" + rawPhone;
     }

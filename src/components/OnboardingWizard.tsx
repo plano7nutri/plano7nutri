@@ -69,15 +69,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const isLastStep = step === TOTAL_STEPS - 1;
 
-  const validateWhatsApp = (val: string) => {
-    const formatted = formatWhatsApp(val);
-    if (formatted.length === 0) return "";
-    if (formatted.length !== 12 && formatted.length !== 13) {
-      return "Número inválido. Digite com DDD.";
-    }
-    return "";
-  };
-
   const saveInitialLead = async () => {
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
@@ -122,9 +113,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const next = async () => {
     if (step === 0) {
-      const error = validateWhatsApp(data.whatsapp);
-      if (error) {
-        setWhatsappError(error);
+      if (data.whatsapp.trim().length < 8) {
+        setWhatsappError("Informe um número válido.");
         return;
       }
       const isDuplicate = await checkDuplicate();
@@ -234,7 +224,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   
                   <div className="mt-3 p-4 rounded-xl bg-amber-50 border border-amber-200">
                     <p className="text-sm font-bold text-amber-800 leading-relaxed">
-                      ATENÇÃO: Digite seu WhatsApp com DDD. Se seu número tiver 9 após o DDD, inclua-o (Ex: 11988887777). Se não tiver, não coloque (Ex: 1188887777). <br />
+                      ATENÇÃO: Digite seu WhatsApp com DDD. <br />
                       <span className="text-destructive uppercase mt-1 block">Se não digitar corretamente, o sistema não será ativado.</span>
                     </p>
                   </div>
