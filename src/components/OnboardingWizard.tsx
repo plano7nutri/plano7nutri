@@ -210,7 +210,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
                   <input
                     type="tel"
-                    placeholder="Ex: 11988887777"
+                    placeholder="11988887777 ou 1188887777"
                     value={data.whatsapp}
                     onChange={(e) => {
                       setData({ ...data, whatsapp: e.target.value });
