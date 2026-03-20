@@ -36,9 +36,9 @@ serve(async (req) => {
     const finalMetadata = { ...metadata, ...user_metadata };
     const fullName = body.nome || finalMetadata?.nome || finalMetadata?.full_name || "Usuário Elite";
     
-    // LÓGICA ESTRITA DE WHATSAPP
+    // LÓGICA ESTRITA DE WHATSAPP (Sincronizada com o frontend)
     let rawPhone = (body.phone || finalMetadata?.whatsapp || "").replace(/\D/g, "");
-    if (rawPhone.length > 0 && rawPhone.length <= 11) {
+    if (rawPhone.length === 10 || rawPhone.length === 11) {
       rawPhone = "55" + rawPhone;
     }
 

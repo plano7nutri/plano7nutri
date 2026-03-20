@@ -18,12 +18,14 @@ export function formatWhatsApp(phone: string): string {
   
   if (numero.length === 0) return "";
 
-  // 2. Se o número tem 10 ou 11 dígitos, ele está sem o DDI (55).
-  // Adicionamos o 55 na frente e mantemos o resto intacto.
-  if (numero.length <= 11) {
+  // 2. Se o número tem 10 ou 11 dígitos (DDD + 8 ou 9 números), adicionamos o 55.
+  // Ex: 1188887777 (10) -> 551188887777 (12)
+  // Ex: 11988887777 (11) -> 5511988887777 (13)
+  if (numero.length === 10 || numero.length === 11) {
     return "55" + numero;
   }
   
-  // 3. Se já tem 12 ou 13 dígitos, assumimos que já tem o 55 (ou outro DDI).
+  // 3. Se já tem 12 ou 13 dígitos, assumimos que já tem o 55 e retornamos como está.
+  // Isso evita que o sistema adicione 55 novamente ou tente "corrigir" o que já está certo.
   return numero;
 }
