@@ -225,7 +225,10 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <div className="mt-3 p-4 rounded-xl bg-amber-50 border border-amber-200">
                     <p className="text-sm font-bold text-amber-800 leading-relaxed">
                       ATENÇÃO: Digite seu WhatsApp com DDD. <br />
-                      <span className="text-zinc-600 text-xs block mt-1">Ex: 11988887777 ou 1188887777</span>
+                      <span className="text-zinc-600 text-xs block mt-1">
+                        O nono dígito (9) é opcional, coloque apenas se o seu número possuir. <br />
+                        Ex: 11988887777 ou 1188887777
+                      </span>
                       <span className="text-destructive uppercase mt-1 block">Se não digitar corretamente, o sistema não será ativado.</span>
                     </p>
                   </div>
