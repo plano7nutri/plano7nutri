@@ -38,7 +38,7 @@ serve(async (req) => {
     
     // LÓGICA ESTRITA DE WHATSAPP
     let rawPhone = (body.phone || finalMetadata?.whatsapp || "").replace(/\D/g, "");
-    if (!rawPhone.startsWith("55") && rawPhone.length > 0) {
+    if (rawPhone.length > 0 && rawPhone.length <= 11) {
       rawPhone = "55" + rawPhone;
     }
 
