@@ -121,13 +121,21 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     }
   };
 
+  const validateWhatsappLength = (val: string) => {
+    const clean = val.replace(/\D/g, "");
+    return clean.length === 10 || clean.length === 11;
+  };
+
   const next = async () => {
     if (step === 0) {
-      if (data.whatsapp.trim().length < 8) {
-        setWhatsappError("Informe um número válido.");
+      const cleanWhatsapp = data.whatsapp.replace(/\D/g, "");
+      const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
+
+      if (!validateWhatsappLength(cleanWhatsapp)) {
+        setWhatsappError("O WhatsApp deve ter 10 ou 11 dígitos (DDD + Número).");
         return;
       }
-      if (data.whatsapp !== confirmWhatsapp) {
+      if (cleanWhatsapp !== cleanConfirm) {
         setWhatsappError("Os números de WhatsApp não coincidem.");
         return;
       }
@@ -175,11 +183,13 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const canProceed = () => {
     if (step === 0) {
+      const cleanWhatsapp = data.whatsapp.replace(/\D/g, "");
+      const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
       return (
         data.name.trim() !== "" && 
-        data.whatsapp.trim().length >= 8 && 
-        confirmWhatsapp.trim().length >= 8 &&
-        data.whatsapp === confirmWhatsapp &&
+        validateWhatsappLength(cleanWhatsapp) && 
+        validateWhatsappLength(cleanConfirm) &&
+        cleanWhatsapp === cleanConfirm &&
         !isCheckingDuplicate
       );
     }
@@ -230,12 +240,14 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">WhatsApp com DDD</label>
+                    <label className="block text-sm font-medium text-foreground mb-2">WhatsApp com DDD (Apenas números)</label>
                     <input
                       type="tel"
+                      maxLength={11}
                       value={data.whatsapp}
                       onChange={(e) => {
-                        setData({ ...data, whatsapp: e.target.value });
+                        const val = e.target.value.replace(/\D/g, "");
+                        setData({ ...data, whatsapp: val });
                         setDuplicateFound(false);
                         setWhatsappError("");
                       }}
@@ -249,9 +261,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     <label className="block text-sm font-medium text-foreground mb-2">Confirme seu WhatsApp</label>
                     <input
                       type="tel"
+                      maxLength={11}
                       value={confirmWhatsapp}
                       onChange={(e) => {
-                        setConfirmWhatsapp(e.target.value);
+                        const val = e.target.value.replace(/\D/g, "");
+                        setConfirmWhatsapp(val);
                         setWhatsappError("");
                       }}
                       className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
@@ -266,9 +280,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     </p>
                   )}
 
-                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && (
+                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && validateWhatsappLength(data.whatsapp) && (
                     <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> Números coincidem
+                      <CheckCircle2 className="w-3 h-3" /> Número válido e confirmado
                     </p>
                   )}
 
