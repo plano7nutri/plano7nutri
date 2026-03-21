@@ -342,7 +342,7 @@ const Dashboard = ({
         </div>
 
         {/* Bloco de Urgência e Oferta */}
-        <div className="mt-12 space-y-8">
+        <div className="mt-6 lg:mt-12 space-y-8">
           <div className="bg-amber-50 border border-amber-200 p-8 rounded-[2rem] text-center shadow-sm">
             <p className="text-base sm:text-lg font-bold text-zinc-800 leading-relaxed max-w-2xl mx-auto">
               Seus números estão prontos. Mas você já sabe como isso termina — salva, fecha, esquece. Amanhã vira semana que vem, semana que vem vira mês. Seus números não mudam nada sozinhos. O que muda é o que você faz agora, nos próximos 30 segundos. Escolha seu plano abaixo e seu cardápio chega hoje no WhatsApp.
