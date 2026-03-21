@@ -367,7 +367,7 @@ const Dashboard = ({
               <div className="flex items-center gap-3">
                 <MessageCircle className="w-6 h-6" />
                 <h3 className="text-xl font-black uppercase tracking-normal">
-                  Receber Cálculo no WhatsApp
+                  Receber Cálculo no WhatsApp <span className="sm:hidden">Grátis</span>
                 </h3>
               </div>
             </div>
