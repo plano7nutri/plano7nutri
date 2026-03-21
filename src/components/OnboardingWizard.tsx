@@ -107,16 +107,21 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     setDuplicateFound(false);
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
+      
+      // Busca o usuário pelo WhatsApp na tabela usuarios_planogratis
       const { data: existingUser } = await supabase
         .from("usuarios_planogratis")
-        .select("id")
+        .select("nome")
         .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
-      if (existingUser) {
+      // Se o usuário existe E a coluna 'nome' está preenchida, bloqueia
+      if (existingUser && existingUser.nome && existingUser.nome.trim() !== "") {
         setDuplicateFound(true);
         return true;
       }
+      
+      // Se não existe ou o nome está nulo/vazio, pode continuar
       return false;
     } catch (err) {
       console.error("Erro ao verificar duplicidade:", err);
@@ -286,7 +291,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     </p>
                   )}
 
-                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && validateWhatsappLength(data.whatsapp) && (
+                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && validateWhatsAppLength(data.whatsapp) && (
                     <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" /> Número válido e confirmado
                     </p>
