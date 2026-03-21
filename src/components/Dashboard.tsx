@@ -345,7 +345,7 @@ const Dashboard = ({
         <div className="mt-12 space-y-8">
           <div className="bg-amber-50 border border-amber-200 p-8 rounded-[2rem] text-center shadow-sm">
             <p className="text-base sm:text-lg font-bold text-zinc-800 leading-relaxed max-w-2xl mx-auto">
-              Seus números estão prontos. Mas número sem plano não muda nada. O Plano 7 transforma seu TMB e GET em 7 dias de refeições exatas com lista de compras pronta — direto no seu WhatsApp. Escolha seu plano abaixo e começa hoje.
+              Seus números estão prontos. Mas você já sabe como isso termina — salva, fecha, esquece. Amanhã vira semana que vem, semana que vem vira mês. Seus números não mudam nada sozinhos. O que muda é o que você faz agora, nos próximos 30 segundos. Escolha seu plano abaixo e seu cardápio chega hoje no WhatsApp.
             </p>
           </div>
 
