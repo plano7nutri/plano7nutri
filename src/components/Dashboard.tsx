@@ -16,7 +16,6 @@ import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
-import EasterBonus from "./EasterBonus";
 import DashboardLiveCounter from "./DashboardLiveCounter";
 
 interface DashboardProps {
@@ -353,10 +352,8 @@ const Dashboard = ({
           <PricingSection />
         </div>
 
-        {/* Presente de Páscoa e WhatsApp por último */}
+        {/* Botão do WhatsApp por último */}
         <div className="mt-12 space-y-6">
-          <EasterBonus goal={goalLabel} />
-
           <motion.a
             href={whatsappUrl}
             target="_blank"
