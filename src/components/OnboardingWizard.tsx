@@ -77,6 +77,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
+      // Cria o lead na clientes_semcadastro com os dados completos
+      // O gatilho no banco cuidará de criar a linha na usuarios_planogratis apenas com o ID
       const { data: leadData, error } = await supabase
         .from("clientes_semcadastro")
         .insert([{
@@ -106,20 +108,20 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Busca o registro pelo WhatsApp
-      const { data: userRecord } = await supabase
+      // Busca o usuário pelo WhatsApp na tabela usuarios_planogratis
+      const { data: existingUser } = await supabase
         .from("usuarios_planogratis")
         .select("nome")
         .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
-      // REGRA: Se a coluna 'nome' estiver preenchida, o usuário já existe.
-      // Se estiver vazia ou nula, ele pode prosseguir.
-      if (userRecord && userRecord.nome && userRecord.nome.trim() !== "") {
+      // Se o usuário existe E a coluna 'nome' está preenchida, bloqueia
+      if (existingUser && existingUser.nome && existingUser.nome.trim() !== "") {
         setDuplicateFound(true);
         return true;
       }
       
+      // Se não existe ou o nome está nulo/vazio, pode continuar
       return false;
     } catch (err) {
       console.error("Erro ao verificar duplicidade:", err);
@@ -147,10 +149,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         setWhatsappError("Os números de WhatsApp não coincidem.");
         return;
       }
-      
       const isDuplicate = await checkDuplicate();
       if (isDuplicate) return;
-      
       await saveInitialLead();
     }
     setDir(1); 
@@ -291,7 +291,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     </p>
                   )}
 
-                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && validateWhatsappLength(data.whatsapp) && (
+                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && validateWhatsAppLength(data.whatsapp) && (
                     <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" /> Número válido e confirmado
                     </p>
@@ -301,7 +301,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
                       <div className="flex items-start gap-2 text-destructive mb-3">
                         <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                        <p className="text-sm font-bold leading-tight">Este usuário já possui um cadastro completo.</p>
+                        <p className="text-sm font-bold leading-tight">Este WhatsApp já possui um plano cadastrado.</p>
                       </div>
                       {onGoToLogin && (
                         <button onClick={onGoToLogin} className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors">
