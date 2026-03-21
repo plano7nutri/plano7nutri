@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
 export interface OnboardingData {
-  id?: string; // Adicionado para rastrear o vínculo entre tabelas
+  id?: string;
   name: string;
   whatsapp: string;
   age: number;
@@ -54,6 +54,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
   const [duplicateFound, setDuplicateFound] = useState(false);
   const [whatsappError, setWhatsappError] = useState("");
+  const [confirmWhatsapp, setConfirmWhatsapp] = useState("");
   const [heightInput, setHeightInput] = useState("1,70");
   const [data, setData] = useState<OnboardingData>({
     name: "", 
@@ -73,7 +74,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const saveInitialLead = async () => {
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
-      // Insere e retorna o ID gerado
       const { data: leadData, error } = await supabase
         .from("clientes_semcadastro")
         .insert([{
@@ -127,6 +127,10 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         setWhatsappError("Informe um número válido.");
         return;
       }
+      if (data.whatsapp !== confirmWhatsapp) {
+        setWhatsappError("Os números de WhatsApp não coincidem.");
+        return;
+      }
       const isDuplicate = await checkDuplicate();
       if (isDuplicate) return;
       await saveInitialLead();
@@ -170,7 +174,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const canProceed = () => {
-    if (step === 0) return data.name.trim() !== "" && data.whatsapp.trim().length >= 8 && !isCheckingDuplicate;
+    if (step === 0) {
+      return (
+        data.name.trim() !== "" && 
+        data.whatsapp.trim().length >= 8 && 
+        confirmWhatsapp.trim().length >= 8 &&
+        data.whatsapp === confirmWhatsapp &&
+        !isCheckingDuplicate
+      );
+    }
     if (step === 1) return data.age > 0 && data.sex !== "" && data.height > 50 && data.weight > 20;
     if (step === 2) return data.activity !== "";
     if (step === 3) return data.goal !== "";
@@ -216,34 +228,47 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <input type="text" placeholder="Seu nome" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">WhatsApp</label>
-                  <input
-                    type="tel"
-                    placeholder="11988887777 ou 1188887777"
-                    value={data.whatsapp}
-                    onChange={(e) => {
-                      setData({ ...data, whatsapp: e.target.value });
-                      setDuplicateFound(false);
-                      setWhatsappError("");
-                    }}
-                    className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
-                      duplicateFound || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
-                    }`}
-                  />
-                  
-                  <div className="mt-3 p-4 rounded-xl bg-amber-50 border border-amber-200">
-                    <p className="text-sm font-bold text-amber-800 leading-relaxed">
-                      ATENÇÃO: Digite seu WhatsApp com DDD. <br />
-                      Se o seu número tiver o dígito (9), coloque-o. Se não tiver, não coloque. <br />
-                      Ex: 11988887777 ou 1188887777 <br />
-                      <span className="text-destructive uppercase mt-1 block">Se não digitar corretamente, o sistema não será ativado.</span>
-                    </p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">WhatsApp com DDD</label>
+                    <input
+                      type="tel"
+                      value={data.whatsapp}
+                      onChange={(e) => {
+                        setData({ ...data, whatsapp: e.target.value });
+                        setDuplicateFound(false);
+                        setWhatsappError("");
+                      }}
+                      className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
+                        duplicateFound || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Confirme seu WhatsApp</label>
+                    <input
+                      type="tel"
+                      value={confirmWhatsapp}
+                      onChange={(e) => {
+                        setConfirmWhatsapp(e.target.value);
+                        setWhatsappError("");
+                      }}
+                      className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
+                        (confirmWhatsapp !== "" && data.whatsapp !== confirmWhatsapp) || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
+                      }`}
+                    />
                   </div>
                   
                   {whatsappError && (
                     <p className="mt-2 text-xs font-bold text-destructive flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {whatsappError}
+                    </p>
+                  )}
+
+                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && (
+                    <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Números coincidem
                     </p>
                   )}
 
