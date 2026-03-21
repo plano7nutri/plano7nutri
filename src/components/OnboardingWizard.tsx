@@ -72,8 +72,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const saveInitialLead = async () => {
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
+      // Agora salvando na tabela clientes_semcadastro conforme solicitado
       await supabase
-        .from("usuarios_planogratis_registro_inicial")
+        .from("clientes_semcadastro")
         .insert([{
           nome: data.name.trim(),
           whatsapp: cleanWhatsapp,

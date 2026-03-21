@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "router-dom";
 import { useTheme } from "next-themes";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,10 +39,8 @@ const Cadastro = () => {
 
   const handleComplete = async (data: OnboardingData) => {
     try {
-      // Aplica a formatação robusta na camada de banco
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Disparo do Webhook solicitado
       await fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -75,7 +73,6 @@ const Cadastro = () => {
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
 
       const dashData = {
-        session_id: Math.random().toString(36).substring(7),
         nome: data.name,
         whatsapp: finalWhatsapp,
         sexo_biologico: data.sex,
@@ -93,18 +90,19 @@ const Cadastro = () => {
         proteina_dia: proteina,
         carbo_dia: carbo,
         gordura_dia: gordura,
-        avatar_url: null,
-        entregue: false,
+        cliente_gratis: true,
+        cadastro_feito: true
       };
 
-      const { error: insertError } = await supabase
+      // Usando upsert baseado no whatsapp para atualizar o registro criado pelo gatilho
+      const { error: upsertError } = await supabase
         .from("usuarios_planogratis")
-        .insert([dashData]);
+        .upsert(dashData, { onConflict: 'whatsapp' });
 
-      if (insertError) throw new Error(insertError.message);
+      if (upsertError) throw new Error(upsertError.message);
 
       toast.success("Plano calculado com sucesso!");
-      localStorage.setItem("plano7_free_whatsapp", dashData.whatsapp);
+      localStorage.setItem("plano7_free_whatsapp", finalWhatsapp);
       navigate("/dashboard", { state: dashData });
     } catch (err: any) {
       console.error("Erro no processo:", err);
