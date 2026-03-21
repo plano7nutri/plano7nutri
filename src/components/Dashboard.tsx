@@ -339,40 +339,44 @@ const Dashboard = ({
                 </Dialog>
               )}
             </div>
-
-            {/* Bônus de Páscoa da Vivi */}
-            <EasterBonus goal={goalLabel} />
-
-            {/* Botão WhatsApp Grátis - Sempre sólido e acessível */}
-            <motion.a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className="block w-full relative group transition-all duration-300 mt-6"
-            >
-              <div className="absolute -inset-1 rounded-[2rem] bg-[#25D366]/30 blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-              <div className="relative rounded-[2rem] p-6 shadow-xl flex flex-col items-center text-center gap-3 overflow-hidden bg-[#25D366] text-white">
-                <div className="flex items-center gap-3">
-                  <MessageCircle className="w-6 h-6" />
-                  <h3 className="text-xl font-black uppercase tracking-normal">
-                    Receber Cálculo no WhatsApp
-                  </h3>
-                </div>
-              </div>
-            </motion.a>
           </div>
         </div>
 
-        {/* Bloco de Urgência */}
-        <div className="mt-12 bg-amber-50 border border-amber-200 p-8 rounded-[2rem] text-center shadow-sm">
-          <p className="text-base sm:text-lg font-bold text-zinc-800 leading-relaxed max-w-2xl mx-auto">
-            Seus números estão prontos. Mas número sem plano não muda nada. O Plano 7 transforma seu TMB e GET em 7 dias de refeições exatas com lista de compras pronta — direto no seu WhatsApp. Escolha seu plano abaixo e começa hoje.
-          </p>
+        {/* Bloco de Urgência e Oferta */}
+        <div className="mt-12 space-y-8">
+          <div className="bg-amber-50 border border-amber-200 p-8 rounded-[2rem] text-center shadow-sm">
+            <p className="text-base sm:text-lg font-bold text-zinc-800 leading-relaxed max-w-2xl mx-auto">
+              Seus números estão prontos. Mas número sem plano não muda nada. O Plano 7 transforma seu TMB e GET em 7 dias de refeições exatas com lista de compras pronta — direto no seu WhatsApp. Escolha seu plano abaixo e começa hoje.
+            </p>
+          </div>
+
+          <PricingSection />
         </div>
 
-        <PricingSection />
+        {/* Presente de Páscoa e WhatsApp por último */}
+        <div className="mt-12 space-y-6">
+          <EasterBonus goal={goalLabel} />
+
+          <motion.a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="block w-full relative group transition-all duration-300"
+          >
+            <div className="absolute -inset-1 rounded-[2rem] bg-[#25D366]/30 blur opacity-25 group-hover:opacity-50 transition duration-1000" />
+            <div className="relative rounded-[2rem] p-6 shadow-xl flex flex-col items-center text-center gap-3 overflow-hidden bg-[#25D366] text-white">
+              <div className="flex items-center gap-3">
+                <MessageCircle className="w-6 h-6" />
+                <h3 className="text-xl font-black uppercase tracking-normal">
+                  Receber Cálculo no WhatsApp
+                </h3>
+              </div>
+            </div>
+          </motion.a>
+        </div>
+
         <FAQSection />
       </div>
     </div>
