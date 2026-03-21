@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { supabase } from "@/integrations/supabase/client";
