@@ -76,6 +76,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const saveInitialLead = async () => {
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
+      
+      // Cria o lead na clientes_semcadastro com os dados completos
+      // O gatilho no banco cuidará de criar a linha na usuarios_planogratis apenas com o ID
       const { data: leadData, error } = await supabase
         .from("clientes_semcadastro")
         .insert([{
@@ -206,8 +209,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     setLoading(true);
     onComplete({
       ...data,
-      whatsapp: data.whatsapp, // Envia o digitado original
-      whatsapp_confirmacao: confirmWhatsapp, // Envia a confirmação original
+      whatsapp: data.whatsapp,
+      whatsapp_confirmacao: confirmWhatsapp,
       restrictions: data.restrictions.trim() === "" ? "Nenhuma" : data.restrictions,
       preferences: data.preferences.trim() === "" ? "Nenhuma" : data.preferences,
     });
