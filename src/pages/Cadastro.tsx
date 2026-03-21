@@ -73,6 +73,7 @@ const Cadastro = () => {
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
 
       const dashData = {
+        id: data.id, // Usa o ID capturado para vincular as tabelas
         nome: data.name,
         whatsapp: finalWhatsapp,
         sexo_biologico: data.sex,
@@ -94,10 +95,10 @@ const Cadastro = () => {
         cadastro_feito: true
       };
 
-      // Usando upsert baseado no whatsapp para atualizar o registro criado pelo gatilho
+      // Usando upsert baseado no ID para atualizar a linha criada pelo gatilho
       const { error: upsertError } = await supabase
         .from("usuarios_planogratis")
-        .upsert(dashData, { onConflict: 'whatsapp' });
+        .upsert(dashData, { onConflict: 'id' });
 
       if (upsertError) throw new Error(upsertError.message);
 

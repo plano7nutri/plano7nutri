@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
 export interface OnboardingData {
+  id?: string; // Adicionado para rastrear o vínculo entre tabelas
   name: string;
   whatsapp: string;
   age: number;
@@ -72,15 +73,23 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const saveInitialLead = async () => {
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
-      // Agora salvando na tabela clientes_semcadastro conforme solicitado
-      await supabase
+      // Insere e retorna o ID gerado
+      const { data: leadData, error } = await supabase
         .from("clientes_semcadastro")
         .insert([{
           nome: data.name.trim(),
           whatsapp: cleanWhatsapp,
           cliente_gratis: true,
           primeiro_contato: true
-        }]);
+        }])
+        .select('id')
+        .single();
+
+      if (error) throw error;
+      
+      if (leadData) {
+        setData(prev => ({ ...prev, id: leadData.id }));
+      }
     } catch (err) {
       console.error("Erro ao salvar registro inicial:", err);
     }
