@@ -6,7 +6,7 @@ import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
 import { formatWhatsApp } from "@/lib/utils";
 
 type View = "landing" | "check-free-plan";
@@ -15,12 +15,11 @@ const Index = () => {
   const [view, setView] = useState<View>("landing");
   const [loginWhatsapp, setLoginWhatsapp] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [userNotFound, setUserNotFound] = useState(false);
+  const [loginStatus, setLoginStatus] = useState<'idle' | 'not_found' | 'pending'>('idle');
   const navigate = useNavigate();
   const location = useLocation();
   const { setTheme } = useTheme();
 
-  // Forçar Modo Claro na Landing Page
   useEffect(() => {
     try {
       setTheme("light");
@@ -32,7 +31,6 @@ const Index = () => {
   useEffect(() => {
     if (location.state?.view) {
       setView(location.state.view as View);
-      // Limpa o estado para evitar loops
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -51,7 +49,7 @@ const Index = () => {
     }
 
     setIsLoggingIn(true);
-    setUserNotFound(false);
+    setLoginStatus('idle');
     try {
       const { data, error } = await supabase
         .from("usuarios_planogratis")
@@ -61,20 +59,23 @@ const Index = () => {
 
       if (error) throw error;
 
-      if (data) {
-        toast.success(`Bem-vindo de volta, ${data.nome}!`);
-        
-        // Proteção para modo privado em celulares
-        try {
-          localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
-        } catch (e) {
-          console.warn("LocalStorage bloqueado:", e);
-        }
-        
-        navigate("/dashboard", { state: data });
-      } else {
-        setUserNotFound(true);
+      if (!data) {
+        setLoginStatus('not_found');
+        return;
       }
+
+      // Se o nome estiver vazio, precisa terminar o cadastro
+      if (!data.nome || data.nome.trim() === "") {
+        setLoginStatus('pending');
+        return;
+      }
+
+      toast.success(`Bem-vindo de volta, ${data.nome}!`);
+      try {
+        localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
+      } catch (e) {}
+      
+      navigate("/dashboard", { state: data });
     } catch (err) {
       toast.error("Erro ao buscar seu plano.");
     } finally {
@@ -115,15 +116,15 @@ const Index = () => {
                         value={loginWhatsapp}
                         onChange={(e) => {
                           setLoginWhatsapp(e.target.value);
-                          setUserNotFound(false);
+                          setLoginStatus('idle');
                         }}
                         className={`w-full px-4 py-3 rounded-xl border bg-zinc-50 text-zinc-900 text-lg font-medium focus:outline-none focus:ring-2 ${
-                          userNotFound ? "border-destructive focus:ring-destructive" : "focus:ring-primary/20"
+                          loginStatus !== 'idle' ? "border-destructive focus:ring-destructive" : "focus:ring-primary/20"
                         }`}
                       />
                     </div>
 
-                    {userNotFound && (
+                    {loginStatus === 'not_found' && (
                       <motion.div 
                         initial={{ opacity: 0, y: -10 }} 
                         animate={{ opacity: 1, y: 0 }} 
@@ -140,8 +141,31 @@ const Index = () => {
                           onClick={handleStart}
                           className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
                         >
+                          <MessageCircle className="w-4 h-4" />
+                          Calcular Meu Metabolismo Grátis
+                        </button>
+                      </motion.div>
+                    )}
+
+                    {loginStatus === 'pending' && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        className="p-4 rounded-xl bg-amber-50 border border-amber-200"
+                      >
+                        <div className="flex items-start gap-2 text-amber-700 mb-4">
+                          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm font-bold leading-tight">
+                            Termine seu cadastro para acessar o plano.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => navigate("/cadastro")}
+                          className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
+                        >
                           <PlusCircle className="w-4 h-4" />
-                          Criar meu plano grátis
+                          Terminar Cadastro
                         </button>
                       </motion.div>
                     )}

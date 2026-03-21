@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
@@ -52,8 +52,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
-  const [duplicateFound, setDuplicateFound] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [validationStatus, setValidationStatus] = useState<'idle' | 'not_found' | 'exists' | 'pending'>('idle');
   const [whatsappError, setWhatsappError] = useState("");
   const [confirmWhatsapp, setConfirmWhatsapp] = useState("");
   const [heightInput, setHeightInput] = useState("1,70");
@@ -73,61 +73,41 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const isLastStep = step === TOTAL_STEPS - 1;
 
-  const saveInitialLead = async () => {
-    try {
-      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
-      
-      // Cria o lead na clientes_semcadastro com os dados completos
-      // O gatilho no banco cuidará de criar a linha na usuarios_planogratis apenas com o ID
-      const { data: leadData, error } = await supabase
-        .from("clientes_semcadastro")
-        .insert([{
-          nome: data.name.trim(),
-          whatsapp: cleanWhatsapp,
-          cliente_gratis: true,
-          primeiro_contato: true
-        }])
-        .select('id')
-        .single();
-
-      if (error) throw error;
-      
-      if (leadData) {
-        setData(prev => ({ ...prev, id: leadData.id }));
-      }
-    } catch (err) {
-      console.error("Erro ao salvar registro inicial:", err);
-    }
-  };
-
-  const checkDuplicate = async () => {
-    if (hideLoginLink) return false; 
+  const checkWhatsAppStatus = async () => {
+    setIsChecking(true);
+    setValidationStatus('idle');
+    setWhatsappError("");
     
-    setIsCheckingDuplicate(true);
-    setDuplicateFound(false);
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Busca o usuário pelo WhatsApp na tabela usuarios_planogratis
-      const { data: existingUser } = await supabase
+      const { data: user, error } = await supabase
         .from("usuarios_planogratis")
-        .select("nome")
+        .select("id, nome")
         .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
-      // Se o usuário existe E a coluna 'nome' está preenchida, bloqueia
-      if (existingUser && existingUser.nome && existingUser.nome.trim() !== "") {
-        setDuplicateFound(true);
-        return true;
+      if (error) throw error;
+
+      if (!user) {
+        setValidationStatus('not_found');
+        return false;
       }
-      
-      // Se não existe ou o nome está nulo/vazio, pode continuar
-      return false;
+
+      if (user.nome && user.nome.trim() !== "") {
+        setValidationStatus('exists');
+        return false;
+      }
+
+      // Encontrou e o nome está vazio -> Pode prosseguir
+      setData(prev => ({ ...prev, id: user.id }));
+      setValidationStatus('pending');
+      return true;
     } catch (err) {
-      console.error("Erro ao verificar duplicidade:", err);
+      console.error("Erro ao validar WhatsApp:", err);
       return false;
     } finally {
-      setIsCheckingDuplicate(false);
+      setIsChecking(false);
     }
   };
 
@@ -149,9 +129,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         setWhatsappError("Os números de WhatsApp não coincidem.");
         return;
       }
-      const isDuplicate = await checkDuplicate();
-      if (isDuplicate) return;
-      await saveInitialLead();
+      
+      const canGo = await checkWhatsAppStatus();
+      if (!canGo) return;
     }
     setDir(1); 
     setStep((s) => s + 1);
@@ -200,7 +180,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         validateWhatsappLength(cleanWhatsapp) && 
         validateWhatsappLength(cleanConfirm) &&
         cleanWhatsapp === cleanConfirm &&
-        !isCheckingDuplicate
+        !isChecking
       );
     }
     if (step === 1) return data.age > 0 && data.sex !== "" && data.height > 50 && data.weight > 20;
@@ -219,6 +199,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       restrictions: data.restrictions.trim() === "" ? "Nenhuma" : data.restrictions,
       preferences: data.preferences.trim() === "" ? "Nenhuma" : data.preferences,
     });
+  };
+
+  const handleGoToWhatsApp = () => {
+    const message = encodeURIComponent("Quero calcular meu metabolismo, grátis. Vim do seu site!");
+    window.open(`https://wa.me/5511933735838?text=${message}`, "_blank");
   };
 
   return (
@@ -240,7 +225,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
               <p className="text-muted-foreground mb-1">Informe seu nome e WhatsApp para receber seu plano.</p>
               <p className="text-destructive text-sm font-semibold mb-8 uppercase">
-                {hideLoginLink ? "AS INFORMAÇÕES SÓ PODERÃO SER EDITADAS APÓS 7 DIAS PREENCHA COM CUIDADO" : "As informações não poderão ser editadas, preencha com cuidado."}
+                As informações não poderão ser editadas, preencha com cuidado.
               </p>
 
               <div className="space-y-6">
@@ -259,11 +244,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                       onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, "");
                         setData({ ...data, whatsapp: val });
-                        setDuplicateFound(false);
+                        setValidationStatus('idle');
                         setWhatsappError("");
                       }}
                       className={`w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 ${
-                        duplicateFound || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
+                        validationStatus !== 'idle' && validationStatus !== 'pending' || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
                       }`}
                     />
                   </div>
@@ -291,24 +276,36 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     </p>
                   )}
 
-                  {data.whatsapp !== "" && confirmWhatsapp !== "" && data.whatsapp === confirmWhatsapp && validateWhatsAppLength(data.whatsapp) && (
-                    <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> Número válido e confirmado
-                    </p>
-                  )}
-
-                  {duplicateFound && !hideLoginLink && (
+                  {validationStatus === 'not_found' && (
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
                       <div className="flex items-start gap-2 text-destructive mb-3">
                         <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                        <p className="text-sm font-bold leading-tight">Este WhatsApp já possui um plano cadastrado.</p>
+                        <p className="text-sm font-bold leading-tight">WhatsApp inválido, por favor digite seu WhatsApp.</p>
+                      </div>
+                      <button onClick={handleGoToWhatsApp} className="w-full flex items-center justify-center gap-2 bg-primary text-white py-2.5 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
+                        <MessageCircle className="w-4 h-4" /> Calcular Meu Metabolismo Grátis
+                      </button>
+                    </motion.div>
+                  )}
+
+                  {validationStatus === 'exists' && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200">
+                      <div className="flex items-start gap-2 text-amber-700 mb-3">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <p className="text-sm font-bold leading-tight">Este usuário já existe.</p>
                       </div>
                       {onGoToLogin && (
-                        <button onClick={onGoToLogin} className="w-full flex items-center justify-center gap-2 bg-destructive text-white py-2.5 rounded-lg text-sm font-bold hover:bg-destructive/90 transition-colors">
-                          <UserCheck className="w-4 h-4" /> Acessar meu plano existente
+                        <button onClick={onGoToLogin} className="w-full flex items-center justify-center gap-2 bg-primary text-white py-2.5 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
+                          <UserCheck className="w-4 h-4" /> Acessar Meu Plano
                         </button>
                       )}
                     </motion.div>
+                  )}
+
+                  {validationStatus === 'pending' && (
+                    <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> WhatsApp validado. Continue seu cadastro.
+                    </p>
                   )}
                 </div>
               </div>
@@ -412,7 +409,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         <div className="flex items-center justify-between mt-10">
           <button onClick={prev} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft className="w-4 h-4" /> Voltar</button>
           {!isLastStep ? (
-            <button disabled={!canProceed()} onClick={next} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40">{isCheckingDuplicate ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Próximo <ArrowRight className="w-4 h-4" /></>}</button>
+            <button disabled={!canProceed()} onClick={next} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40">{isChecking ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Próximo <ArrowRight className="w-4 h-4" /></>}</button>
           ) : (
             <button disabled={!canProceed() || loading} onClick={handleFinish} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40">{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Quero meu Plano!"}</button>
           )}
