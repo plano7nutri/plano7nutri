@@ -8,6 +8,7 @@ export interface OnboardingData {
   id?: string;
   name: string;
   whatsapp: string;
+  whatsapp_confirmacao: string;
   age: number;
   sex: "male" | "female" | "";
   height: number;
@@ -59,6 +60,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const [data, setData] = useState<OnboardingData>({
     name: "", 
     whatsapp: "", 
+    whatsapp_confirmacao: "",
     age: 25, 
     sex: "", 
     height: 170, 
@@ -204,7 +206,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     setLoading(true);
     onComplete({
       ...data,
-      whatsapp: formatWhatsApp(data.whatsapp),
+      whatsapp: data.whatsapp, // Envia o digitado original
+      whatsapp_confirmacao: confirmWhatsapp, // Envia a confirmação original
       restrictions: data.restrictions.trim() === "" ? "Nenhuma" : data.restrictions,
       preferences: data.preferences.trim() === "" ? "Nenhuma" : data.preferences,
     });
