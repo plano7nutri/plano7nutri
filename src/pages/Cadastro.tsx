@@ -41,13 +41,14 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
+      // Envia para o Webhook (Mantém o WhatsApp aqui)
       await fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nome: data.name.trim(),
-          whatsapp: data.whatsapp, // Primeiro WhatsApp digitado
-          whatsapp_confirmacao: data.whatsapp_confirmacao // WhatsApp de confirmação
+          whatsapp: data.whatsapp,
+          whatsapp_confirmacao: data.whatsapp_confirmacao
         })
       });
 
@@ -73,10 +74,10 @@ const Cadastro = () => {
       const carbo = Math.round((metaCalorias * carbRatio) / 4);
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
 
-      const dashData = {
+      // Objeto para o banco de dados SEM a coluna whatsapp
+      const dbUpdateData = {
         id: data.id,
         nome: data.name,
-        whatsapp: finalWhatsapp,
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
@@ -98,13 +99,16 @@ const Cadastro = () => {
 
       const { error: upsertError } = await supabase
         .from("usuarios_planogratis")
-        .upsert(dashData, { onConflict: 'id' });
+        .upsert(dbUpdateData, { onConflict: 'id' });
 
       if (upsertError) throw new Error(upsertError.message);
 
       toast.success("Plano calculado com sucesso!");
+      
+      // Para o Dashboard funcionar localmente, ainda precisamos do whatsapp no state
+      // mas ele NÃO foi salvo na tabela usuarios_planogratis
       localStorage.setItem("plano7_free_whatsapp", finalWhatsapp);
-      navigate("/dashboard", { state: dashData });
+      navigate("/dashboard", { state: { ...dbUpdateData, whatsapp: finalWhatsapp } });
     } catch (err: any) {
       console.error("Erro no processo:", err);
       toast.error(err.message || "Erro ao processar dados.");
