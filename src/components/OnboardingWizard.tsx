@@ -114,7 +114,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     }
   };
 
-  const validateWhatsappLength = (val: string) => {
+  const validateWhatsAppLength = (val: string) => {
     const clean = val.replace(/\D/g, "");
     return clean.length === 10 || clean.length === 11;
   };
@@ -124,7 +124,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       const cleanWhatsapp = data.whatsapp.replace(/\D/g, "");
       const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
 
-      if (!validateWhatsappLength(cleanWhatsapp)) {
+      if (!validateWhatsAppLength(cleanWhatsapp)) {
         setWhatsappError("O WhatsApp deve ter 10 ou 11 dígitos (DDD + Número).");
         return;
       }
