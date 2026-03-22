@@ -40,7 +40,8 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
   const [heightInput, setHeightInput] = useState((initialData.height / 100).toFixed(2).replace(".", ","));
 
   const handleHeightChange = (increment: number) => {
-    const nextHeight = Math.max(50, Math.min(250, formData.height + increment));
+    // TRAVA RIGOROSA: 2,10m
+    const nextHeight = Math.max(50, Math.min(210, formData.height + increment));
     setFormData({ ...formData, height: nextHeight });
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
   };
@@ -69,7 +70,7 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
         <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Idade</label>
+              <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Idade (Máx 100)</label>
               <div className="flex items-center gap-2">
                 <button type="button" onClick={() => setFormData({...formData, age: Math.max(1, formData.age - 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
                   <Minus size={14} />
@@ -77,16 +78,16 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
                 <input 
                   type="number" 
                   value={formData.age}
-                  onChange={(e) => setFormData({...formData, age: Number(e.target.value)})}
+                  onChange={(e) => setFormData({...formData, age: Math.min(100, Number(e.target.value))})}
                   className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-2 py-2 text-white text-center focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
-                <button type="button" onClick={() => setFormData({...formData, age: Math.min(120, formData.age + 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                <button type="button" onClick={() => setFormData({...formData, age: Math.min(100, formData.age + 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
                   <Plus size={14} />
                 </button>
               </div>
             </div>
             <div>
-              <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Peso (kg)</label>
+              <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Peso (Máx 125kg)</label>
               <div className="flex items-center gap-2">
                 <button type="button" onClick={() => setFormData({...formData, weight: Math.max(20, formData.weight - 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
                   <Minus size={14} />
@@ -94,10 +95,10 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
                 <input 
                   type="number" 
                   value={formData.weight}
-                  onChange={(e) => setFormData({...formData, weight: Number(e.target.value)})}
+                  onChange={(e) => setFormData({...formData, weight: Math.min(125, Number(e.target.value))})}
                   className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-2 py-2 text-white text-center focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
-                <button type="button" onClick={() => setFormData({...formData, weight: Math.min(300, formData.weight + 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
+                <button type="button" onClick={() => setFormData({...formData, weight: Math.min(125, formData.weight + 1)})} className="p-2 bg-zinc-800 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors">
                   <Plus size={14} />
                 </button>
               </div>
@@ -105,7 +106,7 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
           </div>
 
           <div>
-            <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Altura (m)</label>
+            <label className="block text-[10px] uppercase font-bold text-emerald-500 mb-1.5">Altura (Máx 2,10m)</label>
             <div className="flex items-center gap-4">
               <button type="button" onClick={() => handleHeightChange(-1)} className="p-3 bg-zinc-800 rounded-xl text-emerald-500 hover:bg-emerald-500/10 transition-colors">
                 <Minus size={18} />

@@ -159,6 +159,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     if (!isNaN(numericVal)) {
       let finalHeight = numericVal <= 3 ? Math.round(numericVal * 100) : Math.round(numericVal);
       
+      // TRAVA RIGOROSA: 2,10m
       if (finalHeight > 210) {
         finalHeight = 210;
         formatted = "2,10";
@@ -172,6 +173,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const stepHeight = (increment: number) => {
+    // TRAVA RIGOROSA: 2,10m
     const nextHeight = Math.max(50, Math.min(210, data.height + increment));
     setData(prev => ({ ...prev, height: nextHeight }));
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
