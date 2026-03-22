@@ -47,7 +47,7 @@ const Cadastro = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nome: data.name.trim(),
-          whatsapp: data.whatsapp,
+          whatsapp: finalWhatsapp,
           whatsapp_confirmacao: data.whatsapp_confirmacao
         })
       });
