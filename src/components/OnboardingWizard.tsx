@@ -82,7 +82,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Removido 'session_id' da consulta pois não existe na tabela usuarios_planogratis
       const { data: user, error } = await supabase
         .from("usuarios_planogratis")
         .select("id, nome")
@@ -101,7 +100,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         return false;
       }
 
-      // Encontrou e o nome está vazio -> Pode prosseguir
       setData(prev => ({ 
         ...prev, 
         id: user.id
@@ -161,7 +159,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     if (!isNaN(numericVal)) {
       let finalHeight = numericVal <= 3 ? Math.round(numericVal * 100) : Math.round(numericVal);
       
-      // TRAVA: Altura máxima 2,10m (210cm)
       if (finalHeight > 210) {
         finalHeight = 210;
         formatted = "2,10";
@@ -175,14 +172,12 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const stepHeight = (increment: number) => {
-    // TRAVA: Altura máxima 2,10m (210cm)
     const nextHeight = Math.max(50, Math.min(210, data.height + increment));
     setData(prev => ({ ...prev, height: nextHeight }));
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
   };
 
   const stepWeight = (increment: number) => {
-    // TRAVA: Peso máximo 125kg
     setData(prev => ({ ...prev, weight: Math.max(20, Math.min(125, prev.weight + increment)) }));
   };
 
@@ -192,8 +187,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
       return (
         data.name.trim() !== "" && 
-        validateWhatsappLength(cleanWhatsapp) && 
-        validateWhatsappLength(cleanConfirm) &&
+        validateWhatsAppLength(cleanWhatsapp) && 
+        validateWhatsAppLength(cleanConfirm) &&
         cleanWhatsapp === cleanConfirm &&
         !isChecking
       );
@@ -332,14 +327,13 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
               <h2 className="text-2xl font-bold text-foreground mb-2">Seus dados</h2>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Idade</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Idade (Máx 100)</label>
                   <div className="flex items-center gap-2">
                     <button onClick={() => setData(prev => ({...prev, age: Math.max(1, prev.age - 1)}))} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
                     <input 
                       type="number" 
                       value={data.age} 
                       onChange={(e) => {
-                        // TRAVA: Idade máxima 100 anos
                         const val = Math.min(100, Number(e.target.value));
                         setData({ ...data, age: val });
                       }} 
@@ -349,7 +343,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Altura (m)</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Altura (Máx 2,10m)</label>
                   <div className="flex items-center gap-2">
                     <button onClick={() => stepHeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
                     <input type="text" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)} className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
@@ -358,14 +352,13 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                 </div>
               </div>
               <div className="mb-6">
-                <label className="block text-sm font-medium text-foreground mb-2">Peso (kg)</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Peso (Máx 125kg)</label>
                 <div className="flex items-center gap-2">
                   <button onClick={() => stepWeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
                   <input 
                     type="number" 
                     value={data.weight} 
                     onChange={(e) => {
-                      // TRAVA: Peso máximo 125kg
                       const val = Math.min(125, Number(e.target.value));
                       setData({ ...data, weight: val });
                     }} 
