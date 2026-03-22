@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap, Info, MessageCircle } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap, Info, MessageCircle, Edit3 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
 import DashboardLiveCounter from "./DashboardLiveCounter";
+import FreeEditForm from "./FreeEditForm";
 
 interface DashboardProps {
   name: string;
@@ -40,17 +41,27 @@ interface DashboardProps {
   entregue?: boolean | null;
   cardapio?: string | null;
   lista?: string | null;
+  perfil_editado?: boolean;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
 }
 
+const activityFactors: Record<string, number> = {
+  "Sedentário": 1.2,
+  "Levemente ativo": 1.375,
+  "Moderadamente ativo": 1.55,
+  "Muito ativo": 1.725,
+  "Extremamente ativo": 1.9,
+};
+
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, entregue, cardapio, lista, onAvatarUpdate, onLogout
+  restrictions, preferences, avatarUrl, entregue, cardapio, lista, perfil_editado, onAvatarUpdate, onLogout
 }: DashboardProps) => {
   const { setTheme } = useTheme();
   const [isUploading, setIsUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
 
   useEffect(() => {
@@ -118,6 +129,59 @@ const Dashboard = ({
     }
   };
 
+  const handleProfileSave = async (newData: any) => {
+    try {
+      // Recalcular Nutrição
+      const tmbCalc = newData.sex === "male" 
+        ? 10 * newData.weight + 6.25 * newData.height - 5 * newData.age + 5 
+        : 10 * newData.weight + 6.25 * newData.height - 5 * newData.age - 161;
+      
+      const factor = activityFactors[newData.activity] || 1.2;
+      const getCalc = Math.round(tmbCalc * factor);
+      
+      let metaCaloriasCalc = getCalc;
+      if (newData.goal.includes("Perder")) metaCaloriasCalc = Math.round(getCalc * 0.8);
+      else if (newData.goal.includes("Ganhar")) metaCaloriasCalc = Math.round(getCalc * 1.15);
+      
+      const metaAguaCalc = Math.round((newData.weight * 35) / 100) * 100;
+      
+      let protRatio = 0.3, carbRatio = 0.45, fatRatio = 0.25;
+      if (metaCaloriasCalc < getCalc) { protRatio = 0.35; carbRatio = 0.35; fatRatio = 0.3; }
+      else if (metaCaloriasCalc > getCalc) { protRatio = 0.3; carbRatio = 0.5; fatRatio = 0.2; }
+      
+      const proteinaCalc = Math.round((metaCaloriasCalc * protRatio) / 4);
+      const carboCalc = Math.round((metaCaloriasCalc * carbRatio) / 4);
+      const gorduraCalc = Math.round((metaCaloriasCalc * fatRatio) / 9);
+
+      const { error } = await supabase
+        .from("usuarios_planogratis")
+        .update({
+          nome: newData.name,
+          idade: newData.age,
+          peso: newData.weight,
+          altura: newData.height,
+          sexo_biologico: newData.sex,
+          meta_calorias: metaCaloriasCalc,
+          meta_agua: metaAguaCalc,
+          tmb: Math.round(tmbCalc),
+          get: getCalc,
+          proteina_dia: proteinaCalc,
+          carbo_dia: carboCalc,
+          gordura_dia: gorduraCalc,
+          perfil_editado: true
+        })
+        .eq("whatsapp", whatsapp);
+
+      if (error) throw error;
+
+      toast.success("Perfil atualizado com sucesso!");
+      setIsEditing(false);
+      if (onAvatarUpdate) onAvatarUpdate(); // Trigger refetch
+    } catch (err) {
+      toast.error("Erro ao atualizar perfil.");
+    }
+  };
+
   const whatsappUrl = `https://wa.me/5511933735838?text=${encodeURIComponent("Quero receber meu *Cálculo de Metabolismo Personalizado* aqui no meu Whatsapp!")}`;
 
   return (
@@ -161,11 +225,22 @@ const Dashboard = ({
                 </label>
               </div>
 
-              <div>
+              <div className="w-full">
                 <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-2">
                   Plano Gratuito
                 </div>
-                <h2 className="text-2xl font-bold text-zinc-900">{name}</h2>
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <h2 className="text-2xl font-bold text-zinc-900">{name}</h2>
+                  {!perfil_editado && (
+                    <button 
+                      onClick={() => setIsEditing(true)}
+                      className="p-1.5 text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                      title="Editar perfil (Uma única vez)"
+                    >
+                      <Edit3 size={18} />
+                    </button>
+                  )}
+                </div>
                 <p className="text-sm text-zinc-500">Membro Plano 7</p>
               </div>
 
@@ -375,6 +450,16 @@ const Dashboard = ({
         </div>
 
         <FAQSection />
+
+        <AnimatePresence>
+          {isEditing && (
+            <FreeEditForm 
+              initialData={{ name, age, sex, height, weight, activity: activityLabel, goal: goalLabel }}
+              onClose={() => setIsEditing(false)}
+              onSave={handleProfileSave}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

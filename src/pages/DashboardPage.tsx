@@ -79,6 +79,7 @@ const DashboardPage = () => {
           entregue={displayData.entregue}
           cardapio={displayData.cardápio}
           lista={displayData.lista}
+          perfil_editado={displayData.perfil_editado}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["userPlan", displayData.whatsapp] })}
           onLogout={handleLogout}
         />
