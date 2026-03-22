@@ -6,6 +6,7 @@ import { formatWhatsApp } from "@/lib/utils";
 
 export interface OnboardingData {
   id?: string;
+  session_id?: string;
   name: string;
   whatsapp: string;
   whatsapp_confirmacao: string;
@@ -83,7 +84,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       
       const { data: user, error } = await supabase
         .from("usuarios_planogratis")
-        .select("id, nome")
+        .select("id, nome, session_id")
         .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
@@ -100,7 +101,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       }
 
       // Encontrou e o nome está vazio -> Pode prosseguir
-      setData(prev => ({ ...prev, id: user.id }));
+      setData(prev => ({ 
+        ...prev, 
+        id: user.id,
+        session_id: user.session_id || undefined 
+      }));
       setValidationStatus('pending');
       return true;
     } catch (err) {
@@ -149,26 +154,36 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
         formatted = formatted.charAt(0) + "," + formatted.slice(1);
       }
     }
-    setHeightInput(formatted);
+    
     const numericString = formatted.replace(",", ".");
     const numericVal = parseFloat(numericString);
+    
     if (!isNaN(numericVal)) {
-      if (numericVal <= 3) {
-        setData(prev => ({ ...prev, height: Math.round(numericVal * 100) }));
-      } else {
-        setData(prev => ({ ...prev, height: Math.round(numericVal) }));
+      let finalHeight = numericVal <= 3 ? Math.round(numericVal * 100) : Math.round(numericVal);
+      
+      // TRAVA: Altura máxima 2,10m (210cm)
+      if (finalHeight > 210) {
+        finalHeight = 210;
+        formatted = "2,10";
       }
+      
+      setHeightInput(formatted);
+      setData(prev => ({ ...prev, height: finalHeight }));
+    } else {
+      setHeightInput(formatted);
     }
   };
 
   const stepHeight = (increment: number) => {
-    const nextHeight = Math.max(50, Math.min(250, data.height + increment));
+    // TRAVA: Altura máxima 2,10m (210cm)
+    const nextHeight = Math.max(50, Math.min(210, data.height + increment));
     setData(prev => ({ ...prev, height: nextHeight }));
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
   };
 
   const stepWeight = (increment: number) => {
-    setData(prev => ({ ...prev, weight: Math.max(20, Math.min(300, prev.weight + increment)) }));
+    // TRAVA: Peso máximo 125kg
+    setData(prev => ({ ...prev, weight: Math.max(20, Math.min(125, prev.weight + increment)) }));
   };
 
   const canProceed = () => {
@@ -320,8 +335,17 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <label className="block text-sm font-medium text-foreground mb-2">Idade</label>
                   <div className="flex items-center gap-2">
                     <button onClick={() => setData(prev => ({...prev, age: Math.max(1, prev.age - 1)}))} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
-                    <input type="number" value={data.age} onChange={(e) => setData({ ...data, age: Number(e.target.value) })} className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
-                    <button onClick={() => setData(prev => ({...prev, age: Math.min(120, prev.age + 1)}))} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
+                    <input 
+                      type="number" 
+                      value={data.age} 
+                      onChange={(e) => {
+                        // TRAVA: Idade máxima 100 anos
+                        const val = Math.min(100, Number(e.target.value));
+                        setData({ ...data, age: val });
+                      }} 
+                      className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" 
+                    />
+                    <button onClick={() => setData(prev => ({...prev, age: Math.min(100, prev.age + 1)}))} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                   </div>
                 </div>
                 <div>
@@ -337,7 +361,16 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                 <label className="block text-sm font-medium text-foreground mb-2">Peso (kg)</label>
                 <div className="flex items-center gap-2">
                   <button onClick={() => stepWeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
-                  <input type="number" value={data.weight} onChange={(e) => setData({ ...data, weight: Number(e.target.value) })} className="w-full px-4 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
+                  <input 
+                    type="number" 
+                    value={data.weight} 
+                    onChange={(e) => {
+                      // TRAVA: Peso máximo 125kg
+                      const val = Math.min(125, Number(e.target.value));
+                      setData({ ...data, weight: val });
+                    }} 
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-center text-lg font-bold" 
+                  />
                   <button onClick={() => stepWeight(1)} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                 </div>
               </div>
