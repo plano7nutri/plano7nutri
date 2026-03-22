@@ -82,9 +82,10 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
+      // Removido 'session_id' da consulta pois não existe na tabela usuarios_planogratis
       const { data: user, error } = await supabase
         .from("usuarios_planogratis")
-        .select("id, nome, session_id")
+        .select("id, nome")
         .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
@@ -103,8 +104,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       // Encontrou e o nome está vazio -> Pode prosseguir
       setData(prev => ({ 
         ...prev, 
-        id: user.id,
-        session_id: user.session_id || undefined 
+        id: user.id
       }));
       setValidationStatus('pending');
       return true;
