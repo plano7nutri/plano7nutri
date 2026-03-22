@@ -78,7 +78,6 @@ const Cadastro = () => {
       // Usamos o ID que veio do Wizard (que foi buscado no banco)
       const dbUpdateData = {
         id: data.id,
-        session_id: data.session_id, // Incluindo session_id para preservar o valor
         nome: data.name,
         sexo_biologico: data.sex,
         idade: data.age,
