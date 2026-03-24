@@ -41,16 +41,20 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Envia para o Webhook
-      await fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nome: data.name.trim(),
-          whatsapp: finalWhatsapp,
-          whatsapp_confirmacao: data.whatsapp_confirmacao
-        })
-      });
+      // Envia para o Webhook (Tratado como opcional para não bloquear o cadastro em caso de erro de SSL/Rede no servidor de destino)
+      try {
+        await fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome: data.name.trim(),
+            whatsapp: finalWhatsapp,
+            whatsapp_confirmacao: data.whatsapp_confirmacao
+          })
+        });
+      } catch (webhookError) {
+        console.warn("Aviso: Webhook não pôde ser enviado (provável erro de SSL), mas prosseguindo com o cadastro:", webhookError);
+      }
 
       const tmb =
         data.sex === "male"
@@ -75,7 +79,6 @@ const Cadastro = () => {
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
 
       // Objeto para o banco de dados SEM a coluna whatsapp
-      // Usamos o ID que veio do Wizard (que foi buscado no banco)
       const dbUpdateData = {
         id: data.id,
         nome: data.name,
@@ -98,8 +101,6 @@ const Cadastro = () => {
         cadastro_feito: true
       };
 
-      // O upsert pelo ID garante que apenas as colunas enviadas sejam atualizadas
-      // Como não enviamos 'whatsapp', ele permanece o original do banco.
       const { error: upsertError } = await supabase
         .from("usuarios_planogratis")
         .upsert(dbUpdateData, { onConflict: 'id' });
