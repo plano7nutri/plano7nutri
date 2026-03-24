@@ -41,9 +41,8 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Disparo do Webhook (Não-bloqueante e tentando evitar preflight de CORS)
-      // Nota: O erro ERR_CERT_AUTHORITY_INVALID indica que o certificado SSL do servidor de destino é inválido.
-      fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
+      // Disparo do Webhook para a nova URL informada
+      fetch('https://hoohs.saas.inventiia.com.br/webhook/plano7_gratis', {
         method: 'POST',
         mode: 'no-cors', 
         headers: { 'Content-Type': 'text/plain' },
@@ -52,7 +51,7 @@ const Cadastro = () => {
           whatsapp: finalWhatsapp,
           whatsapp_confirmacao: data.whatsapp_confirmacao
         })
-      }).catch(e => console.warn("Webhook não disparado devido a erro de SSL no servidor de destino:", e));
+      }).catch(e => console.warn("Webhook não disparado:", e));
 
       const tmb =
         data.sex === "male"
