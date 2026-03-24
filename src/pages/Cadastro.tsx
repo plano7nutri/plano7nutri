@@ -41,17 +41,24 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Disparo do Webhook para a nova URL informada
-      fetch('https://hoohs.saas.inventiia.com.br/webhook/plano7_gratis', {
-        method: 'POST',
-        mode: 'no-cors', 
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          nome: data.name.trim(),
-          whatsapp: finalWhatsapp,
-          whatsapp_confirmacao: data.whatsapp_confirmacao
-        })
-      }).catch(e => console.warn("Webhook não disparado:", e));
+      // Disparo do Webhook (Aguardando a conclusão para garantir o envio)
+      try {
+        await fetch('https://hoohs.saas.inventiia.com.br/webhook/plano7_gratis', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            nome: data.name.trim(),
+            whatsapp: finalWhatsapp,
+            whatsapp_confirmacao: data.whatsapp_confirmacao
+          })
+        });
+      } catch (webhookError) {
+        // Logamos o erro mas não travamos o usuário se o webhook falhar (ex: erro de SSL ou CORS)
+        console.warn("Aviso: Falha ao enviar webhook:", webhookError);
+      }
 
       const tmb =
         data.sex === "male"
