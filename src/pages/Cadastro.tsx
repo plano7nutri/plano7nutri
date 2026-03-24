@@ -41,20 +41,18 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Envia para o Webhook (Tratado como opcional para não bloquear o cadastro em caso de erro de SSL/Rede no servidor de destino)
-      try {
-        await fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            nome: data.name.trim(),
-            whatsapp: finalWhatsapp,
-            whatsapp_confirmacao: data.whatsapp_confirmacao
-          })
-        });
-      } catch (webhookError) {
-        console.warn("Aviso: Webhook não pôde ser enviado (provável erro de SSL), mas prosseguindo com o cadastro:", webhookError);
-      }
+      // Disparo do Webhook (Não-bloqueante e tentando evitar preflight de CORS)
+      // Nota: O erro ERR_CERT_AUTHORITY_INVALID indica que o certificado SSL do servidor de destino é inválido.
+      fetch('https://hooks.saas.inventiia.com.br/webhook/cardapiogratis', {
+        method: 'POST',
+        mode: 'no-cors', 
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          nome: data.name.trim(),
+          whatsapp: finalWhatsapp,
+          whatsapp_confirmacao: data.whatsapp_confirmacao
+        })
+      }).catch(e => console.warn("Webhook não disparado devido a erro de SSL no servidor de destino:", e));
 
       const tmb =
         data.sex === "male"
@@ -78,7 +76,6 @@ const Cadastro = () => {
       const carbo = Math.round((metaCalorias * carbRatio) / 4);
       const gordura = Math.round((metaCalorias * fatRatio) / 9);
 
-      // Objeto para o banco de dados SEM a coluna whatsapp
       const dbUpdateData = {
         id: data.id,
         nome: data.name,
