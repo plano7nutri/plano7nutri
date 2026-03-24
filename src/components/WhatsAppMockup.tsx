@@ -120,7 +120,6 @@ const WhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
-          // Reduzi o tempo de digitação para os balões normais para ser mais fluido
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
@@ -131,7 +130,6 @@ const WhatsAppMockup = () => {
           setMsgIndex(prev => prev + 1);
         }
       } else {
-        // Delay de 5000ms no final da sequência antes de reiniciar
         timeout = setTimeout(() => {
           setCurrentMessages([]);
           setMsgIndex(0);
@@ -139,8 +137,6 @@ const WhatsAppMockup = () => {
       }
     };
 
-    // O delay de 3000ms ocorre QUANDO o msgIndex é 2 (após o card de dados já ter aparecido)
-    // Para todas as outras transições, usamos 1200ms.
     const delay = msgIndex === 2 ? 3000 : 1200;
     const actionTimeout = setTimeout(processNextMessage, delay);
 
@@ -288,18 +284,20 @@ const WhatsAppMockup = () => {
         </div>
       </div>
 
-      <style jsx global>{`
-        .scroll-area-mockup::-webkit-scrollbar {
-          width: 5px;
-        }
-        .scroll-area-mockup::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .scroll-area-mockup::-webkit-scrollbar-thumb {
-          background: rgba(0, 0, 0, 0.15);
-          border-radius: 10px;
-        }
-      `}</style>
+      <style>
+        {`
+          .scroll-area-mockup::-webkit-scrollbar {
+            width: 5px;
+          }
+          .scroll-area-mockup::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .scroll-area-mockup::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+          }
+        `}
+      </style>
     </section>
   );
 };
