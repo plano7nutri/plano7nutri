@@ -41,8 +41,8 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Corrigido: URL alterada de 'hoohs' para 'hooks'
-      fetch('https://hooks.saas.inventiia.com.br/webhook/plano7_gratis', {
+      // Atualizado: Novo link do webhook solicitado
+      fetch('https://editor.saas.inventiia.com.br/webhook/plano7_calculo_gratis', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
