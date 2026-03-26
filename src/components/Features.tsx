@@ -6,7 +6,7 @@ const freeItems = [
   {
     emoji: "🔥",
     title: "Cálculo do seu metabolismo",
-    description: "TMB e GET calculados com precisão científica baseados nos seus dados reais"
+    description: "Conheça seu metabolismo com precisão científica baseados nos seus dados reais."
   },
   {
     emoji: "🔐",
