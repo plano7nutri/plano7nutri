@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Flame,Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils, X, Droplets } from "lucide-react";
+import { MessageCircle, Flame, Zap, Activity, Target, UtensilsCrossed, Camera, Loader2, Crown, Star, LogOut, Edit3, Clock, Heart, ShieldAlert, Settings, CheckCircle2, Lock, ClipboardList, Utensils, X, Droplets } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -116,43 +116,13 @@ const PremiumDashboard = ({
   
   const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalLocked;
 
+  // A trava de edição agora segue EXATAMENTE a mesma lógica do bloqueio do cardápio
   const canEdit = () => {
     if (isActuallyAdmin) return true;
-    if (isBlocked) return false;
-    if (!lastUpdateDate) return true;
-    const lastUpdate = new Date(lastUpdateDate);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - lastUpdate.getTime());
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    return diffDays >= 7;
+    return !isBlocked;
   };
 
   const daysToWait = () => {
-    if (!lastUpdateDate) return 0;
-    const lastUpdate = new Date(lastUpdateDate);
-    const nextUpdate = new Date(lastUpdate);
-    nextUpdate.setDate(nextUpdate.getDate() + 7);
-    const diffTime = nextUpdate.getTime() - new Date().getTime();
-    return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-  };
-
-  const canRequestPlan = () => {
-    if (isActuallyAdmin) return true;
-    if (isBlocked) return false;
-    
-    // Plano Único: Se limite for 0 pode pedir, se for 1 não pode
-    if (tipo_assinatura === "Unica") {
-      return (limite_cardapio_unico ?? 0) === 0;
-    }
-    
-    // Plano Mensal: Só bloqueia se já foi entregue e está no período de 7 dias
-    if (tipo_assinatura === "Mensal" || plano_semanal === true) {
-      return !isMensalLocked;
-    }
-    return true;
-  };
-
-  const daysToNextPlan = () => {
     if (!ultimo_envio_plano) return 0;
     const lastRequest = new Date(ultimo_envio_plano);
     const nextRequest = new Date(lastRequest.getTime() + (7 * 24 * 60 * 60 * 1000));
@@ -206,12 +176,6 @@ const PremiumDashboard = ({
       toast.error(reason);
       return;
     }
-    if (!canEdit()) {
-      toast.info(`Você poderá atualizar seu perfil novamente em ${daysToWait()} dias.`, {
-        icon: <Clock className="w-5 h-5 text-amber-500" />
-      });
-      return;
-    }
     setIsEditing(true);
   };
 
@@ -229,7 +193,7 @@ const PremiumDashboard = ({
     if (isSubscriptionInactive) return "Acesso Bloqueado";
     if (isUnicaDelivered) return "Cardápio Entregue";
     if (isMensalLocked) {
-      const days = daysToNextPlan();
+      const days = daysToWait();
       return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
     }
     return "Solicitar Cardápio de Elite";
@@ -326,25 +290,23 @@ const PremiumDashboard = ({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${isBlocked ? 'bg-muted' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
-                {isBlocked ? <Lock className="w-5 h-5 text-muted-foreground" /> : canEdit() ? <Edit3 className="w-5 h-5 text-emerald-400" /> : <Clock className="w-5 h-5 text-amber-400" />}
+              <div className={`p-2 rounded-lg ${isBlocked ? 'bg-muted' : 'bg-emerald-500/10'}`}>
+                {isBlocked ? <Lock className="w-5 h-5 text-muted-foreground" /> : <Edit3 className="w-5 h-5 text-emerald-400" />}
               </div>
               <div>
                 <h4 className="text-sm font-bold text-foreground">Controle de Atualização</h4>
                 <p className="text-xs text-muted-foreground">
                   {isBlocked 
                     ? isMensalLocked ? "Cardápio entregue. Te vejo em 7 dias!" : "Atualização bloqueada. Assinatura Inativa."
-                    : canEdit() 
-                      ? "Seu perfil está liberado para nova atualização." 
-                      : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
+                    : "Seu perfil está liberado para nova atualização."}
                 </p>
               </div>
             </div>
             <button 
               onClick={handleEditClick}
-              disabled={(!canEdit() || isBlocked) && !safeIsAdminView}
+              disabled={!canEdit() && !safeIsAdminView}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
-                safeIsAdminView || (!isBlocked && canEdit()) 
+                safeIsAdminView || canEdit() 
                   ? "bg-primary text-white hover:bg-primary/90 shadow-glow" 
                   : "bg-muted text-muted-foreground cursor-not-allowed border border-border"
               }`}
