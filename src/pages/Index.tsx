@@ -41,32 +41,44 @@ const Index = () => {
   };
 
   const handleLoginFree = async () => {
-    // Formatações para busca em ambas as tabelas
-    const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
-    const paidSearchWhatsapp = formatTelefoneCadastro(loginWhatsapp);
+    const rawNumber = loginWhatsapp.replace(/\D/g, "");
     
-    if (cleanWhatsapp.length < 10) {
+    if (rawNumber.length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
       return;
     }
 
+    // Formatações base (Garante o 55)
+    const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
+    const paidSearchWhatsapp = formatTelefoneCadastro(loginWhatsapp);
+    
+    // Lista de variações para busca (com e sem o 9º dígito se for o caso)
+    const variations = [cleanWhatsapp];
+    
+    // Se o número tem 11 dígitos (ex: 11988887777), adicionamos a variação de 10 dígitos (ex: 1188887777)
+    // E vice-versa, para cobrir todas as possibilidades de cadastro no banco
+    if (rawNumber.length === 11 && rawNumber[2] === '9') {
+      const withoutNine = "55" + rawNumber.substring(0, 2) + rawNumber.substring(3);
+      variations.push(withoutNine);
+    } else if (rawNumber.length === 10) {
+      const withNine = "55" + rawNumber.substring(0, 2) + "9" + rawNumber.substring(2);
+      variations.push(withNine);
+    }
+
     setIsLoggingIn(true);
     setLoginStatus('idle');
+    
     try {
       // 1. Verificar se é um cliente pago ativo (Elite)
-      // Buscamos pelo formato exato usado na tabela de clientes pagos
       const { data: paidData, error: paidError } = await supabase
         .from("clientes_pagos")
         .select("id, assinatura_ativa, tipo_assinatura, limite_cardapio_unico")
-        .eq("whatsapp", paidSearchWhatsapp)
+        .in("whatsapp", variations) // Busca por todas as variações formatadas
         .maybeSingle();
 
       if (paidError) throw paidError;
 
       if (paidData) {
-        // Lógica de Atividade: 
-        // - Se for Mensal: Precisa estar com assinatura_ativa true
-        // - Se for Unica: Precisa ter limite_cardapio_unico como 0 ou null (ainda não entregue)
         const isMensalAtivo = paidData.tipo_assinatura === "Mensal" && paidData.assinatura_ativa === true;
         const isUnicaAtivo = paidData.tipo_assinatura === "Unica" && (paidData.limite_cardapio_unico === 0 || paidData.limite_cardapio_unico === null);
 
@@ -77,11 +89,11 @@ const Index = () => {
         }
       }
 
-      // 2. Seguir com o fluxo normal do plano grátis se não for um pago ativo
+      // 2. Fluxo Plano Grátis
       const { data, error } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .eq("whatsapp", cleanWhatsapp)
+        .in("whatsapp", variations) // Busca por todas as variações formatadas
         .maybeSingle();
 
       if (error) throw error;
@@ -91,18 +103,15 @@ const Index = () => {
         return;
       }
 
-      // Se o nome estiver vazio, precisa terminar o cadastro
       if (!data.nome || data.nome.trim() === "") {
         setLoginStatus('pending');
         return;
       }
 
       toast.success(`Bem-vindo de volta, ${data.nome}!`);
-      try {
-        localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
-      } catch (e) {}
-      
+      localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
       navigate("/dashboard", { state: data });
+      
     } catch (err) {
       toast.error("Erro ao buscar seu plano.");
     } finally {
