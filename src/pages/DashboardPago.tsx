@@ -86,7 +86,15 @@ const DashboardPago = () => {
     const proteina = Math.round((metaCalorias * protRatio) / 4);
     const carbo = Math.round((metaCalorias * carbRatio) / 4);
     const gordura = Math.round((metaCalorias * fatRatio) / 9);
-    return { tmb: Math.round(tmb), get, metaCalorias, metaAgua, proteina, carbo, gordura };
+    return { 
+      tmb: Math.round(tmb), 
+      get, 
+      meta_calorias: metaCalorias, 
+      meta_agua: metaAgua, 
+      proteina_dia: proteina, 
+      carbo_dia: carbo, 
+      gordura_dia: gordura 
+    };
   };
 
   const handleUpdateProfile = async (data: any) => {
@@ -101,7 +109,7 @@ const DashboardPago = () => {
       
       // Disparo do Webhook Plano Pago
       fetch('https://editor.saas.inventiia.com.br/webhook/plano7_pago', {
-        method: 'POST',
+        method'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nome: userData.nome,
@@ -127,13 +135,13 @@ const DashboardPago = () => {
         objetivo_semanal: data.goal,
         restricoes_alimentares: data.restrictions,
         preferencias: data.preferences,
-        meta_calorias: nutrition.metaCalorias,
-        meta_agua: nutrition.metaAgua,
+        meta_calorias: nutrition.meta_calorias,
+        meta_agua: nutrition.meta_agua,
         tmb: nutrition.tmb,
         get: nutrition.get,
-        proteina_dia: nutrition.proteina,
-        carbo_dia: nutrition.carbo,
-        gordura_dia: nutrition.gordura,
+        proteina_dia: nutrition.proteina_dia,
+        carbo_dia: nutrition.carbo_dia,
+        gordura_dia: nutrition.gordura_dia,
       }).eq("id", user.id);
       
       if (error) throw error;
@@ -187,13 +195,13 @@ const DashboardPago = () => {
         objetivo_semanal: goalLabels[data.goal] || data.goal,
         restricoes_alimentares: data.restrictions || "Nenhuma",
         preferencias: data.preferences || "Nenhuma",
-        meta_calorias: nutrition.metaCalorias,
-        meta_agua: nutrition.metaAgua,
+        meta_calorias: nutrition.meta_calorias,
+        meta_agua: nutrition.meta_agua,
         tmb: nutrition.tmb,
         get: nutrition.get,
-        proteina_dia: nutrition.proteina,
-        carbo_dia: nutrition.carbo,
-        gordura_dia: nutrition.gordura,
+        proteina_dia: nutrition.proteina_dia,
+        carbo_dia: nutrition.carbo_dia,
+        gordura_dia: nutrition.gordura_dia,
         limite_cardapio_unico: 0,
         telefone_cadastro: telefoneCadastro
       }).eq("id", user.id);
@@ -291,3 +299,15 @@ const DashboardPago = () => {
 };
 
 export default DashboardPago;
+
+<dyad-chat-summary>Finalizando a padronização das chaves do webhook do plano pago</dyad-chat-summary>think
+The user is pointing out that my previous response was cut off. I need to complete the `DashboardPago.tsx` file and provide the final summary.
+
+Looking at the previous response, it cut off right at the end of the `DashboardPago.tsx` file.
+
+I will:
+1. Complete the `DashboardPago.tsx` file.
+2. Provide the concise summary.
+3. Provide the chat summary.
+
+Wait, I see the previous response ended with `
