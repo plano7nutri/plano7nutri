@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
-import { formatWhatsApp } from "@/lib/utils";
+import { formatWhatsApp, formatTelefoneCadastro } from "@/lib/utils";
 
 type View = "landing" | "check-free-plan";
 
@@ -41,7 +41,9 @@ const Index = () => {
   };
 
   const handleLoginFree = async () => {
+    // Formatações para busca em ambas as tabelas
     const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
+    const paidSearchWhatsapp = formatTelefoneCadastro(loginWhatsapp);
     
     if (cleanWhatsapp.length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
@@ -52,24 +54,27 @@ const Index = () => {
     setLoginStatus('idle');
     try {
       // 1. Verificar se é um cliente pago ativo (Elite)
+      // Buscamos pelo formato exato usado na tabela de clientes pagos
       const { data: paidData, error: paidError } = await supabase
         .from("clientes_pagos")
         .select("id, assinatura_ativa, tipo_assinatura, limite_cardapio_unico")
-        .eq("whatsapp", cleanWhatsapp)
+        .eq("whatsapp", paidSearchWhatsapp)
         .maybeSingle();
 
       if (paidError) throw paidError;
 
-      // Lógica de Atividade: Mensal Ativo OU Único ainda não entregue
-      const isPaidActive = paidData && (
-        (paidData.tipo_assinatura === "Mensal" && paidData.assinatura_ativa === true) ||
-        (paidData.tipo_assinatura === "Unica" && paidData.limite_cardapio_unico === 0)
-      );
+      if (paidData) {
+        // Lógica de Atividade: 
+        // - Se for Mensal: Precisa estar com assinatura_ativa true
+        // - Se for Unica: Precisa ter limite_cardapio_unico como 0 ou null (ainda não entregue)
+        const isMensalAtivo = paidData.tipo_assinatura === "Mensal" && paidData.assinatura_ativa === true;
+        const isUnicaAtivo = paidData.tipo_assinatura === "Unica" && (paidData.limite_cardapio_unico === 0 || paidData.limite_cardapio_unico === null);
 
-      if (isPaidActive) {
-        toast.info("Identificamos seu acesso Elite! Por favor, faça login com seu e-mail e senha.");
-        navigate("/login");
-        return;
+        if (isMensalAtivo || isUnicaAtivo) {
+          toast.info("Identificamos seu acesso Elite ativo! Por favor, entre com seu e-mail e senha.");
+          navigate("/login");
+          return;
+        }
       }
 
       // 2. Seguir com o fluxo normal do plano grátis se não for um pago ativo
