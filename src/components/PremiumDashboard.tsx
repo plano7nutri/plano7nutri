@@ -111,8 +111,8 @@ const PremiumDashboard = ({
   // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
   const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
   
-  // Lógica de entrega Mensal: Travado estritamente se estiver no período de 7 dias após o último envio
-  const isMensalLocked = tipo_assinatura === "Mensal" && isTimeLocked();
+  // Lógica de entrega Mensal: TRAVA APENAS SE ENTREGUE FOR TRUE E ESTIVER DENTRO DOS 7 DIAS
+  const isMensalLocked = tipo_assinatura === "Mensal" && entregue === true && isTimeLocked();
   
   const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalLocked;
 
@@ -145,10 +145,9 @@ const PremiumDashboard = ({
       return (limite_cardapio_unico ?? 0) === 0;
     }
     
-    // Plano Mensal: Libera a cada 7 dias após o último envio
+    // Plano Mensal: Só bloqueia se já foi entregue e está no período de 7 dias
     if (tipo_assinatura === "Mensal" || plano_semanal === true) {
-      if (!ultimo_envio_plano) return true;
-      return !isTimeLocked();
+      return !isMensalLocked;
     }
     return true;
   };
@@ -181,13 +180,7 @@ const PremiumDashboard = ({
       });
       return;
     }
-    if (!canRequestPlan()) {
-      e.preventDefault();
-      toast.error(`Seu novo plano semanal estará disponível em ${daysToNextPlan()} dias.`, {
-        icon: <Clock className="w-5 h-5 text-amber-500" />
-      });
-      return;
-    }
+    
     toast.success("Abrindo WhatsApp para solicitar seu plano...");
   };
 
@@ -260,10 +253,6 @@ const PremiumDashboard = ({
     if (isSubscriptionInactive) return "Acesso Bloqueado";
     if (isUnicaDelivered) return "Cardápio Entregue";
     if (isMensalLocked) {
-      const days = daysToNextPlan();
-      return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
-    }
-    if (!canRequestPlan()) {
       const days = daysToNextPlan();
       return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
     }
