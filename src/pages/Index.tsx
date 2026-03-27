@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
-import { formatWhatsApp, formatTelefoneCadastro } from "@/lib/utils";
+import { formatWhatsApp } from "@/lib/utils";
 
 type View = "landing" | "check-free-plan";
 
@@ -48,72 +48,69 @@ const Index = () => {
       return;
     }
 
-    // Formatações base (Garante o 55)
-    const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
-    const paidSearchWhatsapp = formatTelefoneCadastro(loginWhatsapp);
+    // Gerar variações de busca (sempre com 55)
+    const variations: string[] = [];
     
-    // Lista de variações para busca (com e sem o 9º dígito se for o caso)
-    const variations = [cleanWhatsapp];
-    
-    // Se o número tem 11 dígitos (ex: 11988887777), adicionamos a variação de 10 dígitos (ex: 1188887777)
-    // E vice-versa, para cobrir todas as possibilidades de cadastro no banco
-    if (rawNumber.length === 11 && rawNumber[2] === '9') {
-      const withoutNine = "55" + rawNumber.substring(0, 2) + rawNumber.substring(3);
-      variations.push(withoutNine);
-    } else if (rawNumber.length === 10) {
-      const withNine = "55" + rawNumber.substring(0, 2) + "9" + rawNumber.substring(2);
-      variations.push(withNine);
+    // Caso 1: Número como digitado (com 55 forçado)
+    let base = rawNumber;
+    if (!base.startsWith("55")) base = "55" + base;
+    variations.push(base);
+
+    // Caso 2: Tratar o 9º dígito (se tiver 13 dígitos, tenta a versão de 12 e vice-versa)
+    if (base.length === 13 && base[4] === '9') {
+      // Remove o 9: 5511988887777 -> 551188887777
+      variations.push(base.substring(0, 4) + base.substring(5));
+    } else if (base.length === 12) {
+      // Adiciona o 9: 551188887777 -> 5511988887777
+      variations.push(base.substring(0, 4) + "9" + base.substring(4));
     }
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 1. Verificar se é um cliente pago ativo (Elite)
-      const { data: paidData, error: paidError } = await supabase
+      // 1. BUSCA PRIORITÁRIA: Clientes Pagos
+      // Buscamos qualquer registro que bata com as variações
+      const { data: paidUsers, error: paidError } = await supabase
         .from("clientes_pagos")
-        .select("id, assinatura_ativa, tipo_assinatura, limite_cardapio_unico")
-        .in("whatsapp", variations) // Busca por todas as variações formatadas
-        .maybeSingle();
+        .select("id, nome, email, whatsapp")
+        .in("whatsapp", variations);
 
       if (paidError) throw paidError;
 
-      if (paidData) {
-        const isMensalAtivo = paidData.tipo_assinatura === "Mensal" && paidData.assinatura_ativa === true;
-        const isUnicaAtivo = paidData.tipo_assinatura === "Unica" && (paidData.limite_cardapio_unico === 0 || paidData.limite_cardapio_unico === null);
-
-        if (isMensalAtivo || isUnicaAtivo) {
-          toast.info("Identificamos seu acesso Elite ativo! Por favor, entre com seu e-mail e senha.");
-          navigate("/login");
-          return;
-        }
+      // Se encontrou QUALQUER registro na tabela de pagos, bloqueia o acesso grátis
+      if (paidUsers && paidUsers.length > 0) {
+        toast.info(`Identificamos que você é um cliente Elite (${paidUsers[0].nome}). Por favor, acesse com seu e-mail e senha.`);
+        navigate("/login");
+        return;
       }
 
-      // 2. Fluxo Plano Grátis
-      const { data, error } = await supabase
+      // 2. BUSCA SECUNDÁRIA: Plano Grátis
+      const { data: freeUser, error: freeError } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .in("whatsapp", variations) // Busca por todas as variações formatadas
+        .in("whatsapp", variations)
         .maybeSingle();
 
-      if (error) throw error;
+      if (freeError) throw freeError;
 
-      if (!data) {
+      if (!freeUser) {
         setLoginStatus('not_found');
         return;
       }
 
-      if (!data.nome || data.nome.trim() === "") {
+      if (!freeUser.nome || freeUser.nome.trim() === "") {
         setLoginStatus('pending');
         return;
       }
 
-      toast.success(`Bem-vindo de volta, ${data.nome}!`);
-      localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
-      navigate("/dashboard", { state: data });
+      toast.success(`Bem-vindo de volta, ${freeUser.nome}!`);
+      localStorage.setItem("plano7_free_whatsapp", freeUser.whatsapp);
+      navigate("/dashboard", { state: freeUser });
       
     } catch (err) {
-      toast.error("Erro ao buscar seu plano.");
+      console.error("Erro no login:", err);
+      toast.error("Erro ao validar seu acesso.");
     } finally {
       setIsLoggingIn(false);
     }
