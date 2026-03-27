@@ -6,8 +6,7 @@ import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-center";
-import { formatWhatsApp } from "@/lib/utils";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
 
 type View = "landing" | "check-free-plan";
 
@@ -68,10 +67,8 @@ const Index = () => {
       const prefix = isWith55 ? "55" : "";
 
       if (numPart.length === 9 && numPart[0] === '9') {
-        // Tem o 9, adiciona versão sem o 9
         finalVariations.push(prefix + ddd + numPart.substring(1));
       } else if (numPart.length === 8) {
-        // Não tem o 9, adiciona versão com o 9
         finalVariations.push(prefix + ddd + "9" + numPart);
       }
     });
@@ -83,7 +80,7 @@ const Index = () => {
     setLoginStatus('idle');
     
     try {
-      // 1. BUSCA PRIORITÁRIA: Clientes Pagos (Checando ambas as colunas possíveis)
+      // 1. BUSCA PRIORITÁRIA: Clientes Pagos
       const { data: paidUsers, error: paidError } = await supabase
         .from("clientes_pagos")
         .select("id, nome")
