@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
@@ -27,6 +27,7 @@ interface OnboardingWizardProps {
   onGoToLogin?: () => void;
   hideLoginLink?: boolean;
   skipInternalValidation?: boolean;
+  initialEmail?: string;
 }
 
 const activityLevels = [
@@ -51,7 +52,7 @@ const slideVariants = {
 
 const TOTAL_STEPS = 5;
 
-const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = false, skipInternalValidation = false }: OnboardingWizardProps) => {
+const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = false, skipInternalValidation = false, initialEmail = "" }: OnboardingWizardProps) => {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -62,7 +63,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const [heightInput, setHeightInput] = useState("1,70");
   const [data, setData] = useState<OnboardingData>({
     name: "", 
-    email: "",
+    email: initialEmail,
     whatsapp: "", 
     whatsapp_confirmacao: "",
     age: 25, 
@@ -74,6 +75,13 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     restrictions: "",
     preferences: "",
   });
+
+  // Atualiza o e-mail se a prop mudar
+  useEffect(() => {
+    if (initialEmail) {
+      setData(prev => ({ ...prev, email: initialEmail }));
+    }
+  }, [initialEmail]);
 
   const isLastStep = step === TOTAL_STEPS - 1;
 
@@ -199,11 +207,9 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     if (step === 0) {
       const cleanWhatsapp = data.whatsapp.replace(/\D/g, "");
       const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
       return (
         data.name.trim() !== "" && 
-        emailRegex.test(data.email) &&
         validateWhatsAppLength(cleanWhatsapp) && 
         validateWhatsAppLength(cleanConfirm) &&
         cleanWhatsapp === cleanConfirm &&
@@ -259,14 +265,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Nome Completo</label>
                   <input type="text" placeholder="Seu nome" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">E-mail</label>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                    <input type="email" placeholder="seu@email.com" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })} className="w-full pl-12 pr-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring" />
-                  </div>
                 </div>
 
                 <div className="space-y-4">

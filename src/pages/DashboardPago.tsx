@@ -128,8 +128,6 @@ const DashboardPago = () => {
     try {
       const nutrition = calculateNutrition({ ...data, activity: activityLabels[data.activity] || data.activity, goal: goalLabels[data.goal] || data.goal });
       
-      // IMPORTANTE: Não atualizamos o campo 'whatsapp' nem 'telefone_cadastro' 
-      // para manter o número original definido pelo administrador.
       const { error } = await supabase.from("clientes_pagos").update({
         nome: data.name,
         nome_usuario: data.name,
@@ -197,6 +195,7 @@ const DashboardPago = () => {
           onBack={() => signOut()} 
           hideLoginLink={true} 
           skipInternalValidation={true}
+          initialEmail={userData.email}
         />
       </div>
     );
