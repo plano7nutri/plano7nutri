@@ -332,10 +332,10 @@ const Dashboard = ({
                   Taxa Basal (TMB)
                 </h4>
                 <div className="flex items-center gap-2">
-                  <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1 blur-[6px] select-none">
+                  <span className="text-2xl font-black text-zinc-800 tracking-tight mb-1 blur-md select-none">
                     {tmb}
-                  </p>
-                  <Lock size={14} className="text-zinc-400 -ml-1" />
+                  </span>
+                  <Lock size={16} className="text-zinc-400" />
                   <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </div>
                 <p className="text-[9px] text-zinc-400 leading-tight">Gasto calórico em repouso absoluto.</p>
@@ -346,10 +346,10 @@ const Dashboard = ({
                   Gasto Total (GET)
                 </h4>
                 <div className="flex items-center gap-2">
-                  <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1 blur-[6px] select-none">
+                  <span className="text-2xl font-black text-zinc-800 tracking-tight mb-1 blur-md select-none">
                     {get}
-                  </p>
-                  <Lock size={14} className="text-zinc-400 -ml-1" />
+                  </span>
+                  <Lock size={16} className="text-zinc-400" />
                   <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
                 </div>
                 <p className="text-[9px] text-zinc-400 leading-tight">Total gasto no dia incluindo atividades.</p>
@@ -370,24 +370,24 @@ const Dashboard = ({
                   <Beef className="w-5 h-5 text-red-500 mx-auto mb-3" />
                   <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Proteína</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-2xl font-black text-zinc-900 tracking-tighter blur-[6px] select-none">{proteina}g</p>
-                    <Lock size={12} className="text-zinc-400" />
+                    <span className="text-2xl font-black text-zinc-900 tracking-tighter blur-md select-none">{proteina}g</span>
+                    <Lock size={14} className="text-zinc-400" />
                   </div>
                 </div>
                 <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
                   <Wheat className="w-5 h-5 text-amber-600 mx-auto mb-3" />
                   <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carbo</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-2xl font-black text-zinc-900 tracking-tighter blur-[6px] select-none">{carbo}g</p>
-                    <Lock size={12} className="text-zinc-400" />
+                    <span className="text-2xl font-black text-zinc-900 tracking-tighter blur-md select-none">{carbo}g</span>
+                    <Lock size={14} className="text-zinc-400" />
                   </div>
                 </div>
                 <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
                   <Pizza className="w-5 h-5 text-orange-500 mx-auto mb-3" />
                   <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gordura</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-2xl font-black text-zinc-900 tracking-tighter blur-[6px] select-none">{gordura}g</p>
-                    <Lock size={12} className="text-zinc-400" />
+                    <span className="text-2xl font-black text-zinc-900 tracking-tighter blur-md select-none">{gordura}g</span>
+                    <Lock size={14} className="text-zinc-400" />
                   </div>
                 </div>
               </div>
