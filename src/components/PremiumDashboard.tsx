@@ -160,30 +160,6 @@ const PremiumDashboard = ({
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  const handleWhatsAppClick = (e: React.MouseEvent) => {
-    if (isActuallyAdmin) return;
-    
-    if (isSubscriptionInactive) {
-      e.preventDefault();
-      toast.error("Seu acesso está inativo. Renove para continuar.");
-      return;
-    }
-    if (isUnicaDelivered) {
-      e.preventDefault();
-      toast.error("Seu cardápio único já foi entregue.");
-      return;
-    }
-    if (isMensalLocked) {
-      e.preventDefault();
-      toast.error(`Seu novo plano semanal estará disponível em ${daysToNextPlan()} dias.`, {
-        icon: <Clock className="w-5 h-5 text-amber-500" />
-      });
-      return;
-    }
-    
-    toast.success("Abrindo WhatsApp para solicitar seu plano...");
-  };
-
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isBlocked && !isActuallyAdmin) {
       toast.error("Acesso restrito.");
@@ -257,6 +233,61 @@ const PremiumDashboard = ({
       return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
     }
     return "Solicitar Cardápio de Elite";
+  };
+
+  // Componente de Botão Dinâmico: motion.a se liberado, motion.div se travado
+  const RequestButton = () => {
+    const isActuallyBlocked = isBlocked && !safeIsAdminView;
+    
+    const commonClasses = `block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${isActuallyBlocked ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer'}`;
+    
+    const glowClasses = `absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${!isActuallyBlocked ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`;
+    
+    const contentClasses = `relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${!isActuallyBlocked ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`;
+
+    if (isActuallyBlocked) {
+      return (
+        <motion.div className={commonClasses}>
+          <div className={glowClasses} />
+          <div className={contentClasses}>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-[#25D366]" />
+                <h3 className="text-lg font-black uppercase tracking-normal">
+                  {getButtonText()}
+                </h3>
+              </div>
+              {isMensalLocked && (
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Te vejo em 7 dias</span>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      );
+    }
+
+    return (
+      <motion.a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        className={commonClasses}
+      >
+        <div className={glowClasses} />
+        <div className={contentClasses}>
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-5 h-5" />
+              <h3 className="text-lg font-black uppercase tracking-normal">
+                {getButtonText()}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </motion.a>
+    );
   };
 
   return (
@@ -557,30 +588,7 @@ const PremiumDashboard = ({
 
         <EasterBonus goal={goalLabel} />
 
-        <motion.a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handleWhatsAppClick}
-          whileHover={(canRequestPlan() || safeIsAdminView) ? { scale: 1.02, y: -2 } : {}}
-          whileTap={(canRequestPlan() || safeIsAdminView) ? { scale: 0.98 } : {}}
-          className={`block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${((!canRequestPlan() || isBlocked) && !safeIsAdminView) ? 'opacity-80' : ''}`}
-        >
-          <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
-          <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-3">
-                {((canRequestPlan() && !isBlocked) || safeIsAdminView) ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
-                <h3 className="text-lg font-black uppercase tracking-normal">
-                  {getButtonText()}
-                </h3>
-              </div>
-              {isMensalLocked && !safeIsAdminView && (
-                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Te vejo em 7 dias</span>
-              )}
-            </div>
-          </div>
-        </motion.a>
+        <RequestButton />
 
         {(isBlocked && !safeIsAdminView && tipo_assinatura === "Unica") && (
           <motion.div 
