@@ -93,10 +93,32 @@ const DashboardPago = () => {
       toast.error("Modo visualização: Você não pode editar dados de outros usuários.");
       return;
     }
-    if (!user?.id) return;
+    if (!user?.id || !userData) return;
     setIsProcessing(true);
     try {
       const nutrition = calculateNutrition(data);
+      
+      // Disparo do Webhook Plano Pago
+      fetch('https://editor.saas.inventiia.com.br/webhook/plano7_pago', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: userData.nome,
+          whatsapp: userData.whatsapp,
+          email: userData.email,
+          idade: data.age,
+          peso: data.weight,
+          altura: data.height,
+          sexo_biologico: data.sex,
+          nivel_atividade_fisica: data.activity,
+          objetivo_semanal: data.goal,
+          restricoes_alimentares: data.restrictions,
+          preferencias: data.preferences,
+          ...nutrition
+        }),
+        keepalive: true
+      }).catch(err => console.warn("Erro silencioso no webhook pago:", err));
+
       const { error } = await supabase.from("clientes_pagos").update({
         idade: data.age,
         peso: data.weight,
@@ -112,6 +134,7 @@ const DashboardPago = () => {
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
       }).eq("id", user.id);
+      
       if (error) throw error;
       toast.success("Perfil atualizado!");
       queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
@@ -123,11 +146,32 @@ const DashboardPago = () => {
   };
 
   const handleInitialOnboarding = async (data: OnboardingData) => {
-    if (!user?.id) return;
+    if (!user?.id || !userData) return;
     setIsProcessing(true);
     try {
       const nutrition = calculateNutrition({ ...data, activity: activityLabels[data.activity] || data.activity, goal: goalLabels[data.goal] || data.goal });
       
+      // Disparo do Webhook Plano Pago (Onboarding)
+      fetch('https://editor.saas.inventiia.com.br/webhook/plano7_pago', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: data.name,
+          whatsapp: userData.whatsapp,
+          email: userData.email,
+          idade: data.age,
+          peso: data.weight,
+          altura: data.height,
+          sexo_biologico: data.sex,
+          nivel_atividade_fisica: activityLabels[data.activity] || data.activity,
+          objetivo_semanal: goalLabels[data.goal] || data.goal,
+          restricoes_alimentares: data.restrictions || "Nenhuma",
+          preferencias: data.preferences || "Nenhuma",
+          ...nutrition
+        }),
+        keepalive: true
+      }).catch(err => console.warn("Erro silencioso no webhook pago:", err));
+
       const { error } = await supabase.from("clientes_pagos").update({
         nome: data.name,
         nome_usuario: data.name,
