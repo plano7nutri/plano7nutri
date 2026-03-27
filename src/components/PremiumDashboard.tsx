@@ -1,3 +1,4 @@
+= 1 bloqueie o botão e o link de forma absoluta.">
 "use client";
 
 import { useState, useEffect } from "react";
@@ -95,10 +96,14 @@ const PremiumDashboard = ({
     });
   };
 
+  // Lógica de Bloqueio Reforçada
   const isSubscriptionInactive = assinatura_ativa === false;
   
-  // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
-  const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
+  // Verifica se é plano único (aceitando variações de acento)
+  const isPlanoUnico = tipo_assinatura === "Unica" || tipo_assinatura === "Única";
+  
+  // Se o limite for 1 ou mais, o cardápio já foi entregue
+  const isUnicaDelivered = isPlanoUnico && Number(limite_cardapio_unico ?? 0) >= 1;
   
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
@@ -126,9 +131,9 @@ const PremiumDashboard = ({
     if (isActuallyAdmin) return true;
     if (isBlocked) return false;
     
-    // Plano Único: Se limite for 0 pode pedir, se for 1 não pode
-    if (tipo_assinatura === "Unica") {
-      return (limite_cardapio_unico ?? 0) === 0;
+    // Plano Único: Se limite for 0 pode pedir, se for >= 1 já está bloqueado pelo isBlocked
+    if (isPlanoUnico) {
+      return Number(limite_cardapio_unico ?? 0) === 0;
     }
     
     // Plano Mensal: Libera a cada 7 dias após o último envio
@@ -546,13 +551,13 @@ const PremiumDashboard = ({
         <EasterBonus goal={goalLabel} />
 
         <motion.a
-          href={whatsappUrl}
+          href={isBlocked && !safeIsAdminView ? undefined : whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsAppClick}
           whileHover={(canRequestPlan() || safeIsAdminView) ? { scale: 1.02, y: -2 } : {}}
           whileTap={(canRequestPlan() || safeIsAdminView) ? { scale: 0.98 } : {}}
-          className={`block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${((!canRequestPlan() || isBlocked) && !safeIsAdminView) ? 'opacity-80' : ''}`}
+          className={`block w-full md:max-w-md md:mx-auto relative group transition-all duration-300 mt-12 ${((!canRequestPlan() || isBlocked) && !safeIsAdminView) ? 'opacity-80 cursor-not-allowed' : ''}`}
         >
           <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
           <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
