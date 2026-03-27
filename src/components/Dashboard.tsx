@@ -192,7 +192,7 @@ const Dashboard = ({
           {onLogout && (
             <button 
               onClick={onLogout}
-              className="flex items-center gap-2 text-zinc-500 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider"
+              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-xs font-bold uppercase tracking-wider"
             >
               <LogOut className="w-4 h-4" />
               Sair
@@ -208,13 +208,13 @@ const Dashboard = ({
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
-            className="lg:col-span-5 bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm h-fit"
+            className="lg:col-span-5 bg-white border-2 border-primary/10 rounded-3xl p-8 shadow-lg h-fit"
           >
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
-                <Avatar className="w-32 h-32 border-4 border-zinc-50 shadow-md">
+                <Avatar className="w-32 h-32 border-4 border-primary/20 shadow-xl">
                   <AvatarImage src={localAvatarUrl} alt={name} className="object-cover" />
-                  <AvatarFallback className="bg-zinc-100 text-primary text-3xl font-bold">
+                  <AvatarFallback className="bg-primary/10 text-primary text-3xl font-bold">
                     {name?.substring(0, 2).toUpperCase() || "??"}
                   </AvatarFallback>
                 </Avatar>
@@ -226,11 +226,11 @@ const Dashboard = ({
               </div>
 
               <div className="w-full">
-                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-2 border border-primary/20">
                   Plano Gratuito
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <h2 className="text-2xl font-bold text-zinc-900">{name}</h2>
+                  <h2 className="text-2xl font-black text-zinc-900">{name}</h2>
                   {!perfil_editado && (
                     <button 
                       onClick={() => setIsEditing(true)}
@@ -241,52 +241,52 @@ const Dashboard = ({
                     </button>
                   )}
                 </div>
-                <p className="text-sm text-zinc-500">Membro Plano 7</p>
+                <p className="text-sm font-bold text-primary/70">Membro Plano 7</p>
               </div>
 
-              <div className="w-full grid grid-cols-2 gap-4 text-sm border-y border-zinc-100 py-6">
+              <div className="w-full grid grid-cols-2 gap-4 text-sm border-y-2 border-primary/5 py-6">
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Idade</span>
-                  <p className="font-bold text-zinc-900">{age} anos</p>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">Idade</span>
+                  <p className="font-black text-zinc-900 text-lg">{age} anos</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Peso</span>
-                  <p className="font-bold text-zinc-900">{weight} kg</p>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">Peso</span>
+                  <p className="font-black text-zinc-900 text-lg">{weight} kg</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Altura</span>
-                  <p className="font-bold text-zinc-900">{(height / 100).toFixed(2).replace(".", ",")} m</p>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">Altura</span>
+                  <p className="font-black text-zinc-900 text-lg">{(height / 100).toFixed(2).replace(".", ",")} m</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Sexo</span>
-                  <p className="font-bold text-zinc-900">{sex === "male" ? "Masculino" : "Feminino"}</p>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest">Sexo</span>
+                  <p className="font-black text-zinc-900 text-lg">{sex === "male" ? "Masculino" : "Feminino"}</p>
                 </div>
               </div>
 
               <div className="w-full text-left space-y-4">
-                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Atividade</span>
-                  <p className="text-sm font-bold text-zinc-900">{activityLabel}</p>
+                <div className="p-4 rounded-2xl bg-primary/5 border-2 border-primary/10">
+                  <span className="text-[10px] font-black text-primary uppercase block mb-1 tracking-widest">Atividade</span>
+                  <p className="text-sm font-black text-zinc-900">{activityLabel}</p>
                 </div>
-                <div className="p-3 rounded-xl bg-orange-50 border border-orange-100">
-                  <span className="text-[10px] font-bold text-orange-600 uppercase block mb-1">Objetivo</span>
-                  <p className="text-sm font-bold text-zinc-900">{goalLabel}</p>
+                <div className="p-4 rounded-2xl bg-orange-50 border-2 border-orange-100">
+                  <span className="text-[10px] font-black text-orange-600 uppercase block mb-1 tracking-widest">Objetivo</span>
+                  <p className="text-sm font-black text-zinc-900">{goalLabel}</p>
                 </div>
-                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
+                <div className="p-4 rounded-2xl bg-zinc-50 border-2 border-zinc-100">
                   <div className="flex items-center gap-2 text-orange-600 mb-1">
-                    <ShieldAlert className="w-3 h-3" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Restrições</span>
+                    <ShieldAlert className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Restrições</span>
                   </div>
-                  <p className="text-xs font-medium text-zinc-700">
+                  <p className="text-xs font-bold text-zinc-700">
                     {restrictions || "Nenhuma restrição informada."}
                   </p>
                 </div>
-                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100">
+                <div className="p-4 rounded-2xl bg-zinc-50 border-2 border-zinc-100">
                   <div className="flex items-center gap-2 text-primary mb-1">
-                    <Heart className="w-3 h-3" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Preferências</span>
+                    <Heart className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Preferências</span>
                   </div>
-                  <p className="text-xs font-medium text-zinc-700">
+                  <p className="text-xs font-bold text-zinc-700">
                     {preferences || "Nenhuma preferência informada."}
                   </p>
                 </div>
@@ -298,100 +298,100 @@ const Dashboard = ({
             <ImpactPhrase goal={goalLabel} />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group">
-                <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Flame size={80} />
+              <div className="bg-white border-2 border-primary/10 rounded-3xl p-6 shadow-md relative overflow-hidden group">
+                <div className="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Flame size={80} className="text-primary" />
                 </div>
-                <h3 className="text-sm font-bold text-primary mb-1 flex items-center gap-2">
-                  <Flame size={16} /> Calorias Diárias
+                <h3 className="text-sm font-black text-primary mb-1 flex items-center gap-2 uppercase tracking-widest">
+                  <Flame size={18} /> Calorias Diárias
                 </h3>
                 <p className="text-4xl font-black text-zinc-900 tracking-tighter mb-1">
-                  {metaCalorias} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
+                  {metaCalorias} <span className="text-sm font-black text-primary/50 uppercase tracking-normal">kcal</span>
                 </p>
-                <p className="text-[10px] text-zinc-400 font-medium">Energia ideal para o seu objetivo semanal.</p>
+                <p className="text-[10px] text-primary/60 font-bold uppercase">Energia ideal para o seu objetivo.</p>
               </div>
-              <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group">
-                <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Droplets size={80} />
+              <div className="bg-white border-2 border-blue-100 rounded-3xl p-6 shadow-md relative overflow-hidden group">
+                <div className="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Droplets size={80} className="text-blue-500" />
                 </div>
-                <h3 className="text-sm font-bold text-blue-500 mb-1 flex items-center gap-2">
-                  <Droplets size={16} /> Meta de Água
+                <h3 className="text-sm font-black text-blue-600 mb-1 flex items-center gap-2 uppercase tracking-widest">
+                  <Droplets size={18} /> Meta de Água
                 </h3>
                 <p className="text-4xl font-black text-zinc-900 tracking-tighter mb-1">
-                  {metaAgua} <span className="text-sm font-bold text-zinc-400 uppercase tracking-normal">ml</span>
+                  {metaAgua} <span className="text-sm font-black text-blue-400/50 uppercase tracking-normal">ml</span>
                 </p>
-                <p className="text-[10px] text-zinc-400 font-medium">Hidratação baseada no seu peso corporal.</p>
+                <p className="text-[10px] text-blue-500/60 font-bold uppercase">Hidratação baseada no seu peso.</p>
               </div>
             </div>
 
             {/* Metas Basais (TMB e GET) - APENAS NÚMEROS EMBAÇADOS */}
-            <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-6 shadow-sm grid grid-cols-2 gap-6 relative overflow-hidden">
+            <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-6 shadow-md grid grid-cols-2 gap-6 relative overflow-hidden">
               <div>
-                <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                  <Activity size={12} className="text-zinc-400" />
+                <h4 className="text-[10px] font-black text-primary uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                  <Activity size={14} className="text-primary" />
                   Taxa Basal (TMB)
                 </h4>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-black text-zinc-800 tracking-tight mb-1 blur-md select-none">
+                  <p className="text-2xl font-black text-zinc-900 tracking-tight mb-1 blur-[8px] select-none">
                     {tmb}
-                  </span>
-                  <Lock size={16} className="text-zinc-400" />
-                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
+                  </p>
+                  <Lock size={16} className="text-primary" />
+                  <span className="text-xs font-black text-primary/50 uppercase tracking-normal">kcal</span>
                 </div>
-                <p className="text-[9px] text-zinc-400 leading-tight">Gasto calórico em repouso absoluto.</p>
+                <p className="text-[9px] text-primary/60 font-bold uppercase leading-tight">Gasto em repouso absoluto.</p>
               </div>
               <div>
-                <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                  <Zap size={12} className="text-primary" />
+                <h4 className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                  <Zap size={14} className="text-orange-500" />
                   Gasto Total (GET)
                 </h4>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-black text-zinc-800 tracking-tight mb-1 blur-md select-none">
+                  <p className="text-2xl font-black text-zinc-900 tracking-tight mb-1 blur-[8px] select-none">
                     {get}
-                  </span>
-                  <Lock size={16} className="text-zinc-400" />
-                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
+                  </p>
+                  <Lock size={16} className="text-orange-500" />
+                  <span className="text-xs font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
                 </div>
-                <p className="text-[9px] text-zinc-400 leading-tight">Total gasto no dia incluindo atividades.</p>
+                <p className="text-[9px] text-orange-600/60 font-bold uppercase leading-tight">Total gasto no seu dia.</p>
               </div>
             </div>
 
             {/* Macronutrientes - APENAS NÚMEROS EMBAÇADOS */}
-            <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+            <div className="bg-white border-2 border-primary/5 rounded-3xl p-8 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between mb-8">
                 <div className="space-y-1">
-                  <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Macronutrientes</h3>
-                  <p className="text-[10px] text-zinc-400 font-medium">Distribuição ideal de nutrientes para seu corpo.</p>
+                  <h3 className="text-sm font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
+                  <p className="text-[10px] text-primary/60 font-bold uppercase">Distribuição ideal para seu corpo.</p>
                 </div>
-                <div className="h-px flex-1 bg-zinc-100 ml-4" />
+                <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full" />
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
-                  <Beef className="w-5 h-5 text-red-500 mx-auto mb-3" />
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Proteína</span>
+                <div className="bg-red-50 rounded-2xl p-5 text-center border-2 border-red-100 transition-all hover:scale-105">
+                  <Beef className="w-6 h-6 text-red-500 mx-auto mb-3" />
+                  <span className="text-[10px] font-black text-red-600 uppercase block mb-1 tracking-widest">Proteína</span>
                   <div className="flex items-center justify-center gap-1">
-                    <span className="text-2xl font-black text-zinc-900 tracking-tighter blur-md select-none">{proteina}g</span>
-                    <Lock size={14} className="text-zinc-400" />
+                    <p className="text-2xl font-black text-zinc-900 tracking-tighter blur-[8px] select-none">{proteina}g</p>
+                    <Lock size={14} className="text-red-500" />
                   </div>
                 </div>
-                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
-                  <Wheat className="w-5 h-5 text-amber-600 mx-auto mb-3" />
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carbo</span>
+                <div className="bg-amber-50 rounded-2xl p-5 text-center border-2 border-amber-100 transition-all hover:scale-105">
+                  <Wheat className="w-6 h-6 text-amber-600 mx-auto mb-3" />
+                  <span className="text-[10px] font-black text-amber-700 uppercase block mb-1 tracking-widest">Carbo</span>
                   <div className="flex items-center justify-center gap-1">
-                    <span className="text-2xl font-black text-zinc-900 tracking-tighter blur-md select-none">{carbo}g</span>
-                    <Lock size={14} className="text-zinc-400" />
+                    <p className="text-2xl font-black text-zinc-900 tracking-tighter blur-[8px] select-none">{carbo}g</p>
+                    <Lock size={14} className="text-amber-600" />
                   </div>
                 </div>
-                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
-                  <Pizza className="w-5 h-5 text-orange-500 mx-auto mb-3" />
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gordura</span>
+                <div className="bg-orange-50 rounded-2xl p-5 text-center border-2 border-orange-100 transition-all hover:scale-105">
+                  <Pizza className="w-6 h-6 text-orange-500 mx-auto mb-3" />
+                  <span className="text-[10px] font-black text-orange-700 uppercase block mb-1 tracking-widest">Gordura</span>
                   <div className="flex items-center justify-center gap-1">
-                    <span className="text-2xl font-black text-zinc-900 tracking-tighter blur-md select-none">{gordura}g</span>
-                    <Lock size={14} className="text-zinc-400" />
+                    <p className="text-2xl font-black text-zinc-900 tracking-tighter blur-[8px] select-none">{gordura}g</p>
+                    <Lock size={14} className="text-orange-500" />
                   </div>
                 </div>
               </div>
-              <p className="mt-4 text-[9px] text-zinc-500 text-center italic">Gramas recomendadas por dia para cada nutriente.</p>
+              <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
@@ -437,8 +437,8 @@ const Dashboard = ({
 
         {/* Bloco de Urgência e Oferta */}
         <div className="mt-6 lg:mt-12 space-y-8">
-          <div className="bg-amber-50 border border-amber-200 p-8 rounded-[2rem] text-center shadow-sm">
-            <p className="text-base sm:text-lg font-bold text-zinc-800 leading-relaxed max-w-2xl mx-auto">
+          <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
+            <p className="text-base sm:text-lg font-black text-zinc-800 leading-relaxed max-w-2xl mx-auto">
               Seus números estão prontos. Mas você já sabe como isso termina — salva, fecha, esquece. Amanhã vira semana que vem, semana que vem vira mês. Seus números não mudam nada sozinhos. O que muda é o que você faz agora, nos próximos 30 segundos. Escolha seu plano abaixo e seu cardápio chega hoje no WhatsApp.
             </p>
           </div>
