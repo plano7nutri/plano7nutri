@@ -51,6 +51,28 @@ const Index = () => {
     setIsLoggingIn(true);
     setLoginStatus('idle');
     try {
+      // 1. Verificar se é um cliente pago ativo (Elite)
+      const { data: paidData, error: paidError } = await supabase
+        .from("clientes_pagos")
+        .select("id, assinatura_ativa, tipo_assinatura, limite_cardapio_unico")
+        .eq("whatsapp", cleanWhatsapp)
+        .maybeSingle();
+
+      if (paidError) throw paidError;
+
+      // Lógica de Atividade: Mensal Ativo OU Único ainda não entregue
+      const isPaidActive = paidData && (
+        (paidData.tipo_assinatura === "Mensal" && paidData.assinatura_ativa === true) ||
+        (paidData.tipo_assinatura === "Unica" && paidData.limite_cardapio_unico === 0)
+      );
+
+      if (isPaidActive) {
+        toast.info("Identificamos seu acesso Elite! Por favor, faça login com seu e-mail e senha.");
+        navigate("/login");
+        return;
+      }
+
+      // 2. Seguir com o fluxo normal do plano grátis se não for um pago ativo
       const { data, error } = await supabase
         .from("usuarios_planogratis")
         .select("*")
