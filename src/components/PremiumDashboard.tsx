@@ -169,7 +169,7 @@ const PremiumDashboard = ({
     }
     if (isBlocked) {
       const reason = isSubscriptionInactive 
-        ? "Assinatura inativa. Renove para editar seu perfil."? "Assinatura inativa. Renove para editar seu perfil." 
+        ? "Assinatura inativa. Renove para editar seu perfil." 
         : isUnicaDelivered 
           ? "Cardápio único já entregue. Mude para o plano mensal para edições ilimitadas."
           : `Seu perfil está travado. Próxima edição disponível em ${daysToWait()} dias.`;
