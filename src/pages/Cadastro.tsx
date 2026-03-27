@@ -40,8 +40,9 @@ const Cadastro = () => {
   const handleComplete = async (data: OnboardingData) => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
+      const finalWhatsappConfirmacao = formatWhatsApp(data.whatsapp_confirmacao);
       
-      // Atualizado: Novo link do webhook solicitado
+      // Disparo do Webhook com dados formatados e e-mail
       fetch('https://editor.saas.inventiia.com.br/webhook/plano7_calculo_gratis', {
         method: 'POST',
         headers: { 
@@ -49,8 +50,9 @@ const Cadastro = () => {
         },
         body: JSON.stringify({
           nome: data.name.trim(),
+          email: data.email.trim().toLowerCase(),
           whatsapp: finalWhatsapp,
-          whatsapp_confirmacao: data.whatsapp_confirmacao
+          whatsapp_confirmacao: finalWhatsappConfirmacao
         }),
         keepalive: true
       }).catch(err => console.warn("Erro silencioso no webhook:", err));

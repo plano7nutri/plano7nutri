@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
@@ -8,6 +8,7 @@ export interface OnboardingData {
   id?: string;
   session_id?: string;
   name: string;
+  email: string;
   whatsapp: string;
   whatsapp_confirmacao: string;
   age: number;
@@ -61,6 +62,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const [heightInput, setHeightInput] = useState("1,70");
   const [data, setData] = useState<OnboardingData>({
     name: "", 
+    email: "",
     whatsapp: "", 
     whatsapp_confirmacao: "",
     age: 25, 
@@ -76,7 +78,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const isLastStep = step === TOTAL_STEPS - 1;
 
   const checkWhatsAppStatus = async () => {
-    // Se skipInternalValidation for true, não fazemos nenhuma verificação no banco
     if (skipInternalValidation) {
       return true;
     }
@@ -198,8 +199,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     if (step === 0) {
       const cleanWhatsapp = data.whatsapp.replace(/\D/g, "");
       const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
       return (
         data.name.trim() !== "" && 
+        emailRegex.test(data.email) &&
         validateWhatsAppLength(cleanWhatsapp) && 
         validateWhatsAppLength(cleanConfirm) &&
         cleanWhatsapp === cleanConfirm &&
@@ -246,7 +250,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
           {step === 0 && (
             <motion.div key="step0" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
-              <p className="text-muted-foreground mb-1">Informe seu nome e WhatsApp para receber seu plano.</p>
+              <p className="text-muted-foreground mb-1">Informe seus dados para receber seu plano.</p>
               <p className="text-destructive text-sm font-semibold mb-8 uppercase">
                 As informações não poderão ser editadas, preencha com cuidado.
               </p>
@@ -255,6 +259,14 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Nome Completo</label>
                   <input type="text" placeholder="Seu nome" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">E-mail</label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                    <input type="email" placeholder="seu@email.com" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })} className="w-full pl-12 pr-4 py-3 rounded-xl border bg-card text-foreground text-lg font-medium focus:outline-none focus:ring-2 focus:ring-ring" />
+                  </div>
                 </div>
 
                 <div className="space-y-4">
