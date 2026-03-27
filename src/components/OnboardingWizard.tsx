@@ -82,7 +82,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Alterado para verificar objetivo_semanal conforme solicitado
       const { data: user, error } = await supabase
         .from("usuarios_planogratis")
         .select("id, objetivo_semanal")
@@ -91,25 +90,28 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
       if (error) throw error;
 
-      // Se o WhatsApp não existe na base
+      // 1. Se o número não existe na base
       if (!user) {
         setValidationStatus('not_found');
         return false;
       }
 
-      // Se o WhatsApp existe e o objetivo_semanal NÃO está nulo (cadastro já completo)
-      if (user.objetivo_semanal && user.objetivo_semanal.trim() !== "") {
+      // 2. Se o número existe, verificamos se o cadastro está incompleto (objetivo_semanal vazio)
+      const isGoalEmpty = !user.objetivo_semanal || user.objetivo_semanal.trim() === "";
+
+      if (isGoalEmpty) {
+        // Cadastro pendente: permite prosseguir
+        setData(prev => ({ 
+          ...prev, 
+          id: user.id
+        }));
+        setValidationStatus('pending');
+        return true;
+      } else {
+        // Cadastro já existe e está completo
         setValidationStatus('exists');
         return false;
       }
-
-      // Se o WhatsApp existe e o objetivo_semanal ESTÁ nulo (pode completar o cadastro)
-      setData(prev => ({ 
-        ...prev, 
-        id: user.id
-      }));
-      setValidationStatus('pending');
-      return true;
     } catch (err) {
       console.error("Erro ao validar WhatsApp:", err);
       return false;
