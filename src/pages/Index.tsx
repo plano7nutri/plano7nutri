@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle, UserCheck } from "lucide-react";
 
 type View = "landing" | "check-free-plan";
 
@@ -207,10 +207,26 @@ const Index = () => {
                       {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano Grátis"}
                     </motion.button>
 
+                    <div className="pt-4 border-t border-zinc-100 text-center space-y-4">
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-wide">
+                        Se você é cliente pago clique no botão abaixo
+                      </p>
+                      <motion.button
+                        type="button"
+                        onClick={() => navigate("/login")}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full inline-flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:bg-red-700 transition-all uppercase tracking-wider text-xs"
+                      >
+                        <UserCheck className="w-4 h-4" />
+                        Login Plano Pago
+                      </motion.button>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => setView("landing")}
-                      className="w-full text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors flex items-center justify-center gap-2"
+                      className="w-full text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors flex items-center justify-center gap-2 pt-2"
                     >
                       <ArrowLeft className="w-4 h-4" /> Voltar
                     </button>
