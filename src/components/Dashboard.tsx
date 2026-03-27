@@ -131,7 +131,6 @@ const Dashboard = ({
 
   const handleProfileSave = async (newData: any) => {
     try {
-      // Recalcular Nutrição
       const tmbCalc = newData.sex === "male" 
         ? 10 * newData.weight + 6.25 * newData.height - 5 * newData.age + 5 
         : 10 * newData.weight + 6.25 * newData.height - 5 * newData.age - 161;
@@ -176,13 +175,11 @@ const Dashboard = ({
 
       toast.success("Perfil atualizado com sucesso!");
       setIsEditing(false);
-      if (onAvatarUpdate) onAvatarUpdate(); // Trigger refetch
+      if (onAvatarUpdate) onAvatarUpdate();
     } catch (err) {
       toast.error("Erro ao atualizar perfil.");
     }
   };
-
-  const whatsappUrl = `https://wa.me/5511933735838?text=${encodeURIComponent("Quero receber meu *Cálculo de Metabolismo Personalizado* aqui no meu Whatsapp!")}`;
 
   return (
     <div className="min-h-screen px-6 py-10 bg-background text-foreground">
@@ -324,7 +321,6 @@ const Dashboard = ({
               </div>
             </div>
 
-            {/* Metas Basais (TMB e GET) - COM LEGENDAS DESTACADAS */}
             <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-6 shadow-md grid grid-cols-2 gap-6 relative overflow-hidden">
               <div>
                 <h4 className="text-[10px] font-black text-primary uppercase tracking-widest mb-1 flex items-center gap-1.5">
@@ -360,7 +356,6 @@ const Dashboard = ({
               </div>
             </div>
 
-            {/* Macronutrientes - APENAS NÚMEROS EMBAÇADOS */}
             <div className="bg-white border-2 border-primary/5 rounded-3xl p-8 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between mb-8">
                 <div className="space-y-1">
@@ -439,7 +434,6 @@ const Dashboard = ({
           </div>
         </div>
 
-        {/* Bloco de Urgência e Oferta */}
         <div className="mt-6 lg:mt-12 space-y-8">
           <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
             <p className="text-base sm:text-lg font-black text-zinc-800 leading-relaxed max-w-2xl mx-auto">
@@ -448,28 +442,6 @@ const Dashboard = ({
           </div>
 
           <PricingSection />
-        </div>
-
-        {/* Botão do WhatsApp por último */}
-        <div className="mt-12 space-y-6">
-          <motion.a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="block w-full relative group transition-all duration-300"
-          >
-            <div className="absolute -inset-1 rounded-[2rem] bg-[#25D366]/30 blur opacity-25 group-hover:opacity-50 transition duration-1000" />
-            <div className="relative rounded-[2rem] p-6 shadow-xl flex flex-col items-center text-center gap-3 overflow-hidden bg-[#25D366] text-white">
-              <div className="flex items-center gap-3">
-                <MessageCircle className="w-6 h-6" />
-                <h3 className="text-xl font-black uppercase tracking-normal">
-                  Receber Cálculo no WhatsApp <span className="sm:hidden">Grátis</span>
-                </h3>
-              </div>
-            </div>
-          </motion.a>
         </div>
 
         <FAQSection />
