@@ -169,7 +169,7 @@ const PremiumDashboard = ({
     }
     if (isBlocked) {
       const reason = isSubscriptionInactive 
-        ? "Assinatura inativa. Renove para editar seu perfil." 
+        ? "Assinatura inativa. Renove para editar seu perfil."? "Assinatura inativa. Renove para editar seu perfil." 
         : isUnicaDelivered 
           ? "Cardápio único já entregue. Mude para o plano mensal para edições ilimitadas."
           : `Seu perfil está travado. Próxima edição disponível em ${daysToWait()} dias.`;
@@ -209,48 +209,58 @@ const PremiumDashboard = ({
     
     const contentClasses = `relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${!isActuallyBlocked ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`;
 
-    if (isActuallyBlocked) {
-      return (
-        <motion.div className={commonClasses}>
-          <div className={glowClasses} />
-          <div className={contentClasses}>
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#25D366]" />
-                <h3 className="text-lg font-black uppercase tracking-normal">
-                  {getButtonText()}
-                </h3>
-              </div>
-              {isMensalLocked && (
-                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Te vejo em 7 dias</span>
-              )}
-            </div>
-          </div>
-        </motion.div>
-      );
-    }
-
     return (
-      <motion.a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        whileHover={{ scale: 1.02, y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        className={commonClasses}
-      >
-        <div className={glowClasses} />
-        <div className={contentClasses}>
-          <div className="flex flex-col items-center gap-1">
-            <div className="flex items-center gap-3">
-              <MessageCircle className="w-5 h-5" />
-              <h3 className="text-lg font-black uppercase tracking-normal">
-                {getButtonText()}
-              </h3>
+      <div className="space-y-4">
+        {isActuallyBlocked ? (
+          <motion.div className={commonClasses}>
+            <div className={glowClasses} />
+            <div className={contentClasses}>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#25D366]" />
+                  <h3 className="text-lg font-black uppercase tracking-normal">
+                    {getButtonText()}
+                  </h3>
+                </div>
+                {isMensalLocked && (
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Te vejo em 7 dias</span>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      </motion.a>
+          </motion.div>
+        ) : (
+          <motion.a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className={commonClasses}
+          >
+            <div className={glowClasses} />
+            <div className={contentClasses}>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="w-5 h-5" />
+                  <h3 className="text-lg font-black uppercase tracking-normal">
+                    {getButtonText()}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </motion.a>
+        )}
+
+        {isMensalLocked && !safeIsAdminView && (
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-xs font-bold text-zinc-500 uppercase tracking-widest"
+          >
+            Você poderá editar seu perfil e solicitar um novo plano em {daysToWait()} {daysToWait() === 1 ? 'dia' : 'dias'}.
+          </motion.p>
+        )}
+      </div>
     );
   };
 
