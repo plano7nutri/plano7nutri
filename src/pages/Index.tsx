@@ -54,46 +54,61 @@ const Index = () => {
       return;
     }
 
-    // 2. Garante o prefixo 55
+    // 2. Garante o prefixo 55 (Lógica Simples)
     const formattedNumber = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 3. VERIFICAÇÃO EXCLUSIVA EM CLIENTES_PAGOS (COLUNA WHATSAPP)
-      const { data: paidUser } = await supabase
+      // 3. VERIFICAÇÃO PRIORITÁRIA: TABELA clientes_pagos, COLUNA whatsapp
+      // Se estiver aqui, REDIRECIONA PARA O LOGIN PAGO
+      const { data: paidCheck } = await supabase
         .from("clientes_pagos")
         .select("id, nome")
         .eq("whatsapp", formattedNumber)
         .maybeSingle();
 
-      if (paidUser) {
-        toast.info(`Identificamos seu acesso Elite (${paidUser.nome}). Por favor, entre com seu e-mail e senha.`);
+      if (paidCheck) {
+        toast.info(`Identificamos seu acesso Elite (${paidCheck.nome}). Por favor, entre com seu e-mail e senha.`);
         navigate("/login");
         return;
       }
 
-      // 4. SE NÃO FOR PAGO, BUSCA NA TABELA DE USUÁRIOS GRÁTIS
+      // 4. SE NÃO FOR PAGO, PROCURA NAS TABELAS DE ACESSO GRÁTIS
+      // Procuramos primeiro em usuarios_planogratis
       const { data: freeUser } = await supabase
         .from("usuarios_planogratis")
         .select("*")
         .eq("whatsapp", formattedNumber)
         .maybeSingle();
 
-      if (!freeUser) {
-        setLoginStatus('not_found');
-        return;
+      if (freeUser) {
+        // Se achou no plano grátis e tem nome, entra no Dash
+        if (freeUser.nome && freeUser.nome.trim() !== "") {
+          toast.success(`Bem-vindo de volta, ${freeUser.nome}!`);
+          localStorage.setItem("plano7_free_whatsapp", freeUser.whatsapp);
+          navigate("/dashboard", { state: freeUser });
+          return;
+        } else {
+          // Se achou mas está sem nome, manda terminar cadastro
+          setLoginStatus('pending');
+          return;
+        }
       }
 
-      if (!freeUser.nome || freeUser.nome.trim() === "") {
+      // 5. SE NÃO ACHOU EM NENHUMA, VERIFICA clientes_semcadastro (Lead inicial)
+      const { data: leadCheck } = await supabase
+        .from("clientes_semcadastro")
+        .select("id, whatsapp")
+        .eq("whatsapp", formattedNumber)
+        .maybeSingle();
+
+      if (leadCheck) {
         setLoginStatus('pending');
-        return;
+      } else {
+        setLoginStatus('not_found');
       }
-
-      toast.success(`Bem-vindo de volta, ${freeUser.nome}!`);
-      localStorage.setItem("plano7_free_whatsapp", freeUser.whatsapp);
-      navigate("/dashboard", { state: freeUser });
       
     } catch (err) {
       console.error("Erro no login:", err);
