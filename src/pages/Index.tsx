@@ -61,50 +61,42 @@ const Index = () => {
     setLoginStatus('idle');
     
     try {
-      // 3. VERIFICAÇÃO PRIORITÁRIA: TABELA clientes_pagos, COLUNA whatsapp
-      // Se estiver aqui, REDIRECIONA PARA O LOGIN PAGO
+      // 3. VERIFICAÇÃO ÚNICA EM CLIENTES_PAGOS (COLUNA WHATSAPP)
       const { data: paidCheck } = await supabase
         .from("clientes_pagos")
-        .select("id, nome")
+        .select("whatsapp")
         .eq("whatsapp", formattedNumber)
-        .maybeSingle();
+        .limit(1);
 
-      if (paidCheck) {
-        toast.info(`Identificamos seu acesso Elite (${paidCheck.nome}). Por favor, entre com seu e-mail e senha.`);
+      // Se encontrou na tabela de pagos, manda pro login e para tudo
+      if (paidCheck && paidCheck.length > 0) {
+        toast.info("Identificamos seu acesso Premium. Por favor, entre com seu e-mail e senha.");
         navigate("/login");
         return;
       }
 
-      // 4. SE NÃO FOR PAGO, PROCURA NAS TABELAS DE ACESSO GRÁTIS
-      // Procuramos primeiro em usuarios_planogratis
+      // 4. SE NÃO É PAGO, SEGUE O FLUXO GRÁTIS
       const { data: freeUser } = await supabase
         .from("usuarios_planogratis")
         .select("*")
         .eq("whatsapp", formattedNumber)
         .maybeSingle();
 
-      if (freeUser) {
-        // Se achou no plano grátis e tem nome, entra no Dash
-        if (freeUser.nome && freeUser.nome.trim() !== "") {
-          toast.success(`Bem-vindo de volta, ${freeUser.nome}!`);
-          localStorage.setItem("plano7_free_whatsapp", freeUser.whatsapp);
-          navigate("/dashboard", { state: freeUser });
-          return;
-        } else {
-          // Se achou mas está sem nome, manda terminar cadastro
-          setLoginStatus('pending');
-          return;
-        }
+      if (freeUser && freeUser.nome && freeUser.nome.trim() !== "") {
+        toast.success(`Bem-vindo de volta, ${freeUser.nome}!`);
+        localStorage.setItem("plano7_free_whatsapp", formattedNumber);
+        navigate("/dashboard", { state: freeUser });
+        return;
       }
 
-      // 5. SE NÃO ACHOU EM NENHUMA, VERIFICA clientes_semcadastro (Lead inicial)
+      // 5. VERIFICA SE É LEAD (SEM CADASTRO) OU GRÁTIS INCOMPLETO
       const { data: leadCheck } = await supabase
         .from("clientes_semcadastro")
-        .select("id, whatsapp")
+        .select("whatsapp")
         .eq("whatsapp", formattedNumber)
         .maybeSingle();
 
-      if (leadCheck) {
+      if (leadCheck || freeUser) {
         setLoginStatus('pending');
       } else {
         setLoginStatus('not_found');
