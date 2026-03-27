@@ -6,7 +6,7 @@ import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-center";
 import { formatWhatsApp } from "@/lib/utils";
 
 type View = "landing" | "check-free-plan";
@@ -48,39 +48,51 @@ const Index = () => {
       return;
     }
 
-    // Gerar variações de busca (sempre com 55)
+    // Gerar variações exaustivas de busca
     const variations: string[] = [];
     
-    // Caso 1: Número como digitado (com 55 forçado)
-    let base = rawNumber;
-    if (!base.startsWith("55")) base = "55" + base;
-    variations.push(base);
+    // 1. Versão com 55
+    const with55 = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
+    variations.push(with55);
+    
+    // 2. Versão sem 55
+    const without55 = rawNumber.startsWith("55") ? rawNumber.substring(2) : rawNumber;
+    variations.push(without55);
 
-    // Caso 2: Tratar o 9º dígito (se tiver 13 dígitos, tenta a versão de 12 e vice-versa)
-    if (base.length === 13 && base[4] === '9') {
-      // Remove o 9: 5511988887777 -> 551188887777
-      variations.push(base.substring(0, 4) + base.substring(5));
-    } else if (base.length === 12) {
-      // Adiciona o 9: 551188887777 -> 5511988887777
-      variations.push(base.substring(0, 4) + "9" + base.substring(4));
-    }
+    // 3. Lógica do 9º dígito para ambas as versões
+    const finalVariations = [...variations];
+    variations.forEach(v => {
+      const isWith55 = v.startsWith("55");
+      const ddd = isWith55 ? v.substring(2, 4) : v.substring(0, 2);
+      const numPart = isWith55 ? v.substring(4) : v.substring(2);
+      const prefix = isWith55 ? "55" : "";
+
+      if (numPart.length === 9 && numPart[0] === '9') {
+        // Tem o 9, adiciona versão sem o 9
+        finalVariations.push(prefix + ddd + numPart.substring(1));
+      } else if (numPart.length === 8) {
+        // Não tem o 9, adiciona versão com o 9
+        finalVariations.push(prefix + ddd + "9" + numPart);
+      }
+    });
+
+    const uniqueVariations = Array.from(new Set(finalVariations));
+    const variationsString = `(${uniqueVariations.join(',')})`;
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 1. BUSCA PRIORITÁRIA: Clientes Pagos
-      // Buscamos qualquer registro que bata com as variações
+      // 1. BUSCA PRIORITÁRIA: Clientes Pagos (Checando ambas as colunas possíveis)
       const { data: paidUsers, error: paidError } = await supabase
         .from("clientes_pagos")
-        .select("id, nome, email, whatsapp")
-        .in("whatsapp", variations);
+        .select("id, nome")
+        .or(`whatsapp.in.${variationsString},telefone_cadastro.in.${variationsString}`);
 
       if (paidError) throw paidError;
 
-      // Se encontrou QUALQUER registro na tabela de pagos, bloqueia o acesso grátis
       if (paidUsers && paidUsers.length > 0) {
-        toast.info(`Identificamos que você é um cliente Elite (${paidUsers[0].nome}). Por favor, acesse com seu e-mail e senha.`);
+        toast.info(`Identificamos seu acesso Elite (${paidUsers[0].nome}). Por favor, entre com seu e-mail e senha.`);
         navigate("/login");
         return;
       }
@@ -89,7 +101,7 @@ const Index = () => {
       const { data: freeUser, error: freeError } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .in("whatsapp", variations)
+        .in("whatsapp", uniqueVariations)
         .maybeSingle();
 
       if (freeError) throw freeError;
