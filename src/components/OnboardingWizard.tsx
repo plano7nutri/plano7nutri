@@ -25,6 +25,7 @@ interface OnboardingWizardProps {
   onBack: () => void;
   onGoToLogin?: () => void;
   hideLoginLink?: boolean;
+  skipInternalValidation?: boolean;
 }
 
 const activityLevels = [
@@ -49,7 +50,7 @@ const slideVariants = {
 
 const TOTAL_STEPS = 5;
 
-const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = false }: OnboardingWizardProps) => {
+const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = false, skipInternalValidation = false }: OnboardingWizardProps) => {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -75,40 +76,46 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   const isLastStep = step === TOTAL_STEPS - 1;
 
   const checkWhatsAppStatus = async () => {
+    // Se skipInternalValidation for true, não fazemos nenhuma verificação no banco
+    if (skipInternalValidation) {
+      return true;
+    }
+
     setIsChecking(true);
     setValidationStatus('idle');
     setWhatsappError("");
     
     try {
-      const cleanWhatsapp = formatWhatsApp(data.whatsapp);
+      const rawNumber = data.whatsapp.replace(/\D/g, "");
+      const with55 = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
+      const without55 = rawNumber.startsWith("55") ? rawNumber.substring(2) : rawNumber;
       
-      const { data: user, error } = await supabase
+      const { data: users, error } = await supabase
         .from("usuarios_planogratis")
-        .select("id, objetivo_semanal")
-        .eq("whatsapp", cleanWhatsapp)
-        .maybeSingle();
+        .select("id, objetivo_semanal, whatsapp")
+        .or(`whatsapp.eq.${with55},whatsapp.eq.${without55}`)
+        .limit(1);
 
       if (error) throw error;
 
-      // 1. Se o número não existe na base
+      const user = users && users.length > 0 ? users[0] : null;
+
       if (!user) {
         setValidationStatus('not_found');
         return false;
       }
 
-      // 2. Se o número existe, verificamos se o cadastro está incompleto (objetivo_semanal vazio)
       const isGoalEmpty = !user.objetivo_semanal || user.objetivo_semanal.trim() === "";
 
       if (isGoalEmpty) {
-        // Cadastro pendente: permite prosseguir
         setData(prev => ({ 
           ...prev, 
-          id: user.id
+          id: user.id,
+          whatsapp: user.whatsapp
         }));
         setValidationStatus('pending');
         return true;
       } else {
-        // Cadastro já existe e está completo
         setValidationStatus('exists');
         return false;
       }
@@ -122,7 +129,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const validateWhatsAppLength = (val: string) => {
     const clean = val.replace(/\D/g, "");
-    return clean.length === 10 || clean.length === 11;
+    return clean.length >= 10 && clean.length <= 13;
   };
 
   const next = async () => {
@@ -131,7 +138,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
       const cleanConfirm = confirmWhatsapp.replace(/\D/g, "");
 
       if (!validateWhatsAppLength(cleanWhatsapp)) {
-        setWhatsappError("O WhatsApp deve ter 10 ou 11 dígitos (DDD + Número).");
+        setWhatsappError("O WhatsApp deve ter entre 10 e 13 dígitos.");
         return;
       }
       if (cleanWhatsapp !== cleanConfirm) {
@@ -255,7 +262,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     <label className="block text-sm font-medium text-foreground mb-2">WhatsApp com DDD (Apenas números)</label>
                     <input
                       type="tel"
-                      maxLength={11}
+                      maxLength={13}
                       value={data.whatsapp}
                       onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, "");
@@ -273,7 +280,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     <label className="block text-sm font-medium text-foreground mb-2">Confirme seu WhatsApp</label>
                     <input
                       type="tel"
-                      maxLength={11}
+                      maxLength={13}
                       value={confirmWhatsapp}
                       onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, "");

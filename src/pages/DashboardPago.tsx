@@ -190,7 +190,12 @@ const DashboardPago = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="pt-10 px-6 text-center"><h1 className="text-2xl font-bold">Bem-vindo ao Plano 7 Premium</h1></div>
-        <OnboardingWizard onComplete={handleInitialOnboarding} onBack={() => signOut()} hideLoginLink={true} />
+        <OnboardingWizard 
+          onComplete={handleInitialOnboarding} 
+          onBack={() => signOut()} 
+          hideLoginLink={true} 
+          skipInternalValidation={true}
+        />
       </div>
     );
   }
