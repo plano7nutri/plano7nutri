@@ -41,7 +41,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             Plano <span className="text-primary">7</span>
           </div>
           <button
-            onClick={() => navigate('/login')}
+            onClick={onLogin}
             className="text-xs font-bold bg-emerald-600 text-white px-4 py-2 rounded-full hover:bg-emerald-700 transition-all flex items-center gap-2 shadow-sm uppercase tracking-wider"
           >
             <UserCheck className="w-4 h-4" />
@@ -84,7 +84,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
             </motion.button>
             
             <motion.button
-              onClick={onLogin}
+              onClick={() => navigate("/", { state: { view: "check-free-plan" } })}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"

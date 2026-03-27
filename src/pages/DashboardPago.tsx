@@ -44,32 +44,45 @@ const DashboardPago = () => {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Segurança: Só aceita adminViewData se o usuário logado for o Robson
+  // Suporte para acesso via WhatsApp (localStorage) ou Auth
+  const paidWhatsapp = localStorage.getItem("plano7_paid_whatsapp");
   const adminViewData = (user?.email === ADMIN_EMAIL) ? location.state?.adminViewData : null;
 
   const { data: userData, isLoading: dataLoading } = useQuery({
-    queryKey: ["premiumUser", adminViewData?.id || user?.id],
+    queryKey: ["premiumUser", adminViewData?.id || user?.id || paidWhatsapp],
     queryFn: async () => {
       if (adminViewData) return adminViewData;
-      if (!user?.id) return null;
       
-      const { data, error } = await supabase
-        .from("clientes_pagos")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from("clientes_pagos")
+          .select("*")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (error) throw error;
+        return data;
+      }
+
+      if (paidWhatsapp) {
+        const { data, error } = await supabase
+          .from("clientes_pagos")
+          .select("*")
+          .eq("whatsapp", paidWhatsapp)
+          .maybeSingle();
+        if (error) throw error;
+        return data;
+      }
       
-      if (error) throw error;
-      return data;
+      return null;
     },
-    enabled: !!adminViewData || !!user?.id,
+    enabled: !!adminViewData || !!user?.id || !!paidWhatsapp,
   });
 
   useEffect(() => {
-    if (!authLoading && !user && !adminViewData) {
+    if (!authLoading && !user && !adminViewData && !paidWhatsapp) {
       navigate("/login", { replace: true });
     }
-  }, [user, authLoading, navigate, adminViewData]);
+  }, [user, authLoading, navigate, adminViewData, paidWhatsapp]);
 
   const calculateNutrition = (data: any) => {
     const tmb = data.sex === "male" ? 10 * data.weight + 6.25 * data.height - 5 * data.age + 5 : 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
@@ -93,7 +106,9 @@ const DashboardPago = () => {
       toast.error("Modo visualização: Você não pode editar dados de outros usuários.");
       return;
     }
-    if (!user?.id) return;
+    const targetId = user?.id || userData?.id;
+    if (!targetId) return;
+
     setIsProcessing(true);
     try {
       const nutrition = calculateNutrition(data);
@@ -111,10 +126,10 @@ const DashboardPago = () => {
         proteina_dia: nutrition.proteina,
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
-      }).eq("id", user.id);
+      }).eq("id", targetId);
       if (error) throw error;
       toast.success("Perfil atualizado!");
-      queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
+      queryClient.invalidateQueries({ queryKey: ["premiumUser"] });
     } catch (err) {
       toast.error("Erro ao atualizar.");
     } finally {
@@ -123,7 +138,9 @@ const DashboardPago = () => {
   };
 
   const handleInitialOnboarding = async (data: OnboardingData) => {
-    if (!user?.id) return;
+    const targetId = user?.id || userData?.id;
+    if (!targetId) return;
+
     setIsProcessing(true);
     try {
       const nutrition = calculateNutrition({ ...data, activity: activityLabels[data.activity] || data.activity, goal: goalLabels[data.goal] || data.goal });
@@ -148,10 +165,10 @@ const DashboardPago = () => {
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
         limite_cardapio_unico: 0
-      }).eq("id", user.id);
+      }).eq("id", targetId);
       if (error) throw error;
       toast.success("Perfil configurado!");
-      queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
+      queryClient.invalidateQueries({ queryKey: ["premiumUser"] });
     } catch (err) {
       toast.error("Erro ao salvar.");
     } finally {
@@ -160,8 +177,9 @@ const DashboardPago = () => {
   };
 
   const handleLogout = async () => {
-    await signOut();
-    navigate("/login", { replace: true });
+    localStorage.removeItem("plano7_paid_whatsapp");
+    if (user) await signOut();
+    navigate("/", { replace: true });
   };
 
   if (authLoading || dataLoading || isProcessing) {
@@ -184,13 +202,14 @@ const DashboardPago = () => {
     );
   }
 
-  const isFirstAccess = !userData.idade || !userData.peso;
+  // Lógica solicitada: Se objetivo_semanal estiver vazio, mostra o onboarding
+  const isFirstAccess = !userData.objetivo_semanal || userData.objetivo_semanal.trim() === "";
 
   if (isFirstAccess && !adminViewData) {
     return (
       <div className="min-h-screen bg-background">
         <div className="pt-10 px-6 text-center"><h1 className="text-2xl font-bold">Bem-vindo ao Plano 7 Premium</h1></div>
-        <OnboardingWizard onComplete={handleInitialOnboarding} onBack={() => signOut()} hideLoginLink={true} />
+        <OnboardingWizard onComplete={handleInitialOnboarding} onBack={handleLogout} hideLoginLink={true} />
       </div>
     );
   }
