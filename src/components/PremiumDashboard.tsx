@@ -50,6 +50,7 @@ interface PremiumDashboardProps {
   assinatura_ativa?: boolean;
   cardapio?: string | null;
   lista?: string | null;
+  entregue?: boolean | null;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
   onProfileUpdate?: (data: any) => Promise<void>;
@@ -63,7 +64,7 @@ const PremiumDashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
   restrictions, preferences, avatarUrl, tipo_assinatura, plano_semanal, ultimo_envio_plano, limite_cardapio_unico,
-  assinatura_ativa, cardapio, lista, onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate, isAdminView = false
+  assinatura_ativa, cardapio, lista, entregue, onAvatarUpdate, onLogout, onProfileUpdate, lastUpdateDate, isAdminView = false
 }: PremiumDashboardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -100,7 +101,10 @@ const PremiumDashboard = ({
   // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
   const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
   
-  const isBlocked = isSubscriptionInactive || isUnicaDelivered;
+  // Lógica de entrega Mensal: Baseada na coluna entregue
+  const isMensalDelivered = tipo_assinatura === "Mensal" && entregue === true;
+  
+  const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalDelivered;
 
   const canEdit = () => {
     if (isActuallyAdmin) return true;
@@ -164,6 +168,11 @@ const PremiumDashboard = ({
       toast.error("Seu cardápio único já foi entregue.");
       return;
     }
+    if (isMensalDelivered) {
+      e.preventDefault();
+      toast.error("Seu cardápio premium já foi entregue. Te vejo em 7 dias!");
+      return;
+    }
     if (!canRequestPlan()) {
       e.preventDefault();
       toast.error(`Seu novo plano semanal estará disponível em ${daysToNextPlan()} dias.`, {
@@ -214,7 +223,9 @@ const PremiumDashboard = ({
     if (isBlocked) {
       const reason = isSubscriptionInactive 
         ? "Assinatura inativa. Renove para editar seu perfil." 
-        : "Cardápio único já entregue. Mude para o plano mensal para edições ilimitadas.";
+        : isUnicaDelivered 
+          ? "Cardápio único já entregue. Mude para o plano mensal para edições ilimitadas."
+          : "Cardápio premium já entregue. Te vejo em 7 dias!";
       toast.error(reason);
       return;
     }
@@ -240,6 +251,7 @@ const PremiumDashboard = ({
     if (safeIsAdminView) return "Solicitar Cardápio de Elite";
     if (isSubscriptionInactive) return "Acesso Bloqueado";
     if (isUnicaDelivered) return "Cardápio Entregue";
+    if (isMensalDelivered) return "Cardápio Premium Entregue";
     if (!canRequestPlan()) {
       const days = daysToNextPlan();
       return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
@@ -290,7 +302,7 @@ const PremiumDashboard = ({
                 <h4 className="text-sm font-bold text-foreground">Controle de Atualização</h4>
                 <p className="text-xs text-muted-foreground">
                   {isBlocked 
-                    ? "Atualização bloqueada. Assinatura Inativa."
+                    ? isMensalDelivered ? "Cardápio entregue. Te vejo em 7 dias!" : "Atualização bloqueada. Assinatura Inativa."
                     : canEdit() 
                       ? "Seu perfil está liberado para nova atualização." 
                       : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
@@ -556,11 +568,16 @@ const PremiumDashboard = ({
         >
           <div className={`absolute -inset-1 rounded-[2rem] blur opacity-25 transition duration-1000 ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366]/50 group-hover:opacity-50 group-hover:duration-200' : 'bg-zinc-500'}`} />
           <div className={`relative rounded-[2rem] p-5 shadow-2xl flex flex-col items-center text-center gap-3 overflow-hidden ${((canRequestPlan() && !isBlocked) || safeIsAdminView) ? 'bg-[#25D366] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
-            <div className="flex items-center gap-3">
-              {((canRequestPlan() && !isBlocked) || safeIsAdminView) ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
-              <h3 className="text-lg font-black uppercase tracking-normal">
-                {getButtonText()}
-              </h3>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-3">
+                {((canRequestPlan() && !isBlocked) || safeIsAdminView) ? <MessageCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5 text-[#25D366]" />}
+                <h3 className="text-lg font-black uppercase tracking-normal">
+                  {getButtonText()}
+                </h3>
+              </div>
+              {isMensalDelivered && !safeIsAdminView && (
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Te vejo em 7 dias</span>
+              )}
             </div>
           </div>
         </motion.a>

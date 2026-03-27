@@ -279,6 +279,7 @@ const DashboardPago = () => {
           assinatura_ativa={userData.assinatura_ativa}
           cardapio={userData.cardápio}
           lista={userData.Lista}
+          entregue={userData.entregue}
           onAvatarUpdate={() => queryClient.invalidateQueries({ queryKey: ["premiumUser"] })}
           onLogout={handleLogout}
           onProfileUpdate={handleUpdateProfile}
