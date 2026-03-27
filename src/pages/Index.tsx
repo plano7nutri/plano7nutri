@@ -47,18 +47,14 @@ const Index = () => {
       return;
     }
 
-    // Gerar variações exaustivas de busca
+    // Gerar variações de busca (com/sem 55 e com/sem 9º dígito)
     const variations: string[] = [];
-    
-    // 1. Versão com 55
     const with55 = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
-    variations.push(with55);
-    
-    // 2. Versão sem 55
     const without55 = rawNumber.startsWith("55") ? rawNumber.substring(2) : rawNumber;
-    variations.push(without55);
+    
+    variations.push(with55, without55);
 
-    // 3. Lógica do 9º dígito para ambas as versões
+    // Adicionar variações de 9º dígito
     const finalVariations = [...variations];
     variations.forEach(v => {
       const isWith55 = v.startsWith("55");
@@ -74,22 +70,27 @@ const Index = () => {
     });
 
     const uniqueVariations = Array.from(new Set(finalVariations));
-    const variationsString = `(${uniqueVariations.join(',')})`;
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 1. BUSCA PRIORITÁRIA: Clientes Pagos
-      const { data: paidUsers, error: paidError } = await supabase
+      // 1. BUSCA ULTRA-RIGOROSA: Clientes Pagos
+      // Checamos as duas colunas separadamente para garantir que o Supabase não se perca no OR
+      const { data: paidByWhatsapp } = await supabase
         .from("clientes_pagos")
         .select("id, nome")
-        .or(`whatsapp.in.${variationsString},telefone_cadastro.in.${variationsString}`);
+        .in("whatsapp", uniqueVariations);
 
-      if (paidError) throw paidError;
+      const { data: paidByTelefone } = await supabase
+        .from("clientes_pagos")
+        .select("id, nome")
+        .in("telefone_cadastro", uniqueVariations);
 
-      if (paidUsers && paidUsers.length > 0) {
-        toast.info(`Identificamos seu acesso Elite (${paidUsers[0].nome}). Por favor, entre com seu e-mail e senha.`);
+      const paidUser = (paidByWhatsapp?.[0]) || (paidByTelefone?.[0]);
+
+      if (paidUser) {
+        toast.info(`Identificamos seu acesso Elite (${paidUser.nome}). Por favor, entre com seu e-mail e senha.`);
         navigate("/login");
         return;
       }
