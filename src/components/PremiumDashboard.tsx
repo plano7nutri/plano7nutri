@@ -73,9 +73,7 @@ const PremiumDashboard = ({
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
   const queryClient = useQueryClient();
 
-  // SEGURANÇA MÁXIMA: Verifica se o usuário é REALMENTE o administrador
   const isActuallyAdmin = user?.email === ADMIN_EMAIL;
-  // Bloqueia qualquer flag de visualização administrativa se o usuário não for o admin
   const safeIsAdminView = isAdminView && isActuallyAdmin;
 
   useEffect(() => {
@@ -98,7 +96,10 @@ const PremiumDashboard = ({
   };
 
   const isSubscriptionInactive = assinatura_ativa === false;
-  const isUnicaDelivered = tipo_assinatura === "Unica" && limite_cardapio_unico === 1;
+  
+  // Lógica de entrega: Se tem cardápio E lista, ou se o limite foi atingido
+  const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico === 1 || (!!cardapio && !!lista));
+  
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
   const canEdit = () => {
@@ -117,14 +118,20 @@ const PremiumDashboard = ({
     const lastUpdate = new Date(lastUpdateDate);
     const nextUpdate = new Date(lastUpdate);
     nextUpdate.setDate(nextUpdate.getDate() + 7);
-    const diffTime = nextUpdate.getTime() - new Date().getTime();
+    const diffTime = nextRequest.getTime() - new Date().getTime();
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
   const canRequestPlan = () => {
     if (isActuallyAdmin) return true;
     if (isBlocked) return false;
-    if (tipo_assinatura === "Unica") return limite_cardapio_unico !== 1;
+    
+    // Plano Único: Se já foi entregue, não pode pedir mais
+    if (tipo_assinatura === "Unica") {
+      return !isUnicaDelivered;
+    }
+    
+    // Plano Mensal: Libera a cada 7 dias após o último envio
     if (tipo_assinatura === "Mensal" || plano_semanal === true) {
       if (!ultimo_envio_plano) return true;
       const lastRequest = new Date(ultimo_envio_plano);
@@ -145,10 +152,8 @@ const PremiumDashboard = ({
   };
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
-    if (isActuallyAdmin) {
-      toast.success("Acesso admin: Abrindo WhatsApp...");
-      return;
-    }
+    if (isActuallyAdmin) return;
+    
     if (isSubscriptionInactive) {
       e.preventDefault();
       toast.error("Seu acesso está inativo. Renove para continuar.");
@@ -246,7 +251,6 @@ const PremiumDashboard = ({
     <div className="min-h-screen bg-background text-foreground px-6 py-10">
       <div className="w-full max-w-4xl mx-auto">
         
-        {/* Apenas exibe Painel Admin se for o administrador logado */}
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -256,7 +260,6 @@ const PremiumDashboard = ({
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {/* SEGURANÇA: Botão administrativo visível APENAS no dash do Robson */}
               {isActuallyAdmin && !safeIsAdminView && (
                 <button 
                   onClick={() => navigate('/cadastroadmin')}
@@ -278,7 +281,6 @@ const PremiumDashboard = ({
             </div>
           </div>
 
-          {/* Controle de Edição */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${isBlocked ? 'bg-muted' : canEdit() ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
@@ -310,7 +312,6 @@ const PremiumDashboard = ({
           </div>
         </div>
 
-        {/* Renderização do Perfil */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -424,7 +425,6 @@ const PremiumDashboard = ({
 
         <ImpactPhrase goal={goalLabel} />
 
-        {/* Metabolismo de Base (TMB e GET) - PREMIUM */}
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="bg-card/40 border border-emerald-500/10 p-5 rounded-3xl backdrop-blur-sm">
             <h4 className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest mb-1 flex items-center gap-1.5">
@@ -543,7 +543,6 @@ const PremiumDashboard = ({
           )}
         </div>
 
-        {/* Bônus de Páscoa da Vivi - Agora no Premium também */}
         <EasterBonus goal={goalLabel} />
 
         <motion.a
