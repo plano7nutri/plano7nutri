@@ -127,11 +127,12 @@ const DashboardPago = () => {
     setIsProcessing(true);
     try {
       const nutrition = calculateNutrition({ ...data, activity: activityLabels[data.activity] || data.activity, goal: goalLabels[data.goal] || data.goal });
+      
+      // IMPORTANTE: Não atualizamos o campo 'whatsapp' nem 'telefone_cadastro' 
+      // para manter o número original definido pelo administrador.
       const { error } = await supabase.from("clientes_pagos").update({
         nome: data.name,
-        whatsapp: data.whatsapp,
         nome_usuario: data.name,
-        telefone_cadastro: data.whatsapp,
         sexo_biologico: data.sex,
         idade: data.age,
         altura: data.height,
@@ -149,6 +150,7 @@ const DashboardPago = () => {
         gordura_dia: nutrition.gordura,
         limite_cardapio_unico: 0
       }).eq("id", user.id);
+      
       if (error) throw error;
       toast.success("Perfil configurado!");
       queryClient.invalidateQueries({ queryKey: ["premiumUser", user.id] });
