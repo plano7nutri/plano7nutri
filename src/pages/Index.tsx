@@ -21,7 +21,6 @@ const Index = () => {
   const { setTheme } = useTheme();
   const { session } = useAuth();
 
-  // Redireciona se já estiver logado
   useEffect(() => {
     if (session) {
       navigate("/dashboardpago");
@@ -31,9 +30,7 @@ const Index = () => {
   useEffect(() => {
     try {
       setTheme("light");
-    } catch (e) {
-      console.warn("Falha ao definir tema:", e);
-    }
+    } catch (e) {}
   }, [setTheme]);
 
   useEffect(() => {
@@ -49,6 +46,7 @@ const Index = () => {
   };
 
   const handleLoginFree = async () => {
+    // 1. Limpa o que foi digitado (apenas números)
     const rawNumber = loginWhatsapp.replace(/\D/g, "");
     
     if (rawNumber.length < 10) {
@@ -56,32 +54,31 @@ const Index = () => {
       return;
     }
 
-    // Variações básicas: o número como digitado e com o prefixo 55
-    const with55 = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
-    const without55 = rawNumber.startsWith("55") ? rawNumber.substring(2) : rawNumber;
-    const variations = [with55, without55];
+    // 2. Coloca o 55 se não tiver (Lógica solicitada)
+    const formattedNumber = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 1. BUSCA EM CLIENTES PAGOS (Prioridade Máxima)
-      const { data: paidUsers } = await supabase
+      // 3. BUSCA SIMPLES EM CLIENTES PAGOS
+      const { data: paidUser } = await supabase
         .from("clientes_pagos")
         .select("id, nome")
-        .or(`whatsapp.in.(${variations.join(',')}),telefone_cadastro.in.(${variations.join(',')})`);
+        .or(`whatsapp.eq.${formattedNumber},telefone_cadastro.eq.${formattedNumber}`)
+        .maybeSingle();
 
-      if (paidUsers && paidUsers.length > 0) {
-        toast.info(`Identificamos seu acesso Elite (${paidUsers[0].nome}). Por favor, entre com seu e-mail e senha.`);
+      if (paidUser) {
+        toast.info(`Identificamos seu acesso Elite (${paidUser.nome}). Por favor, entre com seu e-mail e senha.`);
         navigate("/login");
         return;
       }
 
-      // 2. BUSCA EM USUÁRIOS GRÁTIS
+      // 4. BUSCA SIMPLES EM USUÁRIOS GRÁTIS
       const { data: freeUser } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .in("whatsapp", variations)
+        .eq("whatsapp", formattedNumber)
         .maybeSingle();
 
       if (!freeUser) {
