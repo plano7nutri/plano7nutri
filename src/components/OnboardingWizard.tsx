@@ -82,24 +82,28 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     try {
       const cleanWhatsapp = formatWhatsApp(data.whatsapp);
       
+      // Alterado para verificar objetivo_semanal conforme solicitado
       const { data: user, error } = await supabase
         .from("usuarios_planogratis")
-        .select("id, nome")
+        .select("id, objetivo_semanal")
         .eq("whatsapp", cleanWhatsapp)
         .maybeSingle();
 
       if (error) throw error;
 
+      // Se o WhatsApp não existe na base
       if (!user) {
         setValidationStatus('not_found');
         return false;
       }
 
-      if (user.nome && user.nome.trim() !== "") {
+      // Se o WhatsApp existe e o objetivo_semanal NÃO está nulo (cadastro já completo)
+      if (user.objetivo_semanal && user.objetivo_semanal.trim() !== "") {
         setValidationStatus('exists');
         return false;
       }
 
+      // Se o WhatsApp existe e o objetivo_semanal ESTÁ nulo (pode completar o cadastro)
       setData(prev => ({ 
         ...prev, 
         id: user.id
@@ -159,7 +163,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
     if (!isNaN(numericVal)) {
       let finalHeight = numericVal <= 3 ? Math.round(numericVal * 100) : Math.round(numericVal);
       
-      // TRAVA RIGOROSA: 2,10m
       if (finalHeight > 210) {
         finalHeight = 210;
         formatted = "2,10";
@@ -173,7 +176,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const stepHeight = (increment: number) => {
-    // TRAVA RIGOROSA: 2,10m
     const nextHeight = Math.max(50, Math.min(210, data.height + increment));
     setData(prev => ({ ...prev, height: nextHeight }));
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
