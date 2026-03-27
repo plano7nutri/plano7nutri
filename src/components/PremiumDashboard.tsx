@@ -96,13 +96,23 @@ const PremiumDashboard = ({
     });
   };
 
+  // Função auxiliar para verificar se o tempo de trava de 7 dias ainda está ativo
+  const isTimeLocked = () => {
+    if (!ultimo_envio_plano) return false;
+    const lastRequest = new Date(ultimo_envio_plano);
+    const now = new Date();
+    const diffTime = now.getTime() - lastRequest.getTime();
+    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+    return diffTime < sevenDaysInMs;
+  };
+
   const isSubscriptionInactive = assinatura_ativa === false;
   
   // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
   const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
   
-  // Lógica de entrega Mensal: Baseada na coluna entregue
-  const isMensalDelivered = tipo_assinatura === "Mensal" && entregue === true;
+  // Lógica de entrega Mensal: Travado apenas se entregue for true E ainda estiver no período de 7 dias
+  const isMensalDelivered = tipo_assinatura === "Mensal" && entregue === true && isTimeLocked();
   
   const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalDelivered;
 
@@ -138,11 +148,7 @@ const PremiumDashboard = ({
     // Plano Mensal: Libera a cada 7 dias após o último envio
     if (tipo_assinatura === "Mensal" || plano_semanal === true) {
       if (!ultimo_envio_plano) return true;
-      const lastRequest = new Date(ultimo_envio_plano);
-      const now = new Date();
-      const diffTime = now.getTime() - lastRequest.getTime();
-      const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-      return diffTime >= sevenDaysInMs;
+      return !isTimeLocked();
     }
     return true;
   };
