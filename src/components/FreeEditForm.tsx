@@ -76,7 +76,11 @@ const FreeEditForm = ({ initialData, onSave, onClose }: FreeEditFormProps) => {
                 <input 
                   type="number" 
                   value={formData.age}
-                  onChange={(e) => setFormData({...formData, age: Math.min(100, Number(e.target.value))})}
+                  onChange={(e) => {
+                    const valStr = e.target.value.replace(/^0+/, '');
+                    const val = valStr === '' ? 0 : Math.min(100, parseInt(valStr));
+                    setFormData({...formData, age: val});
+                  }}
                   className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-2 py-2 text-zinc-900 text-center focus:ring-2 focus:ring-primary/20 outline-none font-bold"
                 />
                 <button type="button" onClick={() => setFormData({...formData, age: Math.min(100, formData.age + 1)})} className="p-2 bg-zinc-100 rounded-lg text-primary hover:bg-primary/10 transition-colors">
@@ -93,7 +97,11 @@ const FreeEditForm = ({ initialData, onSave, onClose }: FreeEditFormProps) => {
                 <input 
                   type="number" 
                   value={formData.weight}
-                  onChange={(e) => setFormData({...formData, weight: Math.min(125, Number(e.target.value))})}
+                  onChange={(e) => {
+                    const valStr = e.target.value.replace(/^0+/, '');
+                    const val = valStr === '' ? 0 : Math.min(125, parseInt(valStr));
+                    setFormData({...formData, weight: val});
+                  }}
                   className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-2 py-2 text-zinc-900 text-center focus:ring-2 focus:ring-primary/20 outline-none font-bold"
                 />
                 <button type="button" onClick={() => setFormData({...formData, weight: Math.min(125, formData.weight + 1)})} className="p-2 bg-zinc-100 rounded-lg text-primary hover:bg-primary/10 transition-colors">

@@ -21,15 +21,6 @@ export interface OnboardingData {
   preferences: string;
 }
 
-interface OnboardingWizardProps {
-  onComplete: (data: OnboardingData) => void;
-  onBack: () => void;
-  onGoToLogin?: () => void;
-  hideLoginLink?: boolean;
-  skipInternalValidation?: boolean;
-  initialEmail?: string;
-}
-
 const activityLevels = [
   { id: "sedentary", label: "Sedentário", desc: "Pouca ou nenhuma atividade física" },
   { id: "lightly_active", label: "Levemente ativo", desc: "Exercícios leves 1-3 dias/semana" },
@@ -169,6 +160,12 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
 
   const handleHeightChange = (val: string) => {
     let formatted = val.replace(/[^0-9,]/g, "");
+    
+    // Impedir zeros à esquerda
+    if (formatted.startsWith("0") && formatted.length > 1 && formatted[1] !== ",") {
+      formatted = formatted.substring(1);
+    }
+    
     if (!formatted.includes(",")) {
       if (formatted.length > 1) {
         formatted = formatted.charAt(0) + "," + formatted.slice(1);
@@ -357,7 +354,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                       type="number" 
                       value={data.age} 
                       onChange={(e) => {
-                        const val = Math.min(100, Number(e.target.value));
+                        const valStr = e.target.value.replace(/^0+/, '');
+                        const val = valStr === '' ? 0 : Math.min(100, parseInt(valStr));
                         setData({ ...data, age: val });
                       }} 
                       className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" 
@@ -382,7 +380,8 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                     type="number" 
                     value={data.weight} 
                     onChange={(e) => {
-                      const val = Math.min(125, Number(e.target.value));
+                      const valStr = e.target.value.replace(/^0+/, '');
+                      const val = valStr === '' ? 0 : Math.min(125, parseInt(valStr));
                       setData({ ...data, weight: val });
                     }} 
                     className="w-full px-4 py-3 rounded-xl border bg-card text-center text-lg font-bold" 
