@@ -46,7 +46,7 @@ const Index = () => {
   };
 
   const handleLoginFree = async () => {
-    // 1. Limpa o que foi digitado (apenas números)
+    // 1. Limpa o número (apenas dígitos)
     const rawNumber = loginWhatsapp.replace(/\D/g, "");
     
     if (rawNumber.length < 10) {
@@ -54,18 +54,18 @@ const Index = () => {
       return;
     }
 
-    // 2. Coloca o 55 se não tiver (Lógica solicitada)
+    // 2. Garante o prefixo 55
     const formattedNumber = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 3. BUSCA SIMPLES EM CLIENTES PAGOS
+      // 3. VERIFICAÇÃO EXCLUSIVA EM CLIENTES_PAGOS (COLUNA WHATSAPP)
       const { data: paidUser } = await supabase
         .from("clientes_pagos")
         .select("id, nome")
-        .or(`whatsapp.eq.${formattedNumber},telefone_cadastro.eq.${formattedNumber}`)
+        .eq("whatsapp", formattedNumber)
         .maybeSingle();
 
       if (paidUser) {
@@ -74,7 +74,7 @@ const Index = () => {
         return;
       }
 
-      // 4. BUSCA SIMPLES EM USUÁRIOS GRÁTIS
+      // 4. SE NÃO FOR PAGO, BUSCA NA TABELA DE USUÁRIOS GRÁTIS
       const { data: freeUser } = await supabase
         .from("usuarios_planogratis")
         .select("*")
