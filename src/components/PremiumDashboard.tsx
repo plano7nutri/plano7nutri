@@ -97,8 +97,8 @@ const PremiumDashboard = ({
 
   const isSubscriptionInactive = assinatura_ativa === false;
   
-  // Lógica de entrega: Se tem cardápio E lista, ou se o limite foi atingido
-  const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico === 1 || (!!cardapio && !!lista));
+  // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
+  const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
   
   const isBlocked = isSubscriptionInactive || isUnicaDelivered;
 
@@ -118,7 +118,7 @@ const PremiumDashboard = ({
     const lastUpdate = new Date(lastUpdateDate);
     const nextUpdate = new Date(lastUpdate);
     nextUpdate.setDate(nextUpdate.getDate() + 7);
-    const diffTime = nextRequest.getTime() - new Date().getTime();
+    const diffTime = nextUpdate.getTime() - new Date().getTime();
     return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   };
 
@@ -126,9 +126,9 @@ const PremiumDashboard = ({
     if (isActuallyAdmin) return true;
     if (isBlocked) return false;
     
-    // Plano Único: Se já foi entregue, não pode pedir mais
+    // Plano Único: Se limite for 0 pode pedir, se for 1 não pode
     if (tipo_assinatura === "Unica") {
-      return !isUnicaDelivered;
+      return (limite_cardapio_unico ?? 0) === 0;
     }
     
     // Plano Mensal: Libera a cada 7 dias após o último envio
