@@ -52,10 +52,10 @@ const ImpactPhrase = ({ goal, className }: ImpactPhraseProps) => {
       className={cn(
         "p-6 rounded-3xl mb-8 border transition-all duration-300",
         isWeightLoss 
-          ? "bg-orange-500/5 border-orange-500/20 text-orange-700" 
+          ? "bg-orange-500/5 border-orange-500/20 text-orange-700 dark:text-zinc-200" 
           : isHypertrophy 
-            ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-700"
-            : "bg-primary/5 border-primary/20 text-zinc-700",
+            ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-700 dark:text-zinc-200"
+            : "bg-primary/5 border-primary/20 text-zinc-700 dark:text-zinc-200",
         className
       )}
     >
