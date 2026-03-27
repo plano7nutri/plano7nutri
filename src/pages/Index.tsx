@@ -6,10 +6,10 @@ import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle, Crown } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
 import { formatWhatsApp } from "@/lib/utils";
 
-type View = "landing" | "check-free-plan" | "check-paid-plan";
+type View = "landing" | "check-free-plan";
 
 const Index = () => {
   const [view, setView] = useState<View>("landing");
@@ -42,6 +42,7 @@ const Index = () => {
 
   const handleLoginFree = async () => {
     const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
+    
     if (cleanWhatsapp.length < 10) {
       toast.error("Informe um WhatsApp válido com DDD.");
       return;
@@ -57,60 +58,26 @@ const Index = () => {
         .maybeSingle();
 
       if (error) throw error;
+
       if (!data) {
         setLoginStatus('not_found');
         return;
       }
 
+      // Se o nome estiver vazio, precisa terminar o cadastro
       if (!data.nome || data.nome.trim() === "") {
         setLoginStatus('pending');
         return;
       }
 
       toast.success(`Bem-vindo de volta, ${data.nome}!`);
-      localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
+      try {
+        localStorage.setItem("plano7_free_whatsapp", data.whatsapp);
+      } catch (e) {}
+      
       navigate("/dashboard", { state: data });
     } catch (err) {
       toast.error("Erro ao buscar seu plano.");
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleLoginPaid = async () => {
-    const cleanWhatsapp = formatWhatsApp(loginWhatsapp);
-    if (cleanWhatsapp.length < 10) {
-      toast.error("Informe um WhatsApp válido com DDD.");
-      return;
-    }
-
-    setIsLoggingIn(true);
-    setLoginStatus('idle');
-    try {
-      const { data, error } = await supabase
-        .from("clientes_pagos")
-        .select("*")
-        .eq("whatsapp", cleanWhatsapp)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (!data) {
-        setLoginStatus('not_found');
-        return;
-      }
-
-      // Lógica solicitada: Se objetivo_semanal estiver vazio, vai para o cadastro. Se preenchido, vai para o dash.
-      if (!data.objetivo_semanal || data.objetivo_semanal.trim() === "") {
-        toast.info("Quase lá! Complete seu perfil para acessar seu plano.");
-        navigate("/cadastro", { state: { ...data, isPaid: true } });
-      } else {
-        toast.success(`Bem-vindo ao seu Dashboard Elite, ${data.nome}!`);
-        localStorage.setItem("plano7_paid_whatsapp", data.whatsapp);
-        navigate("/dashboardpago", { state: { userData: data } });
-      }
-    } catch (err) {
-      toast.error("Erro ao validar seu acesso pago.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -131,23 +98,15 @@ const Index = () => {
             {view === "landing" ? (
               <Landing 
                 onStart={handleStart} 
-                onLogin={() => setView("check-paid-plan")} 
+                onLogin={() => setView("check-free-plan")} 
               />
             ) : (
               <div className="min-h-screen-dynamic flex flex-col items-center justify-center px-6 py-12">
                 <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-card border border-zinc-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    {view === "check-paid-plan" && <Crown className="text-amber-500 w-5 h-5" />}
-                    <h2 className="text-2xl font-bold text-zinc-900">
-                      {view === "check-paid-plan" ? "Acessar Plano Pago" : "Acessar meu plano grátis"}
-                    </h2>
-                  </div>
-                  <p className="text-zinc-500 mb-8 text-sm">Informe seu WhatsApp para acessar seu planejamento.</p>
+                  <h2 className="text-2xl font-bold text-zinc-900 mb-2">Acessar meu plano grátis</h2>
+                  <p className="text-zinc-500 mb-8 text-sm">Informe seu WhatsApp para ver seu planejamento.</p>
                   
-                  <form onSubmit={(e) => { 
-                    e.preventDefault(); 
-                    view === "check-paid-plan" ? handleLoginPaid() : handleLoginFree(); 
-                  }} className="space-y-6">
+                  <form onSubmit={(e) => { e.preventDefault(); handleLoginFree(); }} className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-zinc-700 mb-2">WhatsApp</label>
                       <input
@@ -174,21 +133,40 @@ const Index = () => {
                         <div className="flex items-start gap-2 text-destructive mb-4">
                           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                           <p className="text-sm font-bold leading-tight">
-                            {view === "check-paid-plan" 
-                              ? "Usuário não existe em nossa base de clientes pagos." 
-                              : "Número não encontrado."}
+                            Número não encontrado.
                           </p>
                         </div>
-                        {view === "check-free-plan" && (
-                          <button
-                            type="button"
-                            onClick={handleStart}
-                            className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
-                          >
-                            <MessageCircle className="w-4 h-4" />
-                            Calcular Meu Metabolismo Grátis
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={handleStart}
+                          className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          Calcular Meu Metabolismo Grátis
+                        </button>
+                      </motion.div>
+                    )}
+
+                    {loginStatus === 'pending' && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        className="p-4 rounded-xl bg-amber-50 border border-amber-200"
+                      >
+                        <div className="flex items-start gap-2 text-amber-700 mb-4">
+                          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm font-bold leading-tight">
+                            Termine seu cadastro para acessar o plano.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => navigate("/cadastro")}
+                          className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors shadow-sm"
+                        >
+                          <PlusCircle className="w-4 h-4" />
+                          Terminar Cadastro
+                        </button>
                       </motion.div>
                     )}
 
@@ -197,11 +175,9 @@ const Index = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       disabled={isLoggingIn}
-                      className={`w-full inline-flex items-center justify-center gap-2 text-white px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50 ${
-                        view === "check-paid-plan" ? "bg-amber-600 hover:bg-amber-700" : "bg-primary"
-                      }`}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
                     >
-                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Acessar Meu Plano"}
+                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano Grátis"}
                     </motion.button>
 
                     <button

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,10 +31,7 @@ const goalLabels: Record<string, string> = {
 
 const Cadastro = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { setTheme } = useTheme();
-
-  const isPaidUser = location.state?.isPaid === true;
 
   useEffect(() => {
     setTheme("light");
@@ -44,10 +41,12 @@ const Cadastro = () => {
     try {
       const finalWhatsapp = formatWhatsApp(data.whatsapp);
       
-      // Webhook
+      // Atualizado: Novo link do webhook solicitado
       fetch('https://editor.saas.inventiia.com.br/webhook/plano7_calculo_gratis', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           nome: data.name.trim(),
           whatsapp: finalWhatsapp,
@@ -96,33 +95,23 @@ const Cadastro = () => {
         proteina_dia: proteina,
         carbo_dia: carbo,
         gordura_dia: gordura,
+        cliente_gratis: true,
+        cadastro_feito: true
       };
 
-      if (isPaidUser) {
-        const { error } = await supabase
-          .from("clientes_pagos")
-          .update({
-            ...dbUpdateData,
-            nome_usuario: data.name,
-            telefone_cadastro: finalWhatsapp,
-            limite_cardapio_unico: 0
-          })
-          .eq("id", data.id);
-        if (error) throw error;
-        
-        localStorage.setItem("plano7_paid_whatsapp", finalWhatsapp);
-        toast.success("Perfil Elite configurado!");
-        navigate("/dashboardpago", { state: { userData: { ...dbUpdateData, whatsapp: finalWhatsapp } } });
-      } else {
-        const { error } = await supabase
-          .from("usuarios_planogratis")
-          .upsert({ ...dbUpdateData, whatsapp: finalWhatsapp, cliente_gratis: true, cadastro_feito: true }, { onConflict: 'id' });
-        if (error) throw error;
+      const { error: upsertError } = await supabase
+        .from("usuarios_planogratis")
+        .upsert(dbUpdateData, { onConflict: 'id' });
 
+      if (upsertError) throw new Error(upsertError.message);
+
+      toast.success("Plano calculado com sucesso!");
+      
+      try {
         localStorage.setItem("plano7_free_whatsapp", finalWhatsapp);
-        toast.success("Plano calculado com sucesso!");
-        navigate("/dashboard", { state: { ...dbUpdateData, whatsapp: finalWhatsapp } });
-      }
+      } catch (e) {}
+      
+      navigate("/dashboard", { state: { ...dbUpdateData, whatsapp: finalWhatsapp } });
     } catch (err: any) {
       console.error("Erro no processo:", err);
       toast.error(err.message || "Erro ao processar dados.");
