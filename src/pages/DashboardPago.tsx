@@ -7,6 +7,7 @@ import PremiumDashboard from "@/components/PremiumDashboard";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { formatTelefoneCadastro } from "@/lib/utils";
 
 const ADMIN_EMAIL = "robson_cruz@live.com";
 
@@ -151,6 +152,9 @@ const DashboardPago = () => {
     try {
       const nutrition = calculateNutrition({ ...data, activity: activityLabels[data.activity] || data.activity, goal: goalLabels[data.goal] || data.goal });
       
+      // Formatação fiel para telefone_cadastro
+      const telefoneCadastro = formatTelefoneCadastro(data.whatsapp);
+
       // Disparo do Webhook Plano Pago (Onboarding)
       fetch('https://editor.saas.inventiia.com.br/webhook/plano7_pago', {
         method: 'POST',
@@ -190,7 +194,8 @@ const DashboardPago = () => {
         proteina_dia: nutrition.proteina,
         carbo_dia: nutrition.carbo,
         gordura_dia: nutrition.gordura,
-        limite_cardapio_unico: 0
+        limite_cardapio_unico: 0,
+        telefone_cadastro: telefoneCadastro
       }).eq("id", user.id);
       
       if (error) throw error;
