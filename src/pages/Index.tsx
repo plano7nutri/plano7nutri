@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle } from "lucide-react";
 
@@ -18,6 +19,14 @@ const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setTheme } = useTheme();
+  const { session } = useAuth();
+
+  // Redireciona se já estiver logado
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboardpago");
+    }
+  }, [session, navigate]);
 
   useEffect(() => {
     try {
@@ -47,62 +56,33 @@ const Index = () => {
       return;
     }
 
-    // Gerar variações de busca (com/sem 55 e com/sem 9º dígito)
-    const variations: string[] = [];
+    // Variações básicas: o número como digitado e com o prefixo 55
     const with55 = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
     const without55 = rawNumber.startsWith("55") ? rawNumber.substring(2) : rawNumber;
-    
-    variations.push(with55, without55);
-
-    // Adicionar variações de 9º dígito
-    const finalVariations = [...variations];
-    variations.forEach(v => {
-      const isWith55 = v.startsWith("55");
-      const ddd = isWith55 ? v.substring(2, 4) : v.substring(0, 2);
-      const numPart = isWith55 ? v.substring(4) : v.substring(2);
-      const prefix = isWith55 ? "55" : "";
-
-      if (numPart.length === 9 && numPart[0] === '9') {
-        finalVariations.push(prefix + ddd + numPart.substring(1));
-      } else if (numPart.length === 8) {
-        finalVariations.push(prefix + ddd + "9" + numPart);
-      }
-    });
-
-    const uniqueVariations = Array.from(new Set(finalVariations));
+    const variations = [with55, without55];
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 1. BUSCA ULTRA-RIGOROSA: Clientes Pagos
-      // Checamos as duas colunas separadamente para garantir que o Supabase não se perca no OR
-      const { data: paidByWhatsapp } = await supabase
+      // 1. BUSCA EM CLIENTES PAGOS (Prioridade Máxima)
+      const { data: paidUsers } = await supabase
         .from("clientes_pagos")
         .select("id, nome")
-        .in("whatsapp", uniqueVariations);
+        .or(`whatsapp.in.(${variations.join(',')}),telefone_cadastro.in.(${variations.join(',')})`);
 
-      const { data: paidByTelefone } = await supabase
-        .from("clientes_pagos")
-        .select("id, nome")
-        .in("telefone_cadastro", uniqueVariations);
-
-      const paidUser = (paidByWhatsapp?.[0]) || (paidByTelefone?.[0]);
-
-      if (paidUser) {
-        toast.info(`Identificamos seu acesso Elite (${paidUser.nome}). Por favor, entre com seu e-mail e senha.`);
+      if (paidUsers && paidUsers.length > 0) {
+        toast.info(`Identificamos seu acesso Elite (${paidUsers[0].nome}). Por favor, entre com seu e-mail e senha.`);
         navigate("/login");
         return;
       }
 
-      // 2. BUSCA SECUNDÁRIA: Plano Grátis
-      const { data: freeUser, error: freeError } = await supabase
+      // 2. BUSCA EM USUÁRIOS GRÁTIS
+      const { data: freeUser } = await supabase
         .from("usuarios_planogratis")
         .select("*")
-        .in("whatsapp", uniqueVariations)
+        .in("whatsapp", variations)
         .maybeSingle();
-
-      if (freeError) throw freeError;
 
       if (!freeUser) {
         setLoginStatus('not_found');
