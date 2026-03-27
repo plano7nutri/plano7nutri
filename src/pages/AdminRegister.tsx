@@ -173,11 +173,11 @@ const AdminRegister = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <label className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border cursor-pointer">
-                    <span className="text-[10px] font-bold uppercase">Trava 7 dias</span>
+                    <span className="text-[10px] font-bold uppercase text-zinc-950">Trava 7 dias</span>
                     <input type="checkbox" checked={formData.plano_semanal} onChange={(e) => setFormData({ ...formData, plano_semanal: e.target.checked })} className="w-5 h-5 accent-primary" />
                   </label>
                   <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-colors ${formData.assinatura_ativa ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
-                    <span className="text-[10px] font-bold uppercase">Ativa</span>
+                    <span className="text-[10px] font-bold uppercase text-zinc-950">Ativa</span>
                     <input type="checkbox" checked={formData.assinatura_ativa} onChange={(e) => setFormData({ ...formData, assinatura_ativa: e.target.checked })} className="w-5 h-5 accent-emerald-600" />
                   </label>
                 </div>
