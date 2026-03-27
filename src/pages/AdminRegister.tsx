@@ -148,25 +148,25 @@ const AdminRegister = () => {
                 <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 mb-4">
                   <label className="block text-[10px] font-bold text-amber-700 uppercase mb-2">Senha Mestre (Admin)</label>
                   <div className="relative">
-                    <input type={showMasterSecret ? "text" : "password"} required value={formData.adminSecret} onChange={(e) => setFormData({ ...formData, adminSecret: e.target.value })} className="w-full px-4 py-2 rounded-lg border bg-white text-sm outline-none" />
+                    <input type={showMasterSecret ? "text" : "password"} required value={formData.adminSecret} onChange={(e) => setFormData({ ...formData, adminSecret: e.target.value })} className="w-full px-4 py-2 rounded-lg border bg-white text-sm outline-none text-zinc-950" />
                     <button type="button" onClick={() => setShowMasterSecret(!showMasterSecret)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                       {showMasterSecret ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>
 
-                <input type="text" placeholder="Nome Completo" required value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
-                <input type="tel" placeholder="WhatsApp com DDD" required value={formData.whatsapp} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
-                <input type="email" placeholder="E-mail do Cliente" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                <input type="text" placeholder="Nome Completo" required value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 text-zinc-950 font-medium" />
+                <input type="tel" placeholder="WhatsApp com DDD" required value={formData.whatsapp} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 text-zinc-950 font-medium" />
+                <input type="email" placeholder="E-mail do Cliente" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 text-zinc-950 font-medium" />
                 
                 <div className="relative">
-                  <input type={showPassword ? "text" : "password"} placeholder="Defina a Senha do Cliente" required value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                  <input type={showPassword ? "text" : "password"} placeholder="Defina a Senha do Cliente" required value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 text-zinc-950 font-medium" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 
-                <select value={formData.tipo_assinatura} onChange={(e) => setFormData({ ...formData, tipo_assinatura: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none font-medium">
+                <select value={formData.tipo_assinatura} onChange={(e) => setFormData({ ...formData, tipo_assinatura: e.target.value })} className="w-full px-4 py-3 rounded-xl border bg-zinc-50 outline-none font-bold text-zinc-950">
                   <option value="Unica">Cardápio Único</option>
                   <option value="Mensal">Plano Mensal</option>
                 </select>

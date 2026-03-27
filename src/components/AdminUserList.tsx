@@ -56,7 +56,7 @@ const AdminUserList = ({ users, type }: AdminUserListProps) => {
             <TableRow key={user.id} className="hover:bg-zinc-50/50 transition-colors">
               <TableCell className="font-medium">
                 <div className="flex flex-col">
-                  <span>{user.nome || user.nome_usuario || "Sem nome"}</span>
+                  <span className="text-zinc-950">{user.nome || user.nome_usuario || "Sem nome"}</span>
                   {user.email && <span className="text-[10px] text-zinc-400">{user.email}</span>}
                 </div>
               </TableCell>
