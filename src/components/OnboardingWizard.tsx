@@ -159,9 +159,11 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
   };
 
   const handleHeightChange = (val: string) => {
+    // Remove tudo que não é número ou vírgula
     let formatted = val.replace(/[^0-9,]/g, "");
     
-    // Impedir zeros à esquerda
+    // Remove zeros à esquerda (exceto se for "0,")
+    formatted = formatted.replace(/^0+(?=[1-9])/, "");
     if (formatted.startsWith("0") && formatted.length > 1 && formatted[1] !== ",") {
       formatted = formatted.substring(1);
     }
@@ -351,14 +353,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <div className="flex items-center gap-2">
                     <button onClick={() => setData(prev => ({...prev, age: Math.max(1, prev.age - 1)}))} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
                     <input 
-                      type="number" 
-                      value={data.age} 
+                      type="text" 
+                      inputMode="numeric"
+                      value={data.age === 0 ? "" : data.age} 
                       onChange={(e) => {
-                        const valStr = e.target.value.replace(/^0+/, '');
-                        const val = valStr === '' ? 0 : Math.min(100, parseInt(valStr));
-                        setData({ ...data, age: val });
+                        const val = e.target.value.replace(/\D/g, "").replace(/^0+/, "");
+                        const num = val === "" ? 0 : Math.min(100, parseInt(val));
+                        setData({ ...data, age: num });
                       }} 
-                      className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" 
+                      className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold outline-none focus:ring-2 focus:ring-ring" 
                     />
                     <button onClick={() => setData(prev => ({...prev, age: Math.min(100, prev.age + 1)}))} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                   </div>
@@ -367,7 +370,7 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                   <label className="block text-sm font-medium text-foreground mb-2">Altura (Máx 2,10m)</label>
                   <div className="flex items-center gap-2">
                     <button onClick={() => stepHeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
-                    <input type="text" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)} className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold" />
+                    <input type="text" value={heightInput} onChange={(e) => handleHeightChange(e.target.value)} className="w-full px-2 py-3 rounded-xl border bg-card text-center text-lg font-bold outline-none focus:ring-2 focus:ring-ring" />
                     <button onClick={() => stepHeight(1)} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                   </div>
                 </div>
@@ -377,14 +380,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                 <div className="flex items-center gap-2">
                   <button onClick={() => stepWeight(-1)} className="p-3 bg-secondary rounded-xl"><Minus className="w-4 h-4 text-primary" /></button>
                   <input 
-                    type="number" 
-                    value={data.weight} 
+                    type="text" 
+                    inputMode="numeric"
+                    value={data.weight === 0 ? "" : data.weight} 
                     onChange={(e) => {
-                      const valStr = e.target.value.replace(/^0+/, '');
-                      const val = valStr === '' ? 0 : Math.min(125, parseInt(valStr));
-                      setData({ ...data, weight: val });
+                      const val = e.target.value.replace(/\D/g, "").replace(/^0+/, "");
+                      const num = val === "" ? 0 : Math.min(125, parseInt(val));
+                      setData({ ...data, weight: num });
                     }} 
-                    className="w-full px-4 py-3 rounded-xl border bg-card text-center text-lg font-bold" 
+                    className="w-full px-4 py-3 rounded-xl border bg-card text-center text-lg font-bold outline-none focus:ring-2 focus:ring-ring" 
                   />
                   <button onClick={() => stepWeight(1)} className="p-3 bg-secondary rounded-xl"><Plus className="w-4 h-4 text-primary" /></button>
                 </div>

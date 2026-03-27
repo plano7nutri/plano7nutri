@@ -76,12 +76,13 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
                   <Minus size={14} />
                 </button>
                 <input 
-                  type="number" 
-                  value={formData.age}
+                  type="text" 
+                  inputMode="numeric"
+                  value={formData.age === 0 ? "" : formData.age}
                   onChange={(e) => {
-                    const valStr = e.target.value.replace(/^0+/, '');
-                    const val = valStr === '' ? 0 : Math.min(100, parseInt(valStr));
-                    setFormData({...formData, age: val});
+                    const val = e.target.value.replace(/\D/g, "").replace(/^0+/, "");
+                    const num = val === "" ? 0 : Math.min(100, parseInt(val));
+                    setFormData({...formData, age: num});
                   }}
                   className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-2 py-2 text-white text-center focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
@@ -97,12 +98,13 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
                   <Minus size={14} />
                 </button>
                 <input 
-                  type="number" 
-                  value={formData.weight}
+                  type="text" 
+                  inputMode="numeric"
+                  value={formData.weight === 0 ? "" : formData.weight}
                   onChange={(e) => {
-                    const valStr = e.target.value.replace(/^0+/, '');
-                    const val = valStr === '' ? 0 : Math.min(125, parseInt(valStr));
-                    setFormData({...formData, weight: val});
+                    const val = e.target.value.replace(/\D/g, "").replace(/^0+/, "");
+                    const num = val === "" ? 0 : Math.min(125, parseInt(val));
+                    setFormData({...formData, weight: num});
                   }}
                   className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-2 py-2 text-white text-center focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
