@@ -111,10 +111,10 @@ const PremiumDashboard = ({
   // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
   const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
   
-  // Lógica de entrega Mensal: Travado apenas se entregue for true E ainda estiver no período de 7 dias
-  const isMensalDelivered = tipo_assinatura === "Mensal" && entregue === true && isTimeLocked();
+  // Lógica de entrega Mensal: Travado estritamente se estiver no período de 7 dias após o último envio
+  const isMensalLocked = tipo_assinatura === "Mensal" && isTimeLocked();
   
-  const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalDelivered;
+  const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalLocked;
 
   const canEdit = () => {
     if (isActuallyAdmin) return true;
@@ -174,9 +174,11 @@ const PremiumDashboard = ({
       toast.error("Seu cardápio único já foi entregue.");
       return;
     }
-    if (isMensalDelivered) {
+    if (isMensalLocked) {
       e.preventDefault();
-      toast.error("Seu cardápio premium já foi entregue. Te vejo em 7 dias!");
+      toast.error(`Seu novo plano semanal estará disponível em ${daysToNextPlan()} dias.`, {
+        icon: <Clock className="w-5 h-5 text-amber-500" />
+      });
       return;
     }
     if (!canRequestPlan()) {
@@ -231,7 +233,7 @@ const PremiumDashboard = ({
         ? "Assinatura inativa. Renove para editar seu perfil." 
         : isUnicaDelivered 
           ? "Cardápio único já entregue. Mude para o plano mensal para edições ilimitadas."
-          : "Cardápio premium já entregue. Te vejo em 7 dias!";
+          : `Seu perfil está travado. Próxima edição disponível em ${daysToWait()} dias.`;
       toast.error(reason);
       return;
     }
@@ -257,7 +259,10 @@ const PremiumDashboard = ({
     if (safeIsAdminView) return "Solicitar Cardápio de Elite";
     if (isSubscriptionInactive) return "Acesso Bloqueado";
     if (isUnicaDelivered) return "Cardápio Entregue";
-    if (isMensalDelivered) return "Cardápio Premium Entregue";
+    if (isMensalLocked) {
+      const days = daysToNextPlan();
+      return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
+    }
     if (!canRequestPlan()) {
       const days = daysToNextPlan();
       return `Próximo Plano em ${days} ${days === 1 ? 'dia' : 'dias'}`;
@@ -308,7 +313,7 @@ const PremiumDashboard = ({
                 <h4 className="text-sm font-bold text-foreground">Controle de Atualização</h4>
                 <p className="text-xs text-muted-foreground">
                   {isBlocked 
-                    ? isMensalDelivered ? "Cardápio entregue. Te vejo em 7 dias!" : "Atualização bloqueada. Assinatura Inativa."
+                    ? isMensalLocked ? "Cardápio entregue. Te vejo em 7 dias!" : "Atualização bloqueada. Assinatura Inativa."
                     : canEdit() 
                       ? "Seu perfil está liberado para nova atualização." 
                       : `Próxima edição disponível em ${daysToWait()} ${daysToWait() === 1 ? 'dia' : 'dias'}.`}
@@ -581,7 +586,7 @@ const PremiumDashboard = ({
                   {getButtonText()}
                 </h3>
               </div>
-              {isMensalDelivered && !safeIsAdminView && (
+              {isMensalLocked && !safeIsAdminView && (
                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Te vejo em 7 dias</span>
               )}
             </div>
