@@ -324,53 +324,64 @@ const Dashboard = ({
               </div>
             </div>
 
-            {/* Metas Basais (TMB e GET) */}
-            <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-6 shadow-sm grid grid-cols-2 gap-6">
-              <div>
-                <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                  <Activity size={12} className="text-zinc-400" />
-                  Taxa Basal (TMB)
-                </h4>
-                <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1">
-                  {tmb} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
-                </p>
-                <p className="text-[9px] text-zinc-400 leading-tight">Gasto calórico em repouso absoluto.</p>
+            {/* Metas Basais (TMB e GET) - VISUALMENTE EMBASSADO NO GRÁTIS */}
+            <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-6 shadow-sm grid grid-cols-2 gap-6 relative overflow-hidden">
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-50/40 backdrop-blur-[3px]">
+                <Lock className="text-zinc-400" size={24} />
               </div>
-              <div>
-                <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                  <Zap size={12} className="text-primary" />
-                  Gasto Total (GET)
-                </h4>
-                <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1">
-                  {get} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
-                </p>
-                <p className="text-[9px] text-zinc-400 leading-tight">Total gasto no dia incluindo atividades.</p>
+              <div className="opacity-40 select-none pointer-events-none blur-[2px]">
+                <div>
+                  <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                    <Activity size={12} className="text-zinc-400" />
+                    Taxa Basal (TMB)
+                  </h4>
+                  <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1">
+                    {tmb} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
+                  </p>
+                  <p className="text-[9px] text-zinc-400 leading-tight">Gasto calórico em repouso absoluto.</p>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                    <Zap size={12} className="text-primary" />
+                    Gasto Total (GET)
+                  </h4>
+                  <p className="text-2xl font-black text-zinc-800 tracking-tight mb-1">
+                    {get} <span className="text-xs font-bold text-zinc-400 uppercase tracking-normal">kcal</span>
+                  </p>
+                  <p className="text-[9px] text-zinc-400 leading-tight">Total gasto no dia incluindo atividades.</p>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
-              <div className="flex items-center justify-between mb-8">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Macronutrientes</h3>
-                  <p className="text-[10px] text-zinc-400 font-medium">Distribuição ideal de nutrientes para seu corpo.</p>
-                </div>
-                <div className="h-px flex-1 bg-zinc-100 ml-4" />
+            {/* Macronutrientes - VISUALMENTE EMBASSADO NO GRÁTIS */}
+            <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/40 backdrop-blur-[3px]">
+                <Lock className="text-zinc-400" size={24} />
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
-                  <Beef className="w-5 h-5 text-red-500 mx-auto mb-3" />
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Proteína</span>
-                  <p className="text-2xl font-black text-zinc-900 tracking-tighter">{proteina}g</p>
+              <div className="opacity-40 select-none pointer-events-none blur-[2px]">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Macronutrientes</h3>
+                    <p className="text-[10px] text-zinc-400 font-medium">Distribuição ideal de nutrientes para seu corpo.</p>
+                  </div>
+                  <div className="h-px flex-1 bg-zinc-100 ml-4" />
                 </div>
-                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
-                  <Wheat className="w-5 h-5 text-amber-600 mx-auto mb-3" />
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carbo</span>
-                  <p className="text-2xl font-black text-zinc-900 tracking-tighter">{carbo}g</p>
-                </div>
-                <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
-                  <Pizza className="w-5 h-5 text-orange-500 mx-auto mb-3" />
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gordura</span>
-                  <p className="text-2xl font-black text-zinc-900 tracking-tighter">{gordura}g</p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
+                    <Beef className="w-5 h-5 text-red-500 mx-auto mb-3" />
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Proteína</span>
+                    <p className="text-2xl font-black text-zinc-900 tracking-tighter">{proteina}g</p>
+                  </div>
+                  <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
+                    <Wheat className="w-5 h-5 text-amber-600 mx-auto mb-3" />
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Carbo</span>
+                    <p className="text-2xl font-black text-zinc-900 tracking-tighter">{carbo}g</p>
+                  </div>
+                  <div className="bg-zinc-50 rounded-2xl p-5 text-center border border-zinc-100 transition-colors hover:bg-zinc-100/50">
+                    <Pizza className="w-5 h-5 text-orange-500 mx-auto mb-3" />
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Gordura</span>
+                    <p className="text-2xl font-black text-zinc-900 tracking-tighter">{gordura}g</p>
+                  </div>
                 </div>
               </div>
             </div>
