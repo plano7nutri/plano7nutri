@@ -139,16 +139,19 @@ const Index = () => {
                       <input
                         type="tel"
                         required
-                        placeholder="(11) 99999-9999"
+                        placeholder="Ex: 11999999999 ou 1188888888"
                         value={loginWhatsapp}
                         onChange={(e) => {
                           setLoginWhatsapp(e.target.value);
                           setLoginStatus('idle');
                         }}
                         className={`w-full px-4 py-3 rounded-xl border bg-zinc-50 text-zinc-900 text-lg font-medium focus:outline-none focus:ring-2 ${
-                          loginStatus !== 'idle' ? "border-destructive focus:ring-destructive" : "focus:ring-primary/20"
+                          loginStatus !== 'idle' ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
                         }`}
                       />
+                      <p className="mt-2 text-[11px] font-semibold text-zinc-500 leading-tight">
+                        O número deve conter o DDD. Se o seu número tiver o 9 na frente, coloque-o. Se não tiver, não coloque.
+                      </p>
                     </div>
 
                     {loginStatus === 'not_found' && (
