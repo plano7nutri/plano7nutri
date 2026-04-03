@@ -321,37 +321,41 @@ const Dashboard = ({
               </div>
             </div>
 
-            <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-6 shadow-md grid grid-cols-2 gap-6 relative overflow-hidden">
-              <div>
-                <h4 className="text-[10px] font-black text-primary uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                  <Activity size={14} className="text-primary" />
+            <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-4 sm:p-6 shadow-md grid grid-cols-2 gap-2 sm:gap-6 relative overflow-hidden">
+              <div className="flex flex-col items-center text-center">
+                <h4 className="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
+                  <div className="p-1.5 bg-primary/10 rounded-lg">
+                    <Activity size={14} className="text-primary" />
+                  </div>
                   Taxa Basal (TMB)
                 </h4>
-                <div className="flex items-center gap-2">
-                  <p className="text-2xl font-black text-zinc-900 tracking-tight mb-1 blur-[8px] select-none">
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
                     {tmb}
                   </p>
-                  <Lock size={16} className="text-primary" />
-                  <span className="text-xs font-black text-primary/50 uppercase tracking-normal">kcal</span>
+                  <Lock size={14} className="text-primary shrink-0" />
+                  <span className="text-[10px] sm:text-xs font-black text-primary/50 uppercase tracking-normal">kcal</span>
                 </div>
-                <p className="text-[10px] text-primary font-black uppercase leading-tight mt-1">
-                  Energia gasta pelo corpo para manter funções vitais.
+                <p className="text-[8px] sm:text-[10px] text-primary font-black uppercase leading-tight mt-2">
+                  Energia vital.
                 </p>
               </div>
-              <div>
-                <h4 className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-1 flex items-center gap-1.5">
-                  <Zap size={14} className="text-orange-500" />
+              <div className="flex flex-col items-center text-center">
+                <h4 className="text-[9px] sm:text-[10px] font-black text-orange-600 uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
+                  <div className="p-1.5 bg-orange-500/10 rounded-lg">
+                    <Zap size={14} className="text-orange-500" />
+                  </div>
                   Gasto Total (GET)
                 </h4>
-                <div className="flex items-center gap-2">
-                  <p className="text-2xl font-black text-zinc-900 tracking-tight mb-1 blur-[8px] select-none">
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
                     {get}
                   </p>
-                  <Lock size={16} className="text-orange-500" />
-                  <span className="text-xs font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
+                  <Lock size={14} className="text-orange-500 shrink-0" />
+                  <span className="text-[10px] sm:text-xs font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
                 </div>
-                <p className="text-[10px] text-orange-600 font-black uppercase leading-tight mt-1">
-                  Gasto calórico total diário incluindo suas atividades.
+                <p className="text-[8px] sm:text-[10px] text-orange-600 font-black uppercase leading-tight mt-2">
+                  Gasto diário.
                 </p>
               </div>
             </div>
