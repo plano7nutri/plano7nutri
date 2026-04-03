@@ -120,18 +120,22 @@ const DashboardWhatsAppMockup = () => {
         
         if (nextMsg.sender === "vivi") {
           setIsTyping(true);
-          // Aumentado para 3 segundos conforme solicitado
           timeout = setTimeout(() => {
             setIsTyping(false);
             setCurrentMessages(prev => [...prev, nextMsg]);
             setMsgIndex(prev => prev + 1);
-          }, 3000);
+          }, 3000); // 3 segundos digitando
         } else {
           setCurrentMessages(prev => [...prev, nextMsg]);
           setMsgIndex(prev => prev + 1);
         }
+      } else {
+        // Reset após 2 minutos (120.000 ms)
+        timeout = setTimeout(() => {
+          setCurrentMessages([]);
+          setMsgIndex(0);
+        }, 120000);
       }
-      // Removido o reset automático (else block que limpava as mensagens)
     };
 
     const delay = msgIndex === 0 ? 500 : 1200;
