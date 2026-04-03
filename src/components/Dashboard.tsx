@@ -373,24 +373,33 @@ const Dashboard = ({
                   <Beef className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 fill-red-500/20 mb-2 sm:mb-3" />
                   <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}g</p>
-                    <Lock size={14} className="text-red-500 shrink-0" />
+                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
+                    <div className="flex items-center gap-0.5">
+                      <Lock size={14} className="text-red-500 shrink-0" />
+                      <span className="text-[10px] sm:text-sm font-black text-red-600/50 uppercase">g</span>
+                    </div>
                   </div>
                 </div>
                 <div className="bg-amber-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
                   <Wheat className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 fill-amber-600/20 mb-2 sm:mb-3" />
                   <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}g</p>
-                    <Lock size={14} className="text-amber-600 shrink-0" />
+                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
+                    <div className="flex items-center gap-0.5">
+                      <Lock size={14} className="text-amber-600 shrink-0" />
+                      <span className="text-[10px] sm:text-sm font-black text-amber-700/50 uppercase">g</span>
+                    </div>
                   </div>
                 </div>
                 <div className="bg-orange-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
                   <Pizza className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 fill-orange-500/20 mb-2 sm:mb-3" />
                   <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}g</p>
-                    <Lock size={14} className="text-orange-500 shrink-0" />
+                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
+                    <div className="flex items-center gap-0.5">
+                      <Lock size={14} className="text-orange-500 shrink-0" />
+                      <span className="text-[10px] sm:text-sm font-black text-orange-700/50 uppercase">g</span>
+                    </div>
                   </div>
                 </div>
               </div>
