@@ -18,7 +18,7 @@ import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
 import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
-import WhatsAppMockup from "./WhatsAppMockup";
+import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 
 interface DashboardProps {
   name: string;
@@ -460,7 +460,7 @@ const Dashboard = ({
 
           <div className="pt-12">
             <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
-              <WhatsAppMockup />
+              <DashboardWhatsAppMockup />
             </div>
           </div>
 
