@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Zap, Info, MessageCircle, Edit3 } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, Beef, Wheat, Pizza, AlertCircle, Zap, Info, MessageCircle, Edit3 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
 import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
+import WhatsAppMockup from "./WhatsAppMockup";
 
 interface DashboardProps {
   name: string;
@@ -370,35 +371,35 @@ const Dashboard = ({
               </div>
               <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 <div className="bg-red-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
-                  <span className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</span>
+                  <Beef className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 fill-red-500/20 mb-2 sm:mb-3" />
                   <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
                   <div className="flex items-center justify-center gap-1">
                     <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
                     <div className="flex items-center gap-0.5">
                       <Lock size={14} className="text-red-500 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-red-600/50">g</span>
+                      <span className="text-[10px] sm:text-sm font-black text-red-600/50 uppercase">g</span>
                     </div>
                   </div>
                 </div>
                 <div className="bg-amber-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
-                  <span className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥖</span>
+                  <Wheat className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 fill-amber-600/20 mb-2 sm:mb-3" />
                   <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
                   <div className="flex items-center justify-center gap-1">
                     <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
                     <div className="flex items-center gap-0.5">
                       <Lock size={14} className="text-amber-600 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-amber-700/50">g</span>
+                      <span className="text-[10px] sm:text-sm font-black text-amber-700/50 uppercase">g</span>
                     </div>
                   </div>
                 </div>
                 <div className="bg-orange-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
-                  <span className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥑</span>
+                  <Pizza className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 fill-orange-500/20 mb-2 sm:mb-3" />
                   <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
                   <div className="flex items-center justify-center gap-1">
                     <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
                     <div className="flex items-center gap-0.5">
                       <Lock size={14} className="text-orange-500 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-orange-700/50">g</span>
+                      <span className="text-[10px] sm:text-sm font-black text-orange-700/50 uppercase">g</span>
                     </div>
                   </div>
                 </div>
@@ -455,6 +456,15 @@ const Dashboard = ({
               Nos próximos 30 segundos você pode mudar isso: escolha seu plano, desbloqueie tudo e seu cardápio personalizado chega hoje no WhatsApp. <br />
               <strong className="font-black underline decoration-emerald-500/30">Por menos de R$0,65 por dia. Menos que um café. Você muda sua vida de vez.</strong>
             </p>
+          </div>
+
+          <div className="pt-12">
+            <h3 className="text-2xl sm:text-3xl font-black text-zinc-900 text-center mb-8">
+              É assim que chega no seu WhatsApp
+            </h3>
+            <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
+              <WhatsAppMockup />
+            </div>
           </div>
 
           <PricingSection />
