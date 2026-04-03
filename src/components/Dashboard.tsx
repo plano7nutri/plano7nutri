@@ -323,39 +323,39 @@ const Dashboard = ({
 
             <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-4 sm:p-6 shadow-md grid grid-cols-2 gap-2 sm:gap-6 relative overflow-hidden">
               <div className="flex flex-col items-center text-center">
-                <h4 className="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
+                <h4 className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
                   <div className="p-1.5 bg-primary/10 rounded-lg">
                     <Activity size={14} className="text-primary" />
                   </div>
                   Taxa Basal (TMB)
                 </h4>
                 <div className="flex items-center justify-center gap-1.5">
-                  <p className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
+                  <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
                     {tmb}
                   </p>
-                  <Lock size={14} className="text-primary shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-black text-primary/50 uppercase tracking-normal">kcal</span>
+                  <Lock size={16} className="text-primary shrink-0" />
+                  <span className="text-[11px] sm:text-sm font-black text-primary/50 uppercase tracking-normal">kcal</span>
                 </div>
-                <p className="text-[8px] sm:text-[10px] text-primary font-black uppercase leading-tight mt-2">
-                  Energia vital.
+                <p className="text-[9px] sm:text-[10px] text-primary font-black uppercase leading-tight mt-2">
+                  Energia gasta pelo corpo para manter funções vitais.
                 </p>
               </div>
               <div className="flex flex-col items-center text-center">
-                <h4 className="text-[9px] sm:text-[10px] font-black text-orange-600 uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
+                <h4 className="text-[10px] sm:text-[11px] font-black text-orange-600 uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
                   <div className="p-1.5 bg-orange-500/10 rounded-lg">
                     <Zap size={14} className="text-orange-500" />
                   </div>
                   Gasto Total (GET)
                 </h4>
                 <div className="flex items-center justify-center gap-1.5">
-                  <p className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
+                  <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
                     {get}
                   </p>
-                  <Lock size={14} className="text-orange-500 shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
+                  <Lock size={16} className="text-orange-500 shrink-0" />
+                  <span className="text-[11px] sm:text-sm font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
                 </div>
-                <p className="text-[8px] sm:text-[10px] text-orange-600 font-black uppercase leading-tight mt-2">
-                  Gasto diário.
+                <p className="text-[9px] sm:text-[10px] text-orange-600 font-black uppercase leading-tight mt-2">
+                  Gasto calórico total diário incluindo suas atividades.
                 </p>
               </div>
             </div>
@@ -371,26 +371,26 @@ const Dashboard = ({
               <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 <div className="bg-red-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
                   <Beef className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 fill-red-500/20 mb-2 sm:mb-3" />
-                  <span className="text-[8px] sm:text-[10px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
+                  <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-sm sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}g</p>
-                    <Lock size={12} className="text-red-500 shrink-0" />
+                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}g</p>
+                    <Lock size={14} className="text-red-500 shrink-0" />
                   </div>
                 </div>
                 <div className="bg-amber-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
                   <Wheat className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 fill-amber-600/20 mb-2 sm:mb-3" />
-                  <span className="text-[8px] sm:text-[10px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
+                  <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-sm sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}g</p>
-                    <Lock size={12} className="text-amber-600 shrink-0" />
+                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}g</p>
+                    <Lock size={14} className="text-amber-600 shrink-0" />
                   </div>
                 </div>
                 <div className="bg-orange-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
                   <Pizza className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 fill-orange-500/20 mb-2 sm:mb-3" />
-                  <span className="text-[8px] sm:text-[10px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
+                  <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
                   <div className="flex items-center justify-center gap-1">
-                    <p className="text-sm sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}g</p>
-                    <Lock size={12} className="text-orange-500 shrink-0" />
+                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}g</p>
+                    <Lock size={14} className="text-orange-500 shrink-0" />
                   </div>
                 </div>
               </div>
