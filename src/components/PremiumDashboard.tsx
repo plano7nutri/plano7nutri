@@ -492,6 +492,7 @@ const PremiumDashboard = ({
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
+                <div className="text-2xl mb-3">🥩</div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Proteína</p>
                 <div className="flex items-center justify-center gap-1">
                   <p className="text-3xl font-black text-foreground tracking-tighter">{proteina || 0}</p>
@@ -499,6 +500,7 @@ const PremiumDashboard = ({
                 </div>
               </div>
               <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
+                <div className="text-2xl mb-3">🍞</div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Carbo</p>
                 <div className="flex items-center justify-center gap-1">
                   <p className="text-3xl font-black text-foreground tracking-tighter">{carbo || 0}</p>
@@ -506,6 +508,7 @@ const PremiumDashboard = ({
                 </div>
               </div>
               <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
+                <div className="text-2xl mb-3">🥑</div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Gordura</p>
                 <div className="flex items-center justify-center gap-1">
                   <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}</p>
