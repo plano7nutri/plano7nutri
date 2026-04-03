@@ -107,12 +107,31 @@ const DashboardWhatsAppMockup = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
-    if (isPaused) return;
+    if (!isVisible || isPaused) return;
 
     const processNextMessage = () => {
       if (msgIndex < messages.length) {
@@ -145,7 +164,7 @@ const DashboardWhatsAppMockup = () => {
       clearTimeout(timeout);
       clearTimeout(actionTimeout);
     };
-  }, [msgIndex, isPaused]);
+  }, [msgIndex, isPaused, isVisible]);
 
   useEffect(() => {
     // Auto-scroll apenas enquanto a conversa está ativa e não pausada
@@ -168,7 +187,7 @@ const DashboardWhatsAppMockup = () => {
   };
 
   return (
-    <div className="max-w-[320px] mx-auto bg-black rounded-[3rem] border-[12px] border-zinc-900 shadow-2xl h-[650px] flex flex-col relative overflow-hidden ring-1 ring-zinc-800">
+    <div ref={containerRef} className="max-w-[320px] mx-auto bg-black rounded-[3rem] border-[12px] border-zinc-900 shadow-2xl h-[650px] flex flex-col relative overflow-hidden ring-1 ring-zinc-800">
       {/* Top Notch Area */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-900 rounded-b-2xl z-30 flex items-center justify-center">
         <div className="w-10 h-1 bg-zinc-800 rounded-full mb-1" />
