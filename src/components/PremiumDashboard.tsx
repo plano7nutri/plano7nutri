@@ -493,15 +493,24 @@ const PremiumDashboard = ({
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Proteína</p>
-                <p className="text-3xl font-black text-foreground tracking-tighter">{proteina || 0}g</p>
+                <div className="flex items-center justify-center gap-1">
+                  <p className="text-3xl font-black text-foreground tracking-tighter">{proteina || 0}</p>
+                  <span className="text-base font-bold text-muted-foreground">g</span>
+                </div>
               </div>
               <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Carbo</p>
-                <p className="text-3xl font-black text-foreground tracking-tighter">{carbo || 0}g</p>
+                <div className="flex items-center justify-center gap-1">
+                  <p className="text-3xl font-black text-foreground tracking-tighter">{carbo || 0}</p>
+                  <span className="text-base font-bold text-muted-foreground">g</span>
+                </div>
               </div>
               <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Gordura</p>
-                <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}g</p>
+                <div className="flex items-center justify-center gap-1">
+                  <p className="text-3xl font-black text-foreground tracking-tighter">{gordura || 0}</p>
+                  <span className="text-base font-bold text-muted-foreground">g</span>
+                </div>
               </div>
             </div>
             <p className="mt-4 text-[9px] text-zinc-500 text-center italic">Gramas recomendadas por dia para cada nutriente.</p>
