@@ -459,9 +459,6 @@ const Dashboard = ({
           </div>
 
           <div className="pt-12">
-            <h3 className="text-2xl sm:text-3xl font-black text-zinc-900 text-center mb-8">
-              É assim que chega no seu WhatsApp
-            </h3>
             <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
               <WhatsAppMockup />
             </div>
