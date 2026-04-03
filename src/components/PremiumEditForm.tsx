@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { X, Loader2, Save, Plus, Minus } from "lucide-react";
+import { X, Loader2, Save, Plus, Minus, Lock } from "lucide-react";
 
 interface PremiumEditFormProps {
   initialData: {
@@ -40,7 +40,6 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
   const [heightInput, setHeightInput] = useState((initialData.height / 100).toFixed(2).replace(".", ","));
 
   const handleHeightChange = (increment: number) => {
-    // TRAVA RIGOROSA: 2,10m
     const nextHeight = Math.max(50, Math.min(210, formData.height + increment));
     setFormData({ ...formData, height: nextHeight });
     setHeightInput((nextHeight / 100).toFixed(2).replace(".", ","));
@@ -134,11 +133,14 @@ const PremiumEditForm = ({ initialData, onSave, onClose }: PremiumEditFormProps)
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-emerald-500 mb-1.5">SEXO(Biológico)</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[10px] font-bold text-emerald-500 uppercase">SEXO(Biológico)</label>
+              <Lock size={10} className="text-emerald-500/30" />
+            </div>
             <select 
+              disabled
               value={formData.sex}
-              onChange={(e) => setFormData({...formData, sex: e.target.value})}
-              className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+              className="w-full bg-zinc-800 border-zinc-700 rounded-xl px-4 py-2 text-zinc-500 cursor-not-allowed outline-none opacity-70"
             >
               <option value="male">Masculino</option>
               <option value="female">Feminino</option>

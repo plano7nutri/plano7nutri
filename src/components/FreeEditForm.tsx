@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { X, Loader2, Save, Plus, Minus, AlertTriangle } from "lucide-react";
+import { X, Loader2, Save, Plus, Minus, AlertTriangle, Lock } from "lucide-react";
 
 interface FreeEditFormProps {
   initialData: {
@@ -57,12 +57,15 @@ const FreeEditForm = ({ initialData, onSave, onClose }: FreeEditFormProps) => {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
           <div>
-            <label className="block text-[10px] uppercase font-bold text-zinc-400 mb-1.5">Nome Completo</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[10px] uppercase font-bold text-zinc-400">Nome Completo</label>
+              <Lock size={10} className="text-zinc-300" />
+            </div>
             <input 
               type="text" 
+              readOnly
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2 text-zinc-900 focus:ring-2 focus:ring-primary/20 outline-none"
+              className="w-full bg-zinc-100 border border-zinc-200 rounded-xl px-4 py-2 text-zinc-500 cursor-not-allowed outline-none font-medium"
             />
           </div>
 
@@ -132,19 +135,22 @@ const FreeEditForm = ({ initialData, onSave, onClose }: FreeEditFormProps) => {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-zinc-400 mb-1.5 uppercase">Sexo (Biológico)</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[10px] font-bold text-zinc-400 uppercase">Sexo (Biológico)</label>
+              <Lock size={10} className="text-zinc-300" />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <button 
                 type="button"
-                onClick={() => setFormData({...formData, sex: 'male'})}
-                className={`py-3 rounded-xl border-2 font-bold text-sm transition-all ${formData.sex === 'male' ? 'border-primary bg-primary/5 text-primary' : 'border-zinc-100 text-zinc-400'}`}
+                disabled
+                className={`py-3 rounded-xl border-2 font-bold text-sm transition-all cursor-not-allowed ${formData.sex === 'male' ? 'border-zinc-200 bg-zinc-50 text-zinc-400' : 'border-zinc-100 text-zinc-200 opacity-50'}`}
               >
                 Masculino
               </button>
               <button 
                 type="button"
-                onClick={() => setFormData({...formData, sex: 'female'})}
-                className={`py-3 rounded-xl border-2 font-bold text-sm transition-all ${formData.sex === 'female' ? 'border-primary bg-primary/5 text-primary' : 'border-zinc-100 text-zinc-400'}`}
+                disabled
+                className={`py-3 rounded-xl border-2 font-bold text-sm transition-all cursor-not-allowed ${formData.sex === 'female' ? 'border-zinc-200 bg-zinc-50 text-zinc-400' : 'border-zinc-100 text-zinc-200 opacity-50'}`}
               >
                 Feminino
               </button>
