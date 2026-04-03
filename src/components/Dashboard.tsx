@@ -376,7 +376,7 @@ const Dashboard = ({
                     <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
                     <div className="flex items-center gap-0.5">
                       <Lock size={14} className="text-red-500 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-red-600/50 uppercase">g</span>
+                      <span className="text-[10px] sm:text-sm font-black text-red-600/50">g</span>
                     </div>
                   </div>
                 </div>
@@ -387,7 +387,7 @@ const Dashboard = ({
                     <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
                     <div className="flex items-center gap-0.5">
                       <Lock size={14} className="text-amber-600 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-amber-700/50 uppercase">g</span>
+                      <span className="text-[10px] sm:text-sm font-black text-amber-700/50">g</span>
                     </div>
                   </div>
                 </div>
@@ -398,7 +398,7 @@ const Dashboard = ({
                     <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
                     <div className="flex items-center gap-0.5">
                       <Lock size={14} className="text-orange-500 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-orange-700/50 uppercase">g</span>
+                      <span className="text-[10px] sm:text-sm font-black text-orange-700/50">g</span>
                     </div>
                   </div>
                 </div>
