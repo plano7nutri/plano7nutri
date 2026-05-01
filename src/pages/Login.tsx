@@ -8,7 +8,7 @@ import { ArrowLeft, Zap, Eye, EyeOff, Loader2, Mail, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Login = () => {
-  const { session } = useAuth();
+  const { session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { setTheme } = useTheme();
   const [view, setView] = useState<'login' | 'forgot_password' | 'update_password'>('login');
@@ -30,6 +30,11 @@ const Login = () => {
       navigate('/dashboardpago');
     }
   }, [session, navigate, view]);
+
+  // Evita o flash da tela de login se já estiver logado ou carregando
+  if (authLoading || (session && view !== 'update_password')) {
+    return <div className="min-h-screen bg-background" />;
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

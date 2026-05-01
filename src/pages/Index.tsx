@@ -19,7 +19,7 @@ const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setTheme } = useTheme();
-  const { session } = useAuth();
+  const { session, loading: authLoading } = useAuth();
 
   useEffect(() => {
     if (session) {
@@ -40,13 +40,18 @@ const Index = () => {
     }
   }, [location]);
 
+  // Se estiver carregando a autenticação ou se já houver uma sessão (esperando o useEffect redirecionar),
+  // retornamos uma tela vazia com a cor de fundo padrão para evitar o "flash" da landing page.
+  if (authLoading || session) {
+    return <div className="min-h-screen bg-background" />;
+  }
+
   const handleStart = () => {
     const message = encodeURIComponent("Quero calcular meu metabolismo, grátis. Vim do seu site!");
     window.open(`https://wa.me/5511933735838?text=${message}`, "_blank");
   };
 
   const handleLoginFree = async () => {
-    // 1. Limpa o número (apenas dígitos)
     const rawNumber = loginWhatsapp.replace(/\D/g, "");
     
     if (rawNumber.length < 10) {
@@ -54,28 +59,24 @@ const Index = () => {
       return;
     }
 
-    // 2. Garante o prefixo 55 (Lógica Simples)
     const formattedNumber = rawNumber.startsWith("55") ? rawNumber : "55" + rawNumber;
 
     setIsLoggingIn(true);
     setLoginStatus('idle');
     
     try {
-      // 3. VERIFICAÇÃO ÚNICA EM CLIENTES_PAGOS (COLUNA WHATSAPP)
       const { data: paidCheck } = await supabase
         .from("clientes_pagos")
         .select("whatsapp")
         .eq("whatsapp", formattedNumber)
         .limit(1);
 
-      // Se encontrou na tabela de pagos, manda pro login e para tudo
       if (paidCheck && paidCheck.length > 0) {
         toast.info("Identificamos seu acesso Premium. Por favor, entre com seu e-mail e senha.");
         navigate("/login");
         return;
       }
 
-      // 4. SE NÃO É PAGO, SEGUE O FLUXO GRÁTIS
       const { data: freeUser } = await supabase
         .from("usuarios_planogratis")
         .select("*")
@@ -89,7 +90,6 @@ const Index = () => {
         return;
       }
 
-      // 5. VERIFICA SE É LEAD (SEM CADASTRO) OU GRÁTIS INCOMPLETO
       const { data: leadCheck } = await supabase
         .from("clientes_semcadastro")
         .select("whatsapp")
