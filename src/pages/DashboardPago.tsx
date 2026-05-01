@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
+import { useTheme } from "next-themes";
 import PremiumDashboard from "@/components/PremiumDashboard";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
@@ -42,8 +43,14 @@ const DashboardPago = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { setTheme } = useTheme();
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Forçar tema escuro imediatamente ao entrar no Dashboard Pago
+  useEffect(() => {
+    setTheme("dark");
+  }, [setTheme]);
 
   // Segurança: Só aceita adminViewData se o usuário logado for o Robson
   const adminViewData = (user?.email === ADMIN_EMAIL) ? location.state?.adminViewData : null;

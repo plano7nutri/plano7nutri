@@ -78,10 +78,6 @@ const PremiumDashboard = ({
   const safeIsAdminView = isAdminView && isActuallyAdmin;
 
   useEffect(() => {
-    setTheme("dark");
-  }, [setTheme]);
-
-  useEffect(() => {
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
