@@ -61,7 +61,7 @@ const planItems = [
 const Features = () => {
   return (
     <section className="pt-12 pb-12 bg-[#F8F9FA]">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}

@@ -97,7 +97,7 @@ const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
 
   return (
     <section className="pt-8 pb-12 bg-zinc-50/50">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto">
         
         {/* CTAs de Reforço */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
