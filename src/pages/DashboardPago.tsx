@@ -222,7 +222,7 @@ const DashboardPago = () => {
 
   if (authLoading || dataLoading || isProcessing) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14]">
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#051c14]">
         <Loader2 className="w-10 h-10 animate-spin text-emerald-500 mb-4" />
         <p className="text-emerald-400/60 font-medium">Sincronizando dados...</p>
       </div>
@@ -231,7 +231,7 @@ const DashboardPago = () => {
 
   if (!userData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#051c14] px-6 text-center">
         <ShieldAlert className="text-amber-500 w-16 h-16 mb-6" />
         <h2 className="text-2xl font-bold text-white mb-4">Perfil em Sincronização</h2>
         <button onClick={() => queryClient.invalidateQueries({ queryKey: ["premiumUser"] })} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold mb-4">Tentar Novamente</button>
@@ -244,7 +244,7 @@ const DashboardPago = () => {
 
   if (isFirstAccess && !adminViewData) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="h-screen w-full bg-background">
         <div className="pt-10 px-6 text-center"><h1 className="text-2xl font-bold">Bem-vindo ao Plano 7 Premium</h1></div>
         <OnboardingWizard 
           onComplete={handleInitialOnboarding} 
