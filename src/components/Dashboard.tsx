@@ -1,7 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Zap, Info, MessageCircle, Edit3 } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -43,6 +45,7 @@ interface DashboardProps {
   cardapio?: string | null;
   lista?: string | null;
   perfil_editado?: boolean;
+  createdAt?: string;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
 }
@@ -58,12 +61,47 @@ const activityFactors: Record<string, number> = {
 const Dashboard = ({
   name, age, sex, height, weight, activityLabel, goalLabel,
   tmb, get, metaCalorias, metaAgua, proteina, carbo, gordura, whatsapp,
-  restrictions, preferences, avatarUrl, entregue, cardapio, lista, perfil_editado, onAvatarUpdate, onLogout
+  restrictions, preferences, avatarUrl, entregue, cardapio, lista, perfil_editado, createdAt, onAvatarUpdate, onLogout
 }: DashboardProps) => {
   const { setTheme } = useTheme();
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | undefined>(avatarUrl);
+  
+  // Lógica de Expiração de 24 horas
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    if (!createdAt) return;
+    
+    const calculateTimeLeft = () => {
+      const startTime = new Date(createdAt).getTime();
+      const endTime = startTime + (24 * 60 * 60 * 1000); // 24 horas em ms
+      const diff = endTime - Date.now();
+      
+      if (diff <= 0) {
+        setIsExpired(true);
+        setTimeLeft(0);
+        return;
+      }
+      
+      setTimeLeft(diff);
+    };
+
+    calculateTimeLeft();
+    const interval = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(interval);
+  }, [createdAt]);
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     setTheme("light");
@@ -85,6 +123,10 @@ const Dashboard = ({
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isExpired) {
+      toast.error("Acesso expirado.");
+      return;
+    }
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -131,6 +173,10 @@ const Dashboard = ({
   };
 
   const handleProfileSave = async (newData: any) => {
+    if (isExpired) {
+      toast.error("Acesso expirado.");
+      return;
+    }
     try {
       const tmbCalc = newData.sex === "male" 
         ? 10 * newData.weight + 6.25 * newData.height - 5 * newData.age + 5 
@@ -182,10 +228,61 @@ const Dashboard = ({
     }
   };
 
+  // Se o tempo expirou, mostra a tela de bloqueio
+  if (isExpired) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 text-center">
+        <div className="max-w-md bg-white p-8 rounded-3xl shadow-lg border border-red-100">
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-2xl font-black text-zinc-900 mb-4">Acesso Expirado</h2>
+          <p className="text-zinc-600 mb-2">
+            Seu acesso gratuito de 24 horas expirou.
+          </p>
+          <p className="text-zinc-500 text-sm mb-8">
+            Conforme nossos termos, seus dados foram removidos do sistema. Para continuar tendo acesso ao seu planejamento, adquira um de nossos planos premium.
+          </p>
+          <button 
+            onClick={onLogout}
+            className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors"
+          >
+            Voltar ao Início
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen px-6 py-10 bg-background text-foreground">
       <div className="w-full max-w-4xl mx-auto">
         
+        {/* Barra de Expiração */}
+        {timeLeft > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-100 rounded-xl">
+                <Clock className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-amber-700 uppercase tracking-widest">Acesso Grátis</p>
+                <p className="text-sm font-medium text-amber-800">
+                  Seu acesso expira em: <span className="font-black text-lg">{formatTime(timeLeft)}</span>
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold text-amber-600 uppercase">Limite</p>
+              <p className="text-xs text-amber-700">24 Horas</p>
+            </div>
+          </motion.div>
+        )}
+
         <div className="flex justify-end mb-4">
           {onLogout && (
             <button 
@@ -219,7 +316,7 @@ const Dashboard = ({
                 
                 <label className="absolute bottom-1 right-1 p-3 bg-primary text-white rounded-full cursor-pointer shadow-md hover:scale-110 transition-transform">
                   {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
-                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
+                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading || isExpired} />
                 </label>
               </div>
 
