@@ -107,7 +107,7 @@ const DashboardPago = () => {
       const nutrition = calculateNutrition(data);
       
       // Disparo do Webhook Plano Pago
-      fetch('https://editor.saas.inventiia.com.br/webhook/plano7_pago', {
+      fetch('https://webhook-vpslocal.inventiia.com.br/webhook/plano7_pago', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -163,7 +163,7 @@ const DashboardPago = () => {
       const telefoneCadastro = formatTelefoneCadastro(data.whatsapp);
 
       // Disparo do Webhook Plano Pago (Onboarding)
-      fetch('https://editor.saas.inventiia.com.br/webhook/plano7_pago', {
+      fetch('https://webhook-vpslocal.inventiia.com.br/webhook/plano7_pago', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -277,7 +277,7 @@ const DashboardPago = () => {
           carbo={userData.carbo_dia}
           gordura={userData.gordura_dia}
           restrictions={userData.restricoes_alimentares}
-          preferences={userData.preferencias}
+          preferences={userData.preferences}
           avatarUrl={userData.avatar_url}
           tipo_assinatura={userData.tipo_assinatura}
           plano_semanal={userData.plano_semanal}

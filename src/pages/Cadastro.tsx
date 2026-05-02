@@ -43,7 +43,7 @@ const Cadastro = () => {
       const finalWhatsappConfirmacao = formatWhatsApp(data.whatsapp_confirmacao);
       
       // Disparo do Webhook com dados formatados (sem e-mail no grátis)
-      fetch('https://editor.saas.inventiia.com.br/webhook/plano7_calculo_gratis', {
+      fetch('https://webhook-vpslocal.inventiia.com.br/webhook/plano7_calculo_gratis', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
