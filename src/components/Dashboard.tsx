@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Clock, Edit3, Zap } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Clock, Edit3, Zap, ArrowRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -243,12 +243,23 @@ const Dashboard = ({
           <p className="text-zinc-500 text-sm mb-8">
             Conforme nossos termos, seus dados foram removidos do sistema. Para continuar tendo acesso ao seu planejamento, adquira um de nossos planos premium.
           </p>
-          <button 
-            onClick={onLogout}
-            className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors"
-          >
-            Voltar ao Início
-          </button>
+          <div className="space-y-4">
+            <a 
+              href="https://pay.hotmart.com/X104499776T?checkoutMode=10"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-glow flex items-center justify-center gap-2"
+            >
+              Quero meu plano 7 agora
+              <ArrowRight size={18} />
+            </a>
+            <button 
+              onClick={onLogout}
+              className="text-zinc-400 text-xs font-bold uppercase tracking-widest hover:text-zinc-600 transition-colors"
+            >
+              Voltar ao Início
+            </button>
+          </div>
         </div>
       </div>
     );
