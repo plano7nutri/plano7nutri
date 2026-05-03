@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useLayoutEffect, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
@@ -14,10 +14,11 @@ const DashboardPage = () => {
   const initialData = location.state;
   const whatsappToFetch = initialData?.whatsapp || storedWhatsapp;
 
-  // Forçar scroll para o topo ao montar o componente
-  useEffect(() => {
+  // Forçar scroll para o topo de forma síncrona antes da renderização
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    document.documentElement.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
 
   const { data: dashData, isLoading } = useQuery({
     queryKey: ["userPlan", whatsappToFetch],

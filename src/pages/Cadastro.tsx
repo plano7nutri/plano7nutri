@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLayoutEffect, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
 import OnboardingWizard, { type OnboardingData } from "@/components/OnboardingWizard";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,10 +31,16 @@ const goalLabels: Record<string, string> = {
 
 const Cadastro = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setTheme } = useTheme();
 
-  useEffect(() => {
+  // Forçar scroll para o topo de forma síncrona
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
+    document.documentElement.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
+  useEffect(() => {
     setTheme("light");
   }, [setTheme]);
 

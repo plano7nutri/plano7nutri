@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,9 +47,13 @@ const DashboardPago = () => {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Forçar tema escuro e scroll para o topo
-  useEffect(() => {
+  // Forçar scroll para o topo de forma síncrona
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
+    document.documentElement.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
+  useEffect(() => {
     setTheme("dark");
   }, [setTheme]);
 
