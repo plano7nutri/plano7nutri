@@ -14,6 +14,11 @@ const DashboardPage = () => {
   const initialData = location.state;
   const whatsappToFetch = initialData?.whatsapp || storedWhatsapp;
 
+  // Forçar scroll para o topo ao montar o componente
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data: dashData, isLoading } = useQuery({
     queryKey: ["userPlan", whatsappToFetch],
     queryFn: async () => {
