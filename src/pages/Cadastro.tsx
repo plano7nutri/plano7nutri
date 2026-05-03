@@ -34,6 +34,7 @@ const Cadastro = () => {
   const { setTheme } = useTheme();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setTheme("light");
   }, [setTheme]);
 

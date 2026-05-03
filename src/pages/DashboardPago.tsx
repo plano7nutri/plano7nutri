@@ -47,8 +47,9 @@ const DashboardPago = () => {
   const queryClient = useQueryClient();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Forçar tema escuro imediatamente ao entrar no Dashboard Pago
+  // Forçar tema escuro e scroll para o topo
   useEffect(() => {
+    window.scrollTo(0, 0);
     setTheme("dark");
   }, [setTheme]);
 
