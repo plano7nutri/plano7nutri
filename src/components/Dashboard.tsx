@@ -111,17 +111,6 @@ const Dashboard = ({
     if (avatarUrl) setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
 
-  const renderFormattedText = (text: string | null | undefined) => {
-    if (!text) return null;
-    const parts = text.split(/(\*.*?\*)/g);
-    return parts.map((part, i) => {
-      if (part.startsWith('*') && part.endsWith('*')) {
-        return <strong key={i} className="font-black text-primary">{part.slice(1, -1)}</strong>;
-      }
-      return part;
-    });
-  };
-
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isExpired) {
       toast.error("Acesso expirado.");
@@ -228,7 +217,17 @@ const Dashboard = ({
     }
   };
 
-  // Se o tempo expirou, mostra a tela de bloqueio
+  const renderFormattedText = (text: string | null | undefined) => {
+    if (!text) return null;
+    const parts = text.split(/(\*.*?\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('*') && part.endsWith('*')) {
+        return <strong key={i} className="font-black text-primary">{part.slice(1, -1)}</strong>;
+      }
+      return part;
+    });
+  };
+
   if (isExpired) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 text-center">
@@ -269,6 +268,19 @@ const Dashboard = ({
     <div className="min-h-screen px-6 py-10 bg-background text-foreground">
       <div className="w-full max-w-4xl mx-auto">
         
+        {/* Botão Sair no topo */}
+        <div className="flex justify-end mb-4">
+          {onLogout && (
+            <button 
+              onClick={onLogout}
+              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-xs font-bold uppercase tracking-wider"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair
+            </button>
+          )}
+        </div>
+
         {/* Barra de Expiração */}
         {timeLeft > 0 && (
           <motion.div 
@@ -293,18 +305,6 @@ const Dashboard = ({
             </div>
           </motion.div>
         )}
-
-        <div className="flex justify-end mb-4">
-          {onLogout && (
-            <button 
-              onClick={onLogout}
-              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-xs font-bold uppercase tracking-wider"
-            >
-              <LogOut className="w-4 h-4" />
-              Sair
-            </button>
-          )}
-        </div>
 
         <HealthReminder />
         
