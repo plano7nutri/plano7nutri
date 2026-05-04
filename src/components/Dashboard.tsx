@@ -472,11 +472,11 @@ const Dashboard = ({
         
         <DashboardLiveCounter />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
-            className="lg:col-span-5 bg-white border-2 border-primary/10 rounded-3xl p-8 shadow-lg flex flex-col h-full"
+            className="lg:col-span-5 bg-white border-2 border-primary/10 rounded-3xl p-8 shadow-lg flex flex-col"
           >
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
@@ -770,44 +770,47 @@ const Dashboard = ({
                 </Dialog>
               </div>
             </div>
-
-            <div className="mt-6 lg:mt-12 space-y-8" id="planos-pricing">
-              <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
-                <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
-                  Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
-                  <strong className="font-black">Quem vê tudo, age. Quem vê pela metade, adia. Você já sabe como a história do "amanhã eu começo" termina.</strong> <br />
-                  Nos próximos 30 segundos você pode mudar isso: escolha seu plano, desbloqueie tudo e seu cardápio personalizado chega hoje no WhatsApp. <br />
-                  <strong className="font-black underline decoration-emerald-500/30">Por menos de R$0,65 por dia. Menos que um café. Você muda sua vida de vez.</strong>
-                </p>
-              </div>
-
-              <div className="pt-12">
-                <div className="text-center max-w-2xl mx-auto mb-10">
-                  <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
-                    É assim que chega no seu WhatsApp
-                  </h2>
-                </div>
-                <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
-                  <DashboardWhatsAppMockup />
-                </div>
-              </div>
-
-              <PricingSection />
-            </div>
-
-            <FAQSection />
-
-            <AnimatePresence>
-              {isEditing && (
-                <FreeEditForm 
-                  initialData={{ name, age, sex, height, weight, activity: activityLabel, goal: goalLabel }}
-                  onClose={() => setIsEditing(false)}
-                  onSave={handleProfileSave}
-                />
-              )}
-            </AnimatePresence>
           </div>
         </div>
+
+        {/* Seções de Próximos Passos, Mockup, Preços e FAQ movidas para fora do grid principal */}
+        <div className="mt-12 space-y-12">
+          <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
+            <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
+              Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
+              <strong className="font-black">Quem vê tudo, age. Quem vê pela metade, adia. Você já sabe como a história do "amanhã eu começo" termina.</strong> <br />
+              Nos próximos 30 segundos você pode mudar isso: escolha seu plano, desbloqueie tudo e seu cardápio personalizado chega hoje no WhatsApp. <br />
+              <strong className="font-black underline decoration-emerald-500/30">Por menos de R$0,65 por dia. Menos que um café. Você muda sua vida de vez.</strong>
+            </p>
+          </div>
+
+          <div className="pt-4">
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
+                É assim que chega no seu WhatsApp
+              </h2>
+            </div>
+            <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
+              <DashboardWhatsAppMockup />
+            </div>
+          </div>
+
+          <div id="planos-pricing">
+            <PricingSection />
+          </div>
+
+          <FAQSection />
+        </div>
+
+        <AnimatePresence>
+          {isEditing && (
+            <FreeEditForm 
+              initialData={{ name, age, sex, height, weight, activity: activityLabel, goal: goalLabel }}
+              onClose={() => setIsEditing(false)}
+              onSave={handleProfileSave}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
