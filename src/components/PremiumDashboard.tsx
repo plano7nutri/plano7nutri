@@ -92,6 +92,7 @@ const PremiumDashboard = ({
     });
   };
 
+  // Função auxiliar para verificar se o tempo de trava de 7 dias ainda está ativo
   const isTimeLocked = () => {
     if (!ultimo_envio_plano) return false;
     const lastRequest = new Date(ultimo_envio_plano);
@@ -103,12 +104,15 @@ const PremiumDashboard = ({
 
   const isSubscriptionInactive = assinatura_ativa === false;
   
+  // Lógica de entrega Única: Baseada estritamente no limite (0 = ativo, 1 = travado)
   const isUnicaDelivered = tipo_assinatura === "Unica" && (limite_cardapio_unico ?? 0) >= 1;
   
+  // Lógica de entrega Mensal: TRAVA APENAS SE ENTREGUE FOR TRUE E ESTIVER DENTRO DOS 7 DIAS
   const isMensalLocked = tipo_assinatura === "Mensal" && entregue === true && isTimeLocked();
   
   const isBlocked = isSubscriptionInactive || isUnicaDelivered || isMensalLocked;
 
+  // A trava de edição agora segue EXATAMENTE a mesma lógica do bloqueio do cardápio
   const canEdit = () => {
     if (isActuallyAdmin) return true;
     return !isBlocked;
@@ -191,6 +195,7 @@ const PremiumDashboard = ({
     return "Solicitar Cardápio de Elite";
   };
 
+  // Componente de Botão Dinâmico: motion.a se liberado, motion.div se travado
   const RequestButton = () => {
     const isActuallyBlocked = isBlocked && !safeIsAdminView;
     
@@ -481,8 +486,8 @@ const PremiumDashboard = ({
               <div className="p-2.5 bg-amber-500/10 rounded-xl"><Zap className="w-6 h-6 text-amber-400" /></div>
               <h3 className="text-xl font-bold text-foreground">Macro Distribuição</h3>
             </div>
-            <div className="grid grid-cols-3 gap-4 items-stretch">
-              <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted flex flex-col justify-center h-full">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
                 <div className="text-2xl mb-3">🥩</div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Proteína</p>
                 <div className="flex items-center justify-center gap-1">
@@ -490,7 +495,7 @@ const PremiumDashboard = ({
                   <span className="text-base font-bold text-muted-foreground">g</span>
                 </div>
               </div>
-              <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted flex flex-col justify-center h-full">
+              <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
                 <div className="text-2xl mb-3">🍞</div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Carbo</p>
                 <div className="flex items-center justify-center gap-1">
@@ -498,7 +503,7 @@ const PremiumDashboard = ({
                   <span className="text-base font-bold text-muted-foreground">g</span>
                 </div>
               </div>
-              <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted flex flex-col justify-center h-full">
+              <div className="text-center p-5 rounded-2xl bg-muted/50 border border-emerald-500/5 transition-colors hover:bg-muted">
                 <div className="text-2xl mb-3">🥑</div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-3">Gordura</p>
                 <div className="flex items-center justify-center gap-1">
@@ -511,11 +516,11 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {cardapio && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full h-full flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                <button className="flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
                   <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Cardápio Elite
                 </button>
@@ -539,7 +544,7 @@ const PremiumDashboard = ({
           {lista && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full h-full flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                <button className="flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
                   <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   Ver Lista de Compras
                 </button>
