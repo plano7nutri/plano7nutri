@@ -472,11 +472,11 @@ const Dashboard = ({
         
         <DashboardLiveCounter />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
-            className="lg:col-span-5 bg-white border-2 border-primary/10 rounded-3xl p-8 shadow-lg flex flex-col"
+            className="lg:col-span-5 bg-white border-2 border-primary/10 rounded-3xl p-8 shadow-lg flex flex-col h-full"
           >
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
