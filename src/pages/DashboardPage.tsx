@@ -53,8 +53,7 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("plano7_free_whatsapp");
-    // Removemos o listener de popstate antes de sair para não interferir na navegação normal
-    window.history.back(); 
+    // Navega para a home substituindo o histórico, sem tentar dar "back"
     navigate("/", { state: { view: "check-free-plan" }, replace: true });
   };
 
