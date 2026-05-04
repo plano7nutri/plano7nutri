@@ -432,7 +432,6 @@ const Dashboard = ({
     <div className="min-h-screen px-6 py-10 bg-background text-foreground">
       <div className="w-full max-w-4xl mx-auto">
         
-        {/* Botão Sair no topo */}
         <div className="flex justify-end mb-4">
           {onLogout && (
             <button 
@@ -445,7 +444,6 @@ const Dashboard = ({
           )}
         </div>
 
-        {/* Barra de Expiração */}
         {timeLeft > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
@@ -678,13 +676,12 @@ const Dashboard = ({
               </div>
               <p className="mt-4 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
               
-              {/* BOTÕES DE PREVIEW - ALINHADOS COM O FUNDO DO CARD DE PERFIL */}
               <div className="mt-auto pt-8 flex flex-col sm:flex-row gap-4 items-stretch justify-center w-full">
                 <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                   <DialogTrigger asChild>
                     <button className="flex-1 flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm w-full">
                       <Utensils className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
-                      <span>Ver Cardápio</span>
+                      <span className="text-center">Ver Cardápio</span>
                       <Lock size={16} className="text-amber-500 shrink-0" />
                     </button>
                   </DialogTrigger>
@@ -695,43 +692,25 @@ const Dashboard = ({
                       </DialogTitle>
                     </DialogHeader>
                     <div className="p-6">
-                      
-                      {/* Header Limpo e Real do Usuário */}
                       <div className="mb-6 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
                         <p className="font-medium text-lg">Olá <strong>{name}</strong>, meu nome é <strong>Vivi</strong>! 😊</p>
                         <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
-                        
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
                           <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Objetivo:</span> <strong className="text-emerald-700">{goalLabel}</strong></p>
                           <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Restrições:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{restrictions || "Nenhuma"}</strong></p>
                           <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Preferências:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{preferences || "Nenhuma"}</strong></p>
                           <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Calorias:</span> <strong className="text-emerald-700">{metaCalorias} kcal</strong></p>
                           <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Água:</span> <strong className="text-emerald-700">{metaAgua} ml</strong></p>
-                          
-                          <p className="flex items-center gap-2 text-sm font-medium">
-                            ✅ <span className="text-zinc-500">TMB:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span>
-                          </p>
-                          <p className="flex items-center gap-2 text-sm font-medium">
-                            ✅ <span className="text-zinc-500">GET:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span>
-                          </p>
-                          <p className="flex items-center gap-2 text-sm font-medium">
-                            ✅ <span className="text-zinc-500">Proteína:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span>
-                          </p>
-                          <p className="flex items-center gap-2 text-sm font-medium">
-                            ✅ <span className="text-zinc-500">Carboidrato:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span>
-                          </p>
-                          <p className="flex items-center gap-2 text-sm font-medium">
-                            ✅ <span className="text-zinc-500">Gordura:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span>
-                          </p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">TMB:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">GET:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Proteína:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Carboidrato:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Gordura:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
                         </div>
                       </div>
-
-                      {/* Área do Cardápio Embaçada Seletivamente */}
                       <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
                         <BlurredMenuMock name={name} />
                       </div>
-                      
-                      {/* Botão de Desbloqueio (Embaixo do Blur) */}
                       <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
                          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
                            <Lock size={32} className="text-amber-500" />
@@ -748,16 +727,15 @@ const Dashboard = ({
                            Desbloquear Agora
                          </button>
                       </div>
-
                     </div>
                   </DialogContent>
                 </Dialog>
 
                 <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
                   <DialogTrigger asChild>
-                    <button className="flex-1 flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm w-full">
+                    <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
                       <ClipboardList className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
-                      <span>Ver Lista de Compras</span>
+                      <span className="text-center">Ver Lista de Compras</span>
                       <Lock size={16} className="text-amber-500 shrink-0" />
                     </button>
                   </DialogTrigger>
@@ -768,13 +746,9 @@ const Dashboard = ({
                       </DialogTitle>
                     </DialogHeader>
                     <div className="p-6">
-                      
-                      {/* Área da Lista Embaçada Seletivamente */}
                       <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
                         <BlurredListMock name={name} />
                       </div>
-                      
-                      {/* Botão de Desbloqueio (Embaixo do Blur) */}
                       <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
                          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
                            <Lock size={32} className="text-amber-500" />
@@ -791,50 +765,49 @@ const Dashboard = ({
                            Desbloquear Agora
                          </button>
                       </div>
-
                     </div>
                   </DialogContent>
                 </Dialog>
               </div>
             </div>
+
+            <div className="mt-6 lg:mt-12 space-y-8" id="planos-pricing">
+              <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
+                <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
+                  Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
+                  <strong className="font-black">Quem vê tudo, age. Quem vê pela metade, adia. Você já sabe como a história do "amanhã eu começo" termina.</strong> <br />
+                  Nos próximos 30 segundos você pode mudar isso: escolha seu plano, desbloqueie tudo e seu cardápio personalizado chega hoje no WhatsApp. <br />
+                  <strong className="font-black underline decoration-emerald-500/30">Por menos de R$0,65 por dia. Menos que um café. Você muda sua vida de vez.</strong>
+                </p>
+              </div>
+
+              <div className="pt-12">
+                <div className="text-center max-w-2xl mx-auto mb-10">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
+                    É assim que chega no seu WhatsApp
+                  </h2>
+                </div>
+                <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
+                  <DashboardWhatsAppMockup />
+                </div>
+              </div>
+
+              <PricingSection />
+            </div>
+
+            <FAQSection />
+
+            <AnimatePresence>
+              {isEditing && (
+                <FreeEditForm 
+                  initialData={{ name, age, sex, height, weight, activity: activityLabel, goal: goalLabel }}
+                  onClose={() => setIsEditing(false)}
+                  onSave={handleProfileSave}
+                />
+              )}
+            </AnimatePresence>
           </div>
         </div>
-
-        <div className="mt-6 lg:mt-12 space-y-8" id="planos-pricing">
-          <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
-            <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
-              Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
-              <strong className="font-black">Quem vê tudo, age. Quem vê pela metade, adia. Você já sabe como a história do "amanhã eu começo" termina.</strong> <br />
-              Nos próximos 30 segundos você pode mudar isso: escolha seu plano, desbloqueie tudo e seu cardápio personalizado chega hoje no WhatsApp. <br />
-              <strong className="font-black underline decoration-emerald-500/30">Por menos de R$0,65 por dia. Menos que um café. Você muda sua vida de vez.</strong>
-            </p>
-          </div>
-
-          <div className="pt-12">
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
-                É assim que chega no seu WhatsApp
-              </h2>
-            </div>
-            <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
-              <DashboardWhatsAppMockup />
-            </div>
-          </div>
-
-          <PricingSection />
-        </div>
-
-        <FAQSection />
-
-        <AnimatePresence>
-          {isEditing && (
-            <FreeEditForm 
-              initialData={{ name, age, sex, height, weight, activity: activityLabel, goal: goalLabel }}
-              onClose={() => setIsEditing(false)}
-              onSave={handleProfileSave}
-            />
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

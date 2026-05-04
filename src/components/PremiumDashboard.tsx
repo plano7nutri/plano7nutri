@@ -21,7 +21,6 @@ import PricingSection from "./PricingSection";
 import FAQSection from "./FAQSection";
 import HealthReminder from "./HealthReminder";
 import ImpactPhrase from "./ImpactPhrase";
-import EasterBonus from "./EasterBonus";
 import { useAuth } from "./AuthProvider";
 
 interface PremiumDashboardProps {
@@ -565,8 +564,6 @@ const PremiumDashboard = ({
             </Dialog>
           )}
         </div>
-
-        <EasterBonus goal={goalLabel} />
 
         <RequestButton />
 
