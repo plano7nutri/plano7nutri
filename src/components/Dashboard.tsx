@@ -22,139 +22,70 @@ import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
 import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 
-const MOCK_MENU = `━━━━━━━━━━━━━━━━━━━━
+// --- COMPONENTES DE PREVIEW COM BLUR SELETIVO --- //
 
-🥗 CARDÁPIO SEMANAL PERSONALIZADO
+const MockMenuPreview = () => {
+  const days = ["SEGUNDA-FEIRA", "TERÇA-FEIRA", "QUARTA-FEIRA"];
+  const meals = [
+    { icon: "🍳", label: "Café da manhã" },
+    { icon: "🍎", label: "Lanche 10h" },
+    { icon: "🍽️", label: "Almoço" },
+    { icon: "🥤", label: "Lanche 15h" },
+    { icon: "🌙", label: "Jantar" }
+  ];
 
-SEGUNDA-FEIRA
-🍳 Café da manhã: Omelete (2 ovos) com queijo minas frescal (50g), Pão integral (2 fatias) e Maçã (1 unidade).
-🍎 Lanche 10h: Iogurte natural sem açúcar (1 pote) com sementes de chia (1 colher de sopa).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango grelhado (120g) e Salada de folhas verdes com tomate e pepino (à vontade).
-🥤 Lanche 15h: Pera (1 unidade).
-🌙 Jantar: Carne moída magra (120g) refogada com legumes (brócolis, cenoura) e Salada verde (à vontade).
+  return (
+    <div className="space-y-10 pb-20">
+      {days.map((day, idx) => (
+        <div key={day} className="space-y-4">
+          <h4 className="font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">
+            {day}
+          </h4>
+          <div className="space-y-4 pl-2">
+            {meals.map((meal) => (
+              <div key={meal.label} className="flex flex-col gap-1">
+                <p className="text-sm font-bold text-zinc-800 flex items-center gap-2">
+                  {meal.icon} {meal.label}:
+                </p>
+                <p className="text-sm text-zinc-400 blur-[6px] select-none leading-relaxed pl-6">
+                  Alimento selecionado com gramagem exata para seu metabolismo e objetivo semanal.
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
-TERÇA-FEIRA
-🍳 Café da manhã: Ovos mexidos (2 ovos) com Pão integral (2 fatias) e Banana (1 unidade).
-🍎 Lanche 10h: Queijo minas frescal (80g).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Bife magro (120g) e Abobrinha refogada (1 prato de sobremesa).
-🥤 Lanche 15h: Laranja (1 unidade).
-🌙 Jantar: Frango desfiado (120g) com purê de batata doce (3 colheres de sopa) e Salada de alface e rúcula (à vontade).
+const MockListPreview = () => {
+  const categories = [
+    { icon: "🥩", label: "PROTEÍNAS" },
+    { icon: "🍞", label: "CARBOIDRATOS & GRÃOS" },
+    { icon: "🥦", label: "LEGUMES, VERDURAS & FRUTAS" },
+    { icon: "🥛", label: "LATICÍNIOS & OVOS" }
+  ];
 
-QUARTA-FEIRA
-🍳 Café da manhã: Iogurte natural sem açúcar (1 pote) com morangos (1 xícara) e aveia (2 colheres de sopa).
-🍎 Lanche 10h: Ovos cozidos (2 unidades).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (120g) e Brócolis cozido no vapor (1 prato de sobremesa).
-🥤 Lanche 15h: Maçã (1 unidade).
-🌙 Jantar: Omelete (2 ovos) com espinafre e tomate, acompanhado de Salada mista (à vontade).
-
-QUINTA-FEIRA
-🍳 Café da manhã: Pão integral (2 fatias) com ovo cozido fatiado (2 ovos), queijo minas frescal (50g) e Mamão (1 fatia média).
-🍎 Lanche 10h: Castanhas (30g).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango ensopado com quiabo (120g) e Salada de couve refogada (1 prato de sobremesa).
-🥤 Lanche 15h: Kiwi (2 unidades).
-🌙 Jantar: Carne bovina magra em cubos (120g) com purê de abóbora (3 colheres de sopa) e Salada de folhas verdes (à vontade).
-
-SEXTA-FEIRA
-🍳 Café da manhã: Tapioca (1 unidade) com queijo minas frescal (50g), ovo mexido (1 ovo) e Pêssego (1 unidade).
-🍎 Lanche 10h: Iogurte natural sem açúcar (1 pote).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Carne assada magra (120g) e Salada de grão de bico com pepino e tomate (1 prato de sobremesa).
-🥤 Lanche 15h: Uvas (1 cacho pequeno).
-🌙 Jantar: Frango grelhado (120g) com legumes cozidos no vapor (cenoura, vagem) e Salada de folhas verdes (à vontade).
-
-SÁBADO
-🍳 Café da manhã: Omelete (2 ovos) com tomate e orégano, Pão integral (2 fatias) e Melão (1 fatia média).
-🍎 Lanche 10h: Maçã (1 unidade).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (1 lata, drenado) e Salada de beterraba ralada e cenoura (1 prato de sobremesa).
-🥤 Lanche 15h: Queijo minas frescal (80g).
-🌙 Jantar: Sopa de legumes com carne bovina magra desfiada (1 prato fundo).
-
-DOMINGO
-🍳 Café da manhã: Iogurte natural sem açúcar (1 pote) com banana (1 unidade) e aveia (2 colheres de sopa).
-🍎 Lanche 10h: Ovos cozidos (2 unidades).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango assado (120g) e Salada de lentilha com cheiro-verde (1 prato de sobremesa).
-🥤 Lanche 15h: Pera (1 unidade).
-🌙 Jantar: Carne magra grelhada (120g) com salada caprese (tomate, queijo minas frescal, manjericão).
-
-━━━━━━━━━━━━━━━━━━━━
-
-A jornada por uma vida mais saudável é um passo de cada vez. Com dedicação e escolhas inteligentes, você alcançará seus objetivos! 💪`;
-
-const MOCK_LIST = `🛍️ Sua lista de compras personalizada está pronta!
-_Calculei cada quantidade com base no seu cardápio dos 7 dias._ 💪
-
-🛒 LISTA DE COMPRAS SEMANAL
-
-🥩 PROTEÍNAS:
-- Frango — 480 g
-- Carne Bovina — 480 g
-- Atum em água — 240 g
-
-🍞 CARBOIDRATOS & GRÃOS:
-- Pão integral — 8 fatias
-- Arroz integral — 1000 g
-- Feijão — 500 g
-- Sementes de chia — 10 g
-- Aveia — 40 g
-- Tapioca — 1 unidade
-- Grão de bico — 500 g
-- Lentilha — 500 g
-
-🥦 LEGUMES, VERDURAS & FRUTAS:
-- Maçã — 3 unidades
-- Pera — 2 unidades
-- Banana — 2 unidades
-- Laranja — 1 unidade
-- Morangos — 150 g
-- Mamão — 1 unidade
-- Kiwi — 2 unidades
-- Pêssego — 1 unidade
-- Uvas — 1 unidade
-- Melão — 1 unidade
-- Tomate — 6 unidades
-- Pepino — 2 unidades
-- Brócolis — 2 unidades
-- Cenoura — 4 unidades
-- Abobrinha — 1 unidade
-- Batata doce — 1 unidade
-- Quiabo — 1 unidade
-- Abóbora — 1 unidade
-- Vagem — 1 unidade
-- Beterraba — 1 unidade
-- Alface — 2 maços
-- Rúcula — 1 maço
-- Espinafre — 1 maço
-- Couve — 1 maço
-
-🥛 LATICÍNIOS & OVOS:
-- Ovos — 18 unidades
-- Queijo minas frescal — 360 g
-- Iogurte natural sem açúcar — 4 unidades
-
-🫙 TEMPEROS, ÓLEOS & OUTROS:
-A gosto mas com moderação
-- Azeite de oliva
-- Sal
-- Vinagre
-- Alho — 1 unidade
-- Cebola — 1 unidade
-- Pimenta-do-reino
-- Limão — 1 unidade
-- Orégano
-- Manjericão
-- Cheiro-verde
-
-━━━━━━━━━━━━━━━━━━━━
-
-🎉 Seu cardápio personalizado está pronto!
-
-💬 Quem cuida da alimentação cuida do futuro.
-Você já tomou a decisão mais importante — agora é só executar! 🔥
-Foco total em Alimentação Saudável! 💪
-
-🏆 Sua área de membros ELITE PREMIUM tem tudo que você precisa!
-https://plano7.inventiia.com.br/dashboardpago
-
-_TE VEJO EM 7 DIAS! 🚀_`;
+  return (
+    <div className="space-y-10 pb-20">
+      {categories.map((cat) => (
+        <div key={cat.label} className="space-y-4">
+          <h4 className="font-black text-zinc-900 bg-zinc-50 border border-zinc-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">
+            {cat.icon} {cat.label}
+          </h4>
+          <div className="space-y-2 pl-6 border-l-2 border-zinc-100">
+            {[1, 2, 3].map((i) => (
+              <p key={i} className="text-sm text-zinc-400 blur-[6px] select-none font-medium">
+                - Item do cardápio — 000 g
+              </p>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 interface DashboardProps {
   name: string;
@@ -675,17 +606,15 @@ const Dashboard = ({
                       <Utensils className="text-emerald-500" /> Meu Cardápio de 7 Dias
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="p-6">
+                  <div className="p-6 relative">
                     
                     {/* Header Limpo e Real do Usuário */}
-                    <div className="mb-6 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
+                    <div className="mb-8 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
                       <p className="font-black text-lg">Olá {name}, meu nome é Vivi! 😊</p>
                       <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
                         <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Objetivo:</span> <strong className="text-emerald-700">{goalLabel}</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Restrições:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{restrictions || "Nenhuma"}</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Preferências:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{preferences || "Nenhuma"}</strong></p>
                         <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Calorias:</span> <strong className="text-emerald-700">{metaCalorias} kcal</strong></p>
                         <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Água:</span> <strong className="text-emerald-700">{metaAgua} ml</strong></p>
                         
@@ -707,29 +636,27 @@ const Dashboard = ({
                       </div>
                     </div>
 
-                    {/* Área do Cardápio Embaçada */}
-                    <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed blur-[6px] select-none opacity-50">
-                        {MOCK_MENU}
-                      </div>
-                    </div>
+                    {/* Preview Estruturado com Blur Seletivo */}
+                    <MockMenuPreview />
                     
-                    {/* Botão de Desbloqueio (Embaixo do Blur) */}
-                    <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
-                       <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
-                         <Lock size={32} className="text-amber-500" />
+                    {/* Botão de Desbloqueio (Na parte inferior) */}
+                    <div className="sticky bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-20 pb-6 px-6 flex justify-center">
+                       <div className="bg-white p-8 rounded-[2rem] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)] border border-amber-100 w-full text-center">
+                         <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                           <Lock size={32} className="text-amber-500" />
+                         </div>
+                         <h3 className="text-2xl font-black text-zinc-900 mb-2">Cardápio Bloqueado</h3>
+                         <p className="text-zinc-600 font-medium mb-6">
+                           Sua estrutura já foi montada. Adquira um dos planos Premium para liberar as refeições, alimentos e quantidades exatas calculadas para você.
+                         </p>
+                         <button 
+                           onClick={scrollToPricing}
+                           className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
+                         >
+                           <Crown size={20} />
+                           Desbloquear Agora
+                         </button>
                        </div>
-                       <h3 className="text-2xl font-black text-zinc-900 mb-2">Cardápio Bloqueado</h3>
-                       <p className="text-zinc-600 font-medium mb-6">
-                         Sua estrutura já foi montada. Adquira um dos planos Premium para liberar as refeições, alimentos e quantidades exatas calculadas para você.
-                       </p>
-                       <button 
-                         onClick={scrollToPricing}
-                         className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
-                       >
-                         <Crown size={20} />
-                         Desbloquear Agora
-                       </button>
                     </div>
 
                   </div>
@@ -763,31 +690,29 @@ const Dashboard = ({
                       <ClipboardList className="text-emerald-500" /> Lista de Compras
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="p-6">
+                  <div className="p-6 relative">
                     
-                    {/* Área da Lista Embaçada */}
-                    <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed blur-[6px] select-none opacity-50">
-                        {MOCK_LIST}
-                      </div>
-                    </div>
+                    {/* Preview Estruturado com Blur Seletivo */}
+                    <MockListPreview />
                     
-                    {/* Botão de Desbloqueio (Embaixo do Blur) */}
-                    <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
-                       <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
-                         <Lock size={32} className="text-amber-500" />
+                    {/* Botão de Desbloqueio (Na parte inferior) */}
+                    <div className="sticky bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-20 pb-6 px-6 flex justify-center">
+                       <div className="bg-white p-8 rounded-[2rem] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)] border border-amber-100 w-full text-center">
+                         <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                           <Lock size={32} className="text-amber-500" />
+                         </div>
+                         <h3 className="text-2xl font-black text-zinc-900 mb-2">Lista Bloqueada</h3>
+                         <p className="text-zinc-600 font-medium mb-6">
+                           Economize tempo e dinheiro no mercado. Desbloqueie o plano Premium para ver as quantidades exatas em gramas que você precisa comprar.
+                         </p>
+                         <button 
+                           onClick={scrollToPricing}
+                           className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
+                         >
+                           <Crown size={20} />
+                           Desbloquear Agora
+                         </button>
                        </div>
-                       <h3 className="text-2xl font-black text-zinc-900 mb-2">Lista Bloqueada</h3>
-                       <p className="text-zinc-600 font-medium mb-6">
-                         Economize tempo e dinheiro no mercado. Desbloqueie o plano Premium para ver as quantidades exatas em gramas que você precisa comprar.
-                       </p>
-                       <button 
-                         onClick={scrollToPricing}
-                         className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
-                       >
-                         <Crown size={20} />
-                         Desbloquear Agora
-                       </button>
                     </div>
 
                   </div>
