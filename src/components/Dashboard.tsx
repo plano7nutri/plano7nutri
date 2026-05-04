@@ -22,139 +22,82 @@ import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
 import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 
-const MOCK_MENU = `━━━━━━━━━━━━━━━━━━━━
+// --- COMPONENTES DE PREVIEW ESTRATÉGICO --- //
+const MockMenuPreview = () => (
+  <div className="space-y-8 relative pb-32">
+    <div className="text-center mb-6">
+      <h3 className="text-xl font-black text-zinc-900 tracking-tight">🥗 CARDÁPIO SEMANAL PERSONALIZADO</h3>
+      <div className="w-16 h-1 bg-primary/20 mx-auto mt-3 rounded-full" />
+    </div>
+    
+    <div className="space-y-3">
+      <h4 className="font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">Segunda-feira</h4>
+      <div className="space-y-2 blur-[5px] select-none opacity-80 pl-2">
+        <p className="text-sm leading-relaxed">🍳 <strong className="text-zinc-800">Café da manhã:</strong> Omelete (2 ovos) com queijo minas frescal (50g), Pão integral (2 fatias) e Maçã (1 unidade).</p>
+        <p className="text-sm leading-relaxed">🍎 <strong className="text-zinc-800">Lanche 10h:</strong> Iogurte natural sem açúcar (1 pote) com sementes de chia (1 colher de sopa).</p>
+        <p className="text-sm leading-relaxed">🍽️ <strong className="text-zinc-800">Almoço:</strong> Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango grelhado (120g) e Salada...</p>
+      </div>
+    </div>
+    
+    <div className="space-y-3">
+      <h4 className="font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">Terça-feira</h4>
+      <div className="space-y-2 blur-[6px] select-none opacity-60 pl-2">
+        <p className="text-sm leading-relaxed">🍳 <strong className="text-zinc-800">Café da manhã:</strong> Ovos mexidos (2 ovos) com Pão integral...</p>
+        <p className="text-sm leading-relaxed">🍎 <strong className="text-zinc-800">Lanche 10h:</strong> Queijo minas frescal (80g).</p>
+        <p className="text-sm leading-relaxed">🍽️ <strong className="text-zinc-800">Almoço:</strong> Arroz integral (4 colheres de sopa), Feijão...</p>
+      </div>
+    </div>
 
-🥗 CARDÁPIO SEMANAL PERSONALIZADO
+    <div className="space-y-3">
+      <h4 className="font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">Quarta-feira</h4>
+      <div className="space-y-2 blur-[8px] select-none opacity-40 pl-2">
+        <p className="text-sm leading-relaxed">🍳 Café da manhã: Iogurte natural sem açúcar (1 pote)...</p>
+        <p className="text-sm leading-relaxed">🍎 Lanche 10h: Ovos cozidos (2 unidades).</p>
+        <p className="text-sm leading-relaxed">🍽️ Almoço: Arroz integral (4 colheres de sopa)...</p>
+      </div>
+    </div>
+  </div>
+);
 
-SEGUNDA-FEIRA
-🍳 Café da manhã: Omelete (2 ovos) com queijo minas frescal (50g), Pão integral (2 fatias) e Maçã (1 unidade).
-🍎 Lanche 10h: Iogurte natural sem açúcar (1 pote) com sementes de chia (1 colher de sopa).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango grelhado (120g) e Salada de folhas verdes com tomate e pepino (à vontade).
-🥤 Lanche 15h: Pera (1 unidade).
-🌙 Jantar: Carne moída magra (120g) refogada com legumes (brócolis, cenoura) e Salada verde (à vontade).
+const MockListPreview = () => (
+  <div className="space-y-8 relative pb-32">
+    <div className="text-center mb-6">
+      <h3 className="text-xl font-black text-zinc-900 tracking-tight">🛒 LISTA DE COMPRAS SEMANAL</h3>
+      <p className="text-xs font-medium text-zinc-500 mt-2">Calculei cada quantidade com base no seu cardápio dos 7 dias. 💪</p>
+    </div>
+    
+    <div className="space-y-3">
+      <h4 className="font-black text-red-600 bg-red-50 border border-red-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">🥩 Proteínas</h4>
+      <div className="space-y-2 blur-[5px] select-none opacity-80 pl-4 border-l-2 border-red-100">
+        <p className="text-sm font-medium text-zinc-700">- Frango — 480 g</p>
+        <p className="text-sm font-medium text-zinc-700">- Carne Bovina — 480 g</p>
+        <p className="text-sm font-medium text-zinc-700">- Atum em água — 240 g</p>
+      </div>
+    </div>
 
-TERÇA-FEIRA
-🍳 Café da manhã: Ovos mexidos (2 ovos) com Pão integral (2 fatias) e Banana (1 unidade).
-🍎 Lanche 10h: Queijo minas frescal (80g).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Bife magro (120g) e Abobrinha refogada (1 prato de sobremesa).
-🥤 Lanche 15h: Laranja (1 unidade).
-🌙 Jantar: Frango desfiado (120g) com purê de batata doce (3 colheres de sopa) e Salada de alface e rúcula (à vontade).
+    <div className="space-y-3">
+      <h4 className="font-black text-amber-700 bg-amber-50 border border-amber-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">🍞 Carboidratos & Grãos</h4>
+      <div className="space-y-2 blur-[6px] select-none opacity-60 pl-4 border-l-2 border-amber-100">
+        <p className="text-sm font-medium text-zinc-700">- Pão integral — 8 fatias</p>
+        <p className="text-sm font-medium text-zinc-700">- Arroz integral — 1000 g</p>
+        <p className="text-sm font-medium text-zinc-700">- Feijão — 500 g</p>
+        <p className="text-sm font-medium text-zinc-700">- Sementes de chia — 10 g</p>
+        <p className="text-sm font-medium text-zinc-700">- Aveia — 40 g</p>
+      </div>
+    </div>
 
-QUARTA-FEIRA
-🍳 Café da manhã: Iogurte natural sem açúcar (1 pote) com morangos (1 xícara) e aveia (2 colheres de sopa).
-🍎 Lanche 10h: Ovos cozidos (2 unidades).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (120g) e Brócolis cozido no vapor (1 prato de sobremesa).
-🥤 Lanche 15h: Maçã (1 unidade).
-🌙 Jantar: Omelete (2 ovos) com espinafre e tomate, acompanhado de Salada mista (à vontade).
+    <div className="space-y-3">
+      <h4 className="font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl inline-block uppercase tracking-widest text-xs">🥦 Legumes, Verduras & Frutas</h4>
+      <div className="space-y-2 blur-[8px] select-none opacity-40 pl-4 border-l-2 border-emerald-100">
+        <p className="text-sm font-medium text-zinc-700">- Maçã — 3 unidades</p>
+        <p className="text-sm font-medium text-zinc-700">- Pera — 2 unidades</p>
+        <p className="text-sm font-medium text-zinc-700">- Banana — 2 unidades</p>
+        <p className="text-sm font-medium text-zinc-700">...</p>
+      </div>
+    </div>
+  </div>
+);
 
-QUINTA-FEIRA
-🍳 Café da manhã: Pão integral (2 fatias) com ovo cozido fatiado (2 ovos), queijo minas frescal (50g) e Mamão (1 fatia média).
-🍎 Lanche 10h: Castanhas (30g).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango ensopado com quiabo (120g) e Salada de couve refogada (1 prato de sobremesa).
-🥤 Lanche 15h: Kiwi (2 unidades).
-🌙 Jantar: Carne bovina magra em cubos (120g) com purê de abóbora (3 colheres de sopa) e Salada de folhas verdes (à vontade).
-
-SEXTA-FEIRA
-🍳 Café da manhã: Tapioca (1 unidade) com queijo minas frescal (50g), ovo mexido (1 ovo) e Pêssego (1 unidade).
-🍎 Lanche 10h: Iogurte natural sem açúcar (1 pote).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Carne assada magra (120g) e Salada de grão de bico com pepino e tomate (1 prato de sobremesa).
-🥤 Lanche 15h: Uvas (1 cacho pequeno).
-🌙 Jantar: Frango grelhado (120g) com legumes cozidos no vapor (cenoura, vagem) e Salada de folhas verdes (à vontade).
-
-SÁBADO
-🍳 Café da manhã: Omelete (2 ovos) com tomate e orégano, Pão integral (2 fatias) e Melão (1 fatia média).
-🍎 Lanche 10h: Maçã (1 unidade).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (1 lata, drenado) e Salada de beterraba ralada e cenoura (1 prato de sobremesa).
-🥤 Lanche 15h: Queijo minas frescal (80g).
-🌙 Jantar: Sopa de legumes com carne bovina magra desfiada (1 prato fundo).
-
-DOMINGO
-🍳 Café da manhã: Iogurte natural sem açúcar (1 pote) com banana (1 unidade) e aveia (2 colheres de sopa).
-🍎 Lanche 10h: Ovos cozidos (2 unidades).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango assado (120g) e Salada de lentilha com cheiro-verde (1 prato de sobremesa).
-🥤 Lanche 15h: Pera (1 unidade).
-🌙 Jantar: Carne magra grelhada (120g) com salada caprese (tomate, queijo minas frescal, manjericão).
-
-━━━━━━━━━━━━━━━━━━━━
-
-A jornada por uma vida mais saudável é um passo de cada vez. Com dedicação e escolhas inteligentes, você alcançará seus objetivos! 💪`;
-
-const MOCK_LIST = `🛍️ Sua lista de compras personalizada está pronta!
-_Calculei cada quantidade com base no seu cardápio dos 7 dias._ 💪
-
-🛒 LISTA DE COMPRAS SEMANAL
-
-🥩 PROTEÍNAS:
-- Frango — 480 g
-- Carne Bovina — 480 g
-- Atum em água — 240 g
-
-🍞 CARBOIDRATOS & GRÃOS:
-- Pão integral — 8 fatias
-- Arroz integral — 1000 g
-- Feijão — 500 g
-- Sementes de chia — 10 g
-- Aveia — 40 g
-- Tapioca — 1 unidade
-- Grão de bico — 500 g
-- Lentilha — 500 g
-
-🥦 LEGUMES, VERDURAS & FRUTAS:
-- Maçã — 3 unidades
-- Pera — 2 unidades
-- Banana — 2 unidades
-- Laranja — 1 unidade
-- Morangos — 150 g
-- Mamão — 1 unidade
-- Kiwi — 2 unidades
-- Pêssego — 1 unidade
-- Uvas — 1 unidade
-- Melão — 1 unidade
-- Tomate — 6 unidades
-- Pepino — 2 unidades
-- Brócolis — 2 unidades
-- Cenoura — 4 unidades
-- Abobrinha — 1 unidade
-- Batata doce — 1 unidade
-- Quiabo — 1 unidade
-- Abóbora — 1 unidade
-- Vagem — 1 unidade
-- Beterraba — 1 unidade
-- Alface — 2 maços
-- Rúcula — 1 maço
-- Espinafre — 1 maço
-- Couve — 1 maço
-
-🥛 LATICÍNIOS & OVOS:
-- Ovos — 18 unidades
-- Queijo minas frescal — 360 g
-- Iogurte natural sem açúcar — 4 unidades
-
-🫙 TEMPEROS, ÓLEOS & OUTROS:
-A gosto mas com moderação
-- Azeite de oliva
-- Sal
-- Vinagre
-- Alho — 1 unidade
-- Cebola — 1 unidade
-- Pimenta-do-reino
-- Limão — 1 unidade
-- Orégano
-- Manjericão
-- Cheiro-verde
-
-━━━━━━━━━━━━━━━━━━━━
-
-🎉 Seu cardápio personalizado está pronto!
-
-💬 Quem cuida da alimentação cuida do futuro.
-Você já tomou a decisão mais importante — agora é só executar! 🔥
-Foco total em Alimentação Saudável! 💪
-
-🏆 Sua área de membros ELITE PREMIUM tem tudo que você precisa!
-https://plano7.inventiia.com.br/dashboardpago
-
-_TE VEJO EM 7 DIAS! 🚀_`;
 
 interface DashboardProps {
   name: string;
@@ -646,73 +589,91 @@ const Dashboard = ({
               <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
-            {/* BOTOES DE CARDÁPIO E LISTA - BLOQUEADOS (PLANO GRÁTIS) */}
+            {/* BOTOES DE PREVIEW (MODERNOS E ATRAENTES) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
                   <motion.button 
-                    animate={{ scale: [1, 1.02, 1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="w-full bg-gradient-to-r from-primary to-emerald-500 text-white p-6 rounded-[2rem] font-black uppercase tracking-tighter shadow-[0_15px_30px_-5px_rgba(16,185,129,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(16,185,129,0.5)] hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center justify-center gap-3 border-b-4 border-emerald-700"
+                    whileHover={{ scale: 1.02, y: -4 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="relative w-full bg-white border border-zinc-200 p-6 rounded-[2rem] shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex flex-col"
                   >
-                    <Utensils size={24} className="drop-shadow-md" />
-                    <span className="text-lg">Ver Cardápio</span>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-colors" />
+                    <div className="flex justify-between items-start w-full mb-6 relative z-10">
+                      <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform shadow-sm border border-emerald-100">
+                        <Utensils size={28} />
+                      </div>
+                      <div className="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 border border-amber-200 shadow-sm">
+                        <Lock size={12} /> Bloqueado
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-black text-zinc-900 mb-1 relative z-10">Ver Cardápio</h3>
+                    <p className="text-sm text-zinc-500 font-medium relative z-10 leading-tight">Toque para ver uma prévia da estrutura do seu plano.</p>
                   </motion.button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
-                  <DialogHeader className="p-6 pb-0">
-                    <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                      <Utensils className="text-primary" /> Meu Cardápio de 7 Dias
+                  <DialogHeader className="p-6 pb-0 z-20 bg-white sticky top-0 border-b border-zinc-100">
+                    <DialogTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900">
+                      <Utensils className="text-emerald-500" /> Cardápio de 7 Dias
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="p-6 relative">
+                  <div className="relative">
                     
                     {/* Header Limpo e Real do Usuário */}
-                    <div className="mb-6 space-y-2 text-zinc-800 bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-                      <p className="font-bold">Olá {name}, meu nome é Vivi! 😊</p>
-                      <p className="font-medium text-sm text-zinc-600 mb-4">Vou te enviar agora seu cardápio semanal baseado em:</p>
-                      
-                      <p className="flex items-center gap-2 text-sm font-medium">✅ Objetivo Semanal: <span className="font-bold">{goalLabel}</span></p>
-                      <p className="flex items-center gap-2 text-sm font-medium">✅ Meta de Calorias: <span className="font-bold">{metaCalorias}kcal</span></p>
-                      <p className="flex items-center gap-2 text-sm font-medium">✅ Meta de água: <span className="font-bold">{metaAgua}ml</span></p>
-                      <p className="flex items-center gap-2 text-sm font-medium">
-                        ✅ TMB: <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400">kcal</span>
-                      </p>
-                      <p className="flex items-center gap-2 text-sm font-medium">
-                        ✅ GET: <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400">kcal</span>
-                      </p>
-                      <p className="flex items-center gap-2 text-sm font-medium">
-                        ✅ Proteína dia: <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400">g</span>
-                      </p>
-                      <p className="flex items-center gap-2 text-sm font-medium">
-                        ✅ Carboidrato dia: <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400">g</span>
-                      </p>
-                      <p className="flex items-center gap-2 text-sm font-medium">
-                        ✅ Gordura do dia: <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400">g</span>
-                      </p>
-                    </div>
-
-                    <div className="relative rounded-2xl overflow-hidden border border-zinc-200">
-                      <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed p-6 blur-[6px] select-none opacity-50 bg-zinc-50">
-                        {MOCK_MENU}
+                    <div className="p-6">
+                      <div className="mb-8 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
+                        <p className="font-black text-lg">Olá {name}, meu nome é Vivi! 😊</p>
+                        <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Objetivo:</span> <strong className="text-emerald-700">{goalLabel}</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Restrições:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{restrictions || "Nenhuma"}</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Preferências:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{preferences || "Nenhuma"}</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Calorias:</span> <strong className="text-emerald-700">{metaCalorias} kcal</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Água:</span> <strong className="text-emerald-700">{metaAgua} ml</strong></p>
+                          
+                          <p className="flex items-center gap-2 text-sm font-medium">
+                            ✅ <span className="text-zinc-500">TMB:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span>
+                          </p>
+                          <p className="flex items-center gap-2 text-sm font-medium">
+                            ✅ <span className="text-zinc-500">GET:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span>
+                          </p>
+                          <p className="flex items-center gap-2 text-sm font-medium">
+                            ✅ <span className="text-zinc-500">Proteína:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span>
+                          </p>
+                          <p className="flex items-center gap-2 text-sm font-medium">
+                            ✅ <span className="text-zinc-500">Carboidrato:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span>
+                          </p>
+                          <p className="flex items-center gap-2 text-sm font-medium">
+                            ✅ <span className="text-zinc-500">Gordura:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span>
+                          </p>
+                        </div>
                       </div>
-                      
-                      {/* Overlay com Cadeado */}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/40 backdrop-blur-[2px] z-10 p-6">
-                         <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mb-4 shadow-sm border border-amber-200">
-                           <Lock size={40} className="text-amber-500" />
+
+                      {/* Mockup Renderizado com Blur Seletivo */}
+                      <MockMenuPreview />
+                    </div>
+                    
+                    {/* Overlay com Cadeado (Degradê de baixo pra cima) */}
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-end p-6 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none pb-12">
+                       <div className="bg-white p-8 rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-zinc-100 w-full max-w-md mx-auto text-center transform translate-y-6 pointer-events-auto">
+                         <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-amber-200">
+                           <Lock size={36} className="text-amber-500" />
                          </div>
-                         <h3 className="text-2xl font-black text-zinc-900 mb-2 text-center">Cardápio Bloqueado</h3>
-                         <p className="text-center text-zinc-700 font-medium mb-8 max-w-sm">Adquira um dos planos Premium para desbloquear seu cardápio de 7 dias detalhado e 100% personalizado para você.</p>
+                         <h3 className="text-2xl font-black text-zinc-900 mb-3 text-center tracking-tight">Cardápio Bloqueado</h3>
+                         <p className="text-center text-zinc-600 font-medium mb-8 leading-relaxed">
+                           Sua estrutura já foi montada. Adquira um dos planos Premium para liberar as refeições, alimentos e quantidades exatas calculadas para você.
+                         </p>
                          <button 
                            onClick={scrollToPricing}
-                           className="bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center gap-2 hover:bg-primary/90 transition-all hover:scale-105"
+                           className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
                          >
                            <Crown size={20} />
                            Desbloquear Agora
                          </button>
-                      </div>
+                       </div>
                     </div>
+
                   </div>
                 </DialogContent>
               </Dialog>
@@ -720,42 +681,54 @@ const Dashboard = ({
               <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
                 <DialogTrigger asChild>
                   <motion.button 
-                    animate={{ scale: [1, 1.02, 1] }}
-                    transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}
-                    className="w-full bg-gradient-to-r from-primary to-emerald-500 text-white p-6 rounded-[2rem] font-black uppercase tracking-tighter shadow-[0_15px_30px_-5px_rgba(16,185,129,0.4)] hover:shadow-[0_20px_40px_-5px_rgba(16,185,129,0.5)] hover:scale-[1.05] active:scale-[0.95] transition-all flex items-center justify-center gap-3 border-b-4 border-emerald-700"
+                    whileHover={{ scale: 1.02, y: -4 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="relative w-full bg-white border border-zinc-200 p-6 rounded-[2rem] shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex flex-col"
                   >
-                    <ClipboardList size={24} className="drop-shadow-md" />
-                    <span className="text-lg">Ver Lista</span>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-colors" />
+                    <div className="flex justify-between items-start w-full mb-6 relative z-10">
+                      <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform shadow-sm border border-emerald-100">
+                        <ClipboardList size={28} />
+                      </div>
+                      <div className="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 border border-amber-200 shadow-sm">
+                        <Lock size={12} /> Bloqueado
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-black text-zinc-900 mb-1 relative z-10">Lista de Compras</h3>
+                    <p className="text-sm text-zinc-500 font-medium relative z-10 leading-tight">Veja as categorias calculadas para o seu plano.</p>
                   </motion.button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
-                  <DialogHeader className="p-6 pb-0">
-                    <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                      <ClipboardList className="text-primary" /> Lista de Compras
+                  <DialogHeader className="p-6 pb-0 z-20 bg-white sticky top-0 border-b border-zinc-100">
+                    <DialogTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900">
+                      <ClipboardList className="text-emerald-500" /> Lista de Compras
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="p-6 relative">
-                    <div className="relative rounded-2xl overflow-hidden border border-zinc-200">
-                      <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed p-6 blur-[6px] select-none opacity-50 bg-zinc-50">
-                        {MOCK_LIST}
-                      </div>
-                      
-                      {/* Overlay com Cadeado */}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/40 backdrop-blur-[2px] z-10 p-6">
-                         <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mb-4 shadow-sm border border-amber-200">
-                           <Lock size={40} className="text-amber-500" />
+                  <div className="relative p-6">
+                    
+                    {/* Mockup da Lista */}
+                    <MockListPreview />
+                    
+                    {/* Overlay com Cadeado (Degradê) */}
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-end p-6 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none pb-12">
+                       <div className="bg-white p-8 rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-zinc-100 w-full max-w-md mx-auto text-center transform translate-y-6 pointer-events-auto">
+                         <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-amber-200">
+                           <Lock size={36} className="text-amber-500" />
                          </div>
-                         <h3 className="text-2xl font-black text-zinc-900 mb-2 text-center">Lista Bloqueada</h3>
-                         <p className="text-center text-zinc-700 font-medium mb-8 max-w-sm">Para economizar no mercado e focar só no que importa, libere sua lista de compras Premium.</p>
+                         <h3 className="text-2xl font-black text-zinc-900 mb-3 text-center tracking-tight">Lista Bloqueada</h3>
+                         <p className="text-center text-zinc-600 font-medium mb-8 leading-relaxed">
+                           Economize tempo e dinheiro no mercado. Desbloqueie o plano Premium para ver as quantidades exatas em gramas que você precisa comprar.
+                         </p>
                          <button 
                            onClick={scrollToPricing}
-                           className="bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center gap-2 hover:bg-primary/90 transition-all hover:scale-105"
+                           className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
                          >
                            <Crown size={20} />
                            Desbloquear Agora
                          </button>
-                      </div>
+                       </div>
                     </div>
+
                   </div>
                 </DialogContent>
               </Dialog>
