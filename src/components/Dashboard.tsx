@@ -385,7 +385,15 @@ const Dashboard = ({
   const scrollToPricing = () => {
     setIsMenuOpen(false);
     setIsListOpen(false);
-    document.getElementById("pricing-section")?.scrollIntoView({ behavior: "smooth" });
+    // Adicionamos um delay para o modal fechar suavemente e o scroll não ser interrompido
+    setTimeout(() => {
+      const element = document.getElementById("planos-pricing");
+      if (element) {
+        // Usa getBoundingClientRect para uma rolagem exata ao topo do elemento
+        const y = element.getBoundingClientRect().top + window.scrollY - 20; // 20px de respiro no topo
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }, 300);
   };
 
   if (isExpired) {
@@ -822,7 +830,7 @@ const Dashboard = ({
           </div>
         </div>
 
-        <div className="mt-6 lg:mt-12 space-y-8" id="pricing-section">
+        <div className="mt-6 lg:mt-12 space-y-8">
           <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
             <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
               Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
@@ -843,7 +851,9 @@ const Dashboard = ({
             </div>
           </div>
 
-          <PricingSection />
+          <div id="planos-pricing" className="scroll-mt-6">
+            <PricingSection />
+          </div>
         </div>
 
         <FAQSection />
