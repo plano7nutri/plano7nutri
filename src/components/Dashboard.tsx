@@ -641,8 +641,8 @@ const Dashboard = ({
                 </div>
                 <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
               </div>
-              <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                <div className="bg-red-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
+                <div className="bg-red-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
                   <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</div>
                   <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
                   <div className="flex items-center justify-center gap-1">
@@ -653,7 +653,7 @@ const Dashboard = ({
                     </div>
                   </div>
                 </div>
-                <div className="bg-amber-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
+                <div className="bg-amber-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
                   <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🍞</div>
                   <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
                   <div className="flex items-center justify-center gap-1">
@@ -664,7 +664,7 @@ const Dashboard = ({
                     </div>
                   </div>
                 </div>
-                <div className="bg-orange-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center">
+                <div className="bg-orange-50 rounded-2xl p-2 sm:p-5 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
                   <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥑</div>
                   <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
                   <div className="flex items-center justify-center gap-1">
@@ -679,14 +679,14 @@ const Dashboard = ({
               <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
-            {/* BOTÕES DE PREVIEW - ALINHADOS EXATAMENTE COMO NO PREMIUM */}
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* BOTÕES DE PREVIEW - ALINHADOS COM ALTURA IDÊNTICA */}
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm">
-                    <Utensils className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
-                    Ver Cardápio
-                    <Lock size={16} className="text-amber-500" />
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
+                    <Utensils className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
+                    <span className="flex-1 text-center">Ver Cardápio</span>
+                    <Lock size={16} className="text-amber-500 shrink-0" />
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
@@ -756,10 +756,10 @@ const Dashboard = ({
 
               <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm">
-                    <ClipboardList className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
-                    Ver Lista de Compras
-                    <Lock size={16} className="text-amber-500" />
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
+                    <ClipboardList className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
+                    <span className="flex-1 text-center">Ver Lista de Compras</span>
+                    <Lock size={16} className="text-amber-500 shrink-0" />
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
