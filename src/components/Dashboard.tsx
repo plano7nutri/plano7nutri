@@ -24,7 +24,7 @@ import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 
 const BlurredMenuMock = () => (
   <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed">
-    <div className="text-center font-bold mb-6">━━━━━━━━━━━━━━━━━━━━<br/><br/>🥗 CARDÁPIO SEMANAL PERSONALIZADO</div>
+    <div className="text-center font-bold mb-6">🥗 CARDÁPIO SEMANAL PERSONALIZADO</div>
     
     <div className="mb-6">
       <div className="font-bold mb-1">SEGUNDA-FEIRA</div>
@@ -830,7 +830,7 @@ const Dashboard = ({
           </div>
         </div>
 
-        <div className="mt-6 lg:mt-12 space-y-8">
+        <div className="mt-6 lg:mt-12 space-y-8" id="pricing-section">
           <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
             <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
               Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
@@ -851,9 +851,7 @@ const Dashboard = ({
             </div>
           </div>
 
-          <div id="planos-pricing" className="scroll-mt-6">
-            <PricingSection />
-          </div>
+          <PricingSection />
         </div>
 
         <FAQSection />
