@@ -679,14 +679,14 @@ const Dashboard = ({
               <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
-            {/* BOTÕES DE PREVIEW - ALINHADOS NA MESMA GRADE DO PREMIUM */}
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            {/* BOTÕES DE PREVIEW - ALINHADOS EXATAMENTE COMO NO PREMIUM */}
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-sm group backdrop-blur-sm">
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm">
                     <Utensils className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
-                    <span>Ver Cardápio</span>
-                    <Lock size={16} className="text-amber-500 ml-1" />
+                    Ver Cardápio
+                    <Lock size={16} className="text-amber-500" />
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
@@ -756,10 +756,10 @@ const Dashboard = ({
 
               <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-sm group backdrop-blur-sm">
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm">
                     <ClipboardList className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
-                    <span>Ver Lista de Compras</span>
-                    <Lock size={16} className="text-amber-500 ml-1" />
+                    Ver Lista de Compras
+                    <Lock size={16} className="text-amber-500" />
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
