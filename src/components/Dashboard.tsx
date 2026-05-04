@@ -90,7 +90,6 @@ const BlurredMenuMock = () => (
     </div>
 
     <div className="text-center mt-6">
-      <div className="font-bold mb-4">━━━━━━━━━━━━━━━━━━━━</div>
       <div>A jornada por uma vida mais saudável é um passo de cada vez. Com dedicação e escolhas inteligentes, você alcançará seus objetivos! 💪</div>
     </div>
   </div>
@@ -174,7 +173,6 @@ const BlurredListMock = ({ name }: { name: string }) => (
     </div>
 
     <div className="text-center mt-6">
-      <div className="font-bold mb-4">━━━━━━━━━━━━━━━━━━━━</div>
       <div className="mb-4">🎉 {name} Seu cardápio personalizado está pronto!</div>
       <div className="mb-4">
         💬 Quem cuida da alimentação cuida do futuro.<br/>
