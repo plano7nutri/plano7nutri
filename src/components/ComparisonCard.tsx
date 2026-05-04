@@ -2,9 +2,14 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown, ArrowRight } from "lucide-react";
+import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown } from "lucide-react";
 
 const ComparisonCard = () => {
+  const checkoutUrls = {
+    semanal: "https://pay.hotmart.com/X104499776T?checkoutMode=10",
+    mensal: "https://pay.hotmart.com/R104498424U?checkoutMode=10"
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -85,15 +90,33 @@ const ComparisonCard = () => {
 
         <div className="mt-10 pt-10 border-t border-white/5 text-center">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Plano Semanal</span>
+            <motion.a 
+              href={checkoutUrls.semanal}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex flex-col p-4 rounded-2xl hover:bg-white/5 transition-colors group"
+            >
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1 group-hover:text-zinc-400">Plano Semanal</span>
               <span className="text-3xl font-black text-white">R$ 9,90</span>
-            </div>
+              <span className="text-[9px] font-bold text-emerald-500 uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Comprar Agora</span>
+            </motion.a>
+
             <div className="h-8 w-px bg-white/10 hidden md:block" />
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-1">Plano Mensal</span>
-              <span className="text-3xl font-black text-emerald-400">R$ 19,90</span>
-            </div>
+
+            <motion.a 
+              href={checkoutUrls.mensal}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex flex-col p-4 rounded-2xl hover:bg-emerald-500/5 transition-colors group"
+            >
+              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-1 group-hover:text-emerald-400">Plano Mensal</span>
+              <span className="text-3xl font-black text-emerald-400 group-hover:text-emerald-300">R$ 19,90</span>
+              <span className="text-[9px] font-bold text-emerald-500 uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Assinar Agora</span>
+            </motion.a>
           </div>
           
           <div className="mt-8 p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 inline-block">
