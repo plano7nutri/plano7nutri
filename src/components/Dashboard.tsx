@@ -21,6 +21,7 @@ import ImpactPhrase from "./ImpactPhrase";
 import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
 import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
+import ComparisonCard from "./ComparisonCard";
 
 const BlurredMenuMock = ({ name }: { name: string }) => (
   <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed">
@@ -794,6 +795,8 @@ const Dashboard = ({
               <DashboardWhatsAppMockup />
             </div>
           </div>
+
+          <ComparisonCard />
 
           <div id="planos-pricing">
             <PricingSection />
