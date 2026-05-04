@@ -515,67 +515,30 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
-          {cardapio && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="flex-1 flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm w-full">
-                  <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  <span>Ver Cardápio Elite</span>
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
-                <div className="sticky top-0 bg-background border-b border-emerald-500/10 p-6 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-3 text-emerald-400 font-bold text-xl">
-                    <Utensils className="w-6 h-6" />
-                    Cardápio Personalizado
-                  </div>
-                </div>
-                <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-muted/50 p-8 rounded-2xl border border-border shadow-inner">
-                    {renderFormattedText(cardapio)}
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
+        {/* A margem mt-12 foi removida da div abaixo */}
+        <div className="space-y-8" id="planos-pricing">
+          <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
+            <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
+              Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />
+              <strong className="font-black">Quem vê tudo, age. Quem vê pela metade, adia. Você já sabe como a história do "amanhã eu começo" termina.</strong> <br />
+              Nos próximos 30 segundos você pode mudar isso: escolha seu plano, desbloqueie tudo e seu cardápio personalizado chega hoje no WhatsApp. <br />
+              <strong className="font-black underline decoration-emerald-500/30">Por menos de R$0,65 por dia. Menos que um café. Você muda sua vida de vez.</strong>
+            </p>
+          </div>
 
-          {lista && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="flex-1 flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm w-full">
-                  <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  <span>Ver Lista de Compras</span>
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
-                <div className="sticky top-0 bg-background border-b border-emerald-500/10 p-6 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-3 text-emerald-400 font-bold text-xl">
-                    <ClipboardList className="w-6 h-6" />
-                    Lista de Compras
-                  </div>
-                </div>
-                <div className="p-8">
-                  <div className="whitespace-pre-wrap text-base text-foreground leading-relaxed font-medium bg-muted/50 p-8 rounded-2xl border border-border shadow-inner">
-                    {renderFormattedText(lista)}
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
+          <div className="pt-12">
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
+                É assim que chega no seu WhatsApp
+              </h2>
+            </div>
+            <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
+              <DashboardWhatsAppMockup />
+            </div>
+          </div>
+
+          <PricingSection />
         </div>
-
-        <RequestButton />
-
-        {(isBlocked && !safeIsAdminView && tipo_assinatura === "Unica") && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-16 pt-16 border-t border-emerald-500/10"
-          >
-            <PricingSection isDark={true} />
-          </motion.div>
-        )}
 
         <FAQSection isDark={true} />
 
