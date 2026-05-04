@@ -683,9 +683,9 @@ const Dashboard = ({
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-between gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
                     <Utensils className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-center flex-1">Ver Cardápio</span>
+                    <span className="text-center">Ver Cardápio</span>
                     <Lock size={16} className="text-amber-500 shrink-0" />
                   </button>
                 </DialogTrigger>
@@ -756,9 +756,9 @@ const Dashboard = ({
 
               <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-between gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
                     <ClipboardList className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-center flex-1">Ver Lista de Compras</span>
+                    <span className="text-center">Ver Lista de Compras</span>
                     <Lock size={16} className="text-amber-500 shrink-0" />
                   </button>
                 </DialogTrigger>
