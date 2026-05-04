@@ -22,7 +22,7 @@ import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
 import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 
-const BlurredMenuMock = () => (
+const BlurredMenuMock = ({ name }: { name: string }) => (
   <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed">
     <div className="text-center font-bold mb-6">🥗 CARDÁPIO SEMANAL PERSONALIZADO</div>
     
@@ -173,7 +173,7 @@ const BlurredListMock = ({ name }: { name: string }) => (
     </div>
 
     <div className="text-center mt-6">
-      <div className="mb-4">🎉 {name} Seu cardápio personalizado está pronto!</div>
+      <div className="mb-4">🎉 <strong>{name}</strong> Seu cardápio personalizado está pronto!</div>
       <div className="mb-4">
         💬 Quem cuida da alimentação cuida do futuro.<br/>
         Você já tomou a decisão mais importante — agora é só executar! 🔥<br/>
@@ -712,7 +712,7 @@ const Dashboard = ({
                     
                     {/* Header Limpo e Real do Usuário */}
                     <div className="mb-6 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
-                      <p className="font-black text-lg">Olá {name}, meu nome é Vivi! 😊</p>
+                      <p className="font-black text-lg">Olá <strong>{name}</strong>, meu nome é <strong>Vivi</strong>! 😊</p>
                       <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
