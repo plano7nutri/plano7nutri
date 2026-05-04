@@ -14,11 +14,20 @@ const DashboardPage = () => {
   const initialData = location.state;
   const whatsappToFetch = initialData?.whatsapp || storedWhatsapp;
 
-  // Forçar scroll para o topo de forma síncrona antes da renderização
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
     document.documentElement.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
+
+  // Lógica para impedir que o botão voltar do celular saia do Dashboard
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const { data: dashData, isLoading } = useQuery({
     queryKey: ["userPlan", whatsappToFetch],
@@ -44,6 +53,8 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("plano7_free_whatsapp");
+    // Removemos o listener de popstate antes de sair para não interferir na navegação normal
+    window.history.back(); 
     navigate("/", { state: { view: "check-free-plan" }, replace: true });
   };
 
