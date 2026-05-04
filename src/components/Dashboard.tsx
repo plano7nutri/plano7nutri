@@ -679,14 +679,14 @@ const Dashboard = ({
               <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
-            {/* BOTOES DE PREVIEW - ESTILO RETANGULAR, LADO A LADO */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+            {/* BOTOES DE PREVIEW - CENTRALIZADOS E LADO A LADO NO DESKTOP */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
                   <motion.button 
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="relative w-full bg-white border border-zinc-200 p-5 rounded-2xl shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex items-center gap-4"
+                    className="relative w-full sm:w-[280px] bg-white border border-zinc-200 p-5 rounded-2xl shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex items-center gap-4"
                   >
                     <div className="w-14 h-14 shrink-0 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform border border-emerald-100">
                       <Utensils size={24} />
@@ -742,7 +742,7 @@ const Dashboard = ({
 
                     {/* Área do Cardápio Embaçada Seletivamente */}
                     <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <BlurredMenuMock />
+                      <BlurredMenuMock name={name} />
                     </div>
                     
                     {/* Botão de Desbloqueio (Embaixo do Blur) */}
@@ -772,7 +772,7 @@ const Dashboard = ({
                   <motion.button 
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="relative w-full bg-white border border-zinc-200 p-5 rounded-2xl shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex items-center gap-4"
+                    className="relative w-full sm:w-[280px] bg-white border border-zinc-200 p-5 rounded-2xl shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex items-center gap-4"
                   >
                     <div className="w-14 h-14 shrink-0 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform border border-emerald-100">
                       <ClipboardList size={24} />
