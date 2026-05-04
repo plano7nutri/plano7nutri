@@ -49,7 +49,7 @@ const PricingSection = ({ isDark = false }: PricingSectionProps) => {
   const activePlan = plans[activeIndex];
 
   return (
-    <section className="mt-12 mb-8">
+    <section className="mt-4 mb-8">
       <div className="text-center mb-10">
         <h3 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
           Turbine seu resultado com um plano completo
