@@ -22,139 +22,168 @@ import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
 import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 
-const MOCK_MENU = `━━━━━━━━━━━━━━━━━━━━
+const BlurredMenuMock = () => (
+  <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed">
+    <div className="text-center font-bold mb-6">━━━━━━━━━━━━━━━━━━━━<br/><br/>🥗 CARDÁPIO SEMANAL PERSONALIZADO</div>
+    
+    <div className="mb-6">
+      <div className="font-bold mb-1">SEGUNDA-FEIRA</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Omelete (2 ovos) com queijo minas frescal (50g), Pão integral (2 fatias) e Maçã (1 unidade).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Iogurte natural sem açúcar (1 pote) com sementes de chia (1 colher de sopa).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango grelhado (120g) e Salada de folhas verdes com tomate e pepino (à vontade).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Pera (1 unidade).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Carne moída magra (120g) refogada com legumes (brócolis, cenoura) e Salada verde (à vontade).</span></div>
+    </div>
+    
+    <div className="mb-6">
+      <div className="font-bold mb-1">TERÇA-FEIRA</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Ovos mexidos (2 ovos) com Pão integral (2 fatias) e Banana (1 unidade).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Queijo minas frescal (80g).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Bife magro (120g) e Abobrinha refogada (1 prato de sobremesa).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Laranja (1 unidade).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Frango desfiado (120g) com purê de batata doce (3 colheres de sopa) e Salada de alface e rúcula (à vontade).</span></div>
+    </div>
 
-🥗 CARDÁPIO SEMANAL PERSONALIZADO
+    <div className="mb-6">
+      <div className="font-bold mb-1">QUARTA-FEIRA</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Iogurte natural sem açúcar (1 pote) com morangos (1 xícara) e aveia (2 colheres de sopa).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Ovos cozidos (2 unidades).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (120g) e Brócolis cozido no vapor (1 prato de sobremesa).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Maçã (1 unidade).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Omelete (2 ovos) com espinafre e tomate, acompanhado de Salada mista (à vontade).</span></div>
+    </div>
 
-SEGUNDA-FEIRA
-🍳 Café da manhã: Omelete (2 ovos) com queijo minas frescal (50g), Pão integral (2 fatias) e Maçã (1 unidade).
-🍎 Lanche 10h: Iogurte natural sem açúcar (1 pote) com sementes de chia (1 colher de sopa).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango grelhado (120g) e Salada de folhas verdes com tomate e pepino (à vontade).
-🥤 Lanche 15h: Pera (1 unidade).
-🌙 Jantar: Carne moída magra (120g) refogada com legumes (brócolis, cenoura) e Salada verde (à vontade).
+    <div className="mb-6">
+      <div className="font-bold mb-1">QUINTA-FEIRA</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Pão integral (2 fatias) com ovo cozido fatiado (2 ovos), queijo minas frescal (50g) e Mamão (1 fatia média).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Castanhas (30g).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango ensopado com quiabo (120g) e Salada de couve refogada (1 prato de sobremesa).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Kiwi (2 unidades).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Carne bovina magra em cubos (120g) com purê de abóbora (3 colheres de sopa) e Salada de folhas verdes (à vontade).</span></div>
+    </div>
 
-TERÇA-FEIRA
-🍳 Café da manhã: Ovos mexidos (2 ovos) com Pão integral (2 fatias) e Banana (1 unidade).
-🍎 Lanche 10h: Queijo minas frescal (80g).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Bife magro (120g) e Abobrinha refogada (1 prato de sobremesa).
-🥤 Lanche 15h: Laranja (1 unidade).
-🌙 Jantar: Frango desfiado (120g) com purê de batata doce (3 colheres de sopa) e Salada de alface e rúcula (à vontade).
+    <div className="mb-6">
+      <div className="font-bold mb-1">SEXTA-FEIRA</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Tapioca (1 unidade) com queijo minas frescal (50g), ovo mexido (1 ovo) e Pêssego (1 unidade).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Iogurte natural sem açúcar (1 pote).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Carne assada magra (120g) e Salada de grão de bico com pepino e tomate (1 prato de sobremesa).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Uvas (1 cacho pequeno).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Frango grelhado (120g) com legumes cozidos no vapor (cenoura, vagem) e Salada de folhas verdes (à vontade).</span></div>
+    </div>
 
-QUARTA-FEIRA
-🍳 Café da manhã: Iogurte natural sem açúcar (1 pote) com morangos (1 xícara) e aveia (2 colheres de sopa).
-🍎 Lanche 10h: Ovos cozidos (2 unidades).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (120g) e Brócolis cozido no vapor (1 prato de sobremesa).
-🥤 Lanche 15h: Maçã (1 unidade).
-🌙 Jantar: Omelete (2 ovos) com espinafre e tomate, acompanhado de Salada mista (à vontade).
+    <div className="mb-6">
+      <div className="font-bold mb-1">SÁBADO</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Omelete (2 ovos) com tomate e orégano, Pão integral (2 fatias) e Melão (1 fatia média).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Maçã (1 unidade).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (1 lata, drenado) e Salada de beterraba ralada e cenoura (1 prato de sobremesa).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Queijo minas frescal (80g).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Sopa de legumes com carne bovina magra desfiada (1 prato fundo).</span></div>
+    </div>
 
-QUINTA-FEIRA
-🍳 Café da manhã: Pão integral (2 fatias) com ovo cozido fatiado (2 ovos), queijo minas frescal (50g) e Mamão (1 fatia média).
-🍎 Lanche 10h: Castanhas (30g).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango ensopado com quiabo (120g) e Salada de couve refogada (1 prato de sobremesa).
-🥤 Lanche 15h: Kiwi (2 unidades).
-🌙 Jantar: Carne bovina magra em cubos (120g) com purê de abóbora (3 colheres de sopa) e Salada de folhas verdes (à vontade).
+    <div className="mb-6">
+      <div className="font-bold mb-1">DOMINGO</div>
+      <div>🍳 Café da manhã: <span className="blur-[5px] opacity-50 select-none">Iogurte natural sem açúcar (1 pote) com banana (1 unidade) e aveia (2 colheres de sopa).</span></div>
+      <div>🍎 Lanche 10h: <span className="blur-[5px] opacity-50 select-none">Ovos cozidos (2 unidades).</span></div>
+      <div>🍽️ Almoço: <span className="blur-[5px] opacity-50 select-none">Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango assado (120g) e Salada de lentilha com cheiro-verde (1 prato de sobremesa).</span></div>
+      <div>🥤 Lanche 15h: <span className="blur-[5px] opacity-50 select-none">Pera (1 unidade).</span></div>
+      <div>🌙 Jantar: <span className="blur-[5px] opacity-50 select-none">Carne magra grelhada (120g) com salada caprese (tomate, queijo minas frescal, manjericão).</span></div>
+    </div>
 
-SEXTA-FEIRA
-🍳 Café da manhã: Tapioca (1 unidade) com queijo minas frescal (50g), ovo mexido (1 ovo) e Pêssego (1 unidade).
-🍎 Lanche 10h: Iogurte natural sem açúcar (1 pote).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Carne assada magra (120g) e Salada de grão de bico com pepino e tomate (1 prato de sobremesa).
-🥤 Lanche 15h: Uvas (1 cacho pequeno).
-🌙 Jantar: Frango grelhado (120g) com legumes cozidos no vapor (cenoura, vagem) e Salada de folhas verdes (à vontade).
+    <div className="text-center mt-6">
+      <div className="font-bold mb-4">━━━━━━━━━━━━━━━━━━━━</div>
+      <div>A jornada por uma vida mais saudável é um passo de cada vez. Com dedicação e escolhas inteligentes, você alcançará seus objetivos! 💪</div>
+    </div>
+  </div>
+);
 
-SÁBADO
-🍳 Café da manhã: Omelete (2 ovos) com tomate e orégano, Pão integral (2 fatias) e Melão (1 fatia média).
-🍎 Lanche 10h: Maçã (1 unidade).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Atum em água (1 lata, drenado) e Salada de beterraba ralada e cenoura (1 prato de sobremesa).
-🥤 Lanche 15h: Queijo minas frescal (80g).
-🌙 Jantar: Sopa de legumes com carne bovina magra desfiada (1 prato fundo).
+const BlurredListMock = ({ name }: { name: string }) => (
+  <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed">
+    <div>🛍️ Sua lista de compras personalizada está pronta!</div>
+    <div className="italic">_Calculei cada quantidade com base no seu cardápio dos 7 dias._ 💪</div>
+    <br/>
+    <div className="font-bold">🛒 LISTA DE COMPRAS SEMANAL</div>
+    <br/>
 
-DOMINGO
-🍳 Café da manhã: Iogurte natural sem açúcar (1 pote) com banana (1 unidade) e aveia (2 colheres de sopa).
-🍎 Lanche 10h: Ovos cozidos (2 unidades).
-🍽️ Almoço: Arroz integral (4 colheres de sopa), Feijão (1 concha média), Frango assado (120g) e Salada de lentilha com cheiro-verde (1 prato de sobremesa).
-🥤 Lanche 15h: Pera (1 unidade).
-🌙 Jantar: Carne magra grelhada (120g) com salada caprese (tomate, queijo minas frescal, manjericão).
+    <div className="font-bold">🥩 PROTEÍNAS:</div>
+    <div className="blur-[5px] opacity-50 select-none mb-4">
+      - Frango — 480 g<br/>
+      - Carne Bovina — 480 g<br/>
+      - Atum em água — 240 g
+    </div>
 
-━━━━━━━━━━━━━━━━━━━━
+    <div className="font-bold">🍞 CARBOIDRATOS & GRÃOS:</div>
+    <div className="blur-[5px] opacity-50 select-none mb-4">
+      - Pão integral — 8 fatias<br/>
+      - Arroz integral — 1000 g<br/>
+      - Feijão — 500 g<br/>
+      - Sementes de chia — 10 g<br/>
+      - Aveia — 40 g<br/>
+      - Tapioca — 1 unidade<br/>
+      - Grão de bico — 500 g<br/>
+      - Lentilha — 500 g
+    </div>
 
-A jornada por uma vida mais saudável é um passo de cada vez. Com dedicação e escolhas inteligentes, você alcançará seus objetivos! 💪`;
+    <div className="font-bold">🥦 LEGUMES, VERDURAS & FRUTAS:</div>
+    <div className="blur-[5px] opacity-50 select-none mb-4">
+      - Maçã — 3 unidades<br/>
+      - Pera — 2 unidades<br/>
+      - Banana — 2 unidades<br/>
+      - Laranja — 1 unidade<br/>
+      - Morangos — 150 g<br/>
+      - Mamão — 1 unidade<br/>
+      - Kiwi — 2 unidades<br/>
+      - Pêssego — 1 unidade<br/>
+      - Uvas — 1 unidade<br/>
+      - Melão — 1 unidade<br/>
+      - Tomate — 6 unidades<br/>
+      - Pepino — 2 unidades<br/>
+      - Brócolis — 2 unidades<br/>
+      - Cenoura — 4 unidades<br/>
+      - Abobrinha — 1 unidade<br/>
+      - Batata doce — 1 unidade<br/>
+      - Quiabo — 1 unidade<br/>
+      - Abóbora — 1 unidade<br/>
+      - Vagem — 1 unidade<br/>
+      - Beterraba — 1 unidade<br/>
+      - Alface — 2 maços<br/>
+      - Rúcula — 1 maço<br/>
+      - Espinafre — 1 maço<br/>
+      - Couve — 1 maço
+    </div>
 
-const MOCK_LIST = `🛍️ Sua lista de compras personalizada está pronta!
-_Calculei cada quantidade com base no seu cardápio dos 7 dias._ 💪
+    <div className="font-bold">🥛 LATICÍNIOS & OVOS:</div>
+    <div className="blur-[5px] opacity-50 select-none mb-4">
+      - Ovos — 18 unidades<br/>
+      - Queijo minas frescal — 360 g<br/>
+      - Iogurte natural sem açúcar — 4 unidades
+    </div>
 
-🛒 LISTA DE COMPRAS SEMANAL
+    <div className="font-bold">🫙 TEMPEROS, ÓLEOS & OUTROS:</div>
+    <div className="mb-1">A gosto mas com moderação</div>
+    <div className="blur-[5px] opacity-50 select-none mb-6">
+      - Azeite de oliva<br/>
+      - Sal<br/>
+      - Vinagre<br/>
+      - Alho — 1 unidade<br/>
+      - Cebola — 1 unidade<br/>
+      - Pimenta-do-reino<br/>
+      - Limão — 1 unidade<br/>
+      - Orégano<br/>
+      - Manjericão<br/>
+      - Cheiro-verde
+    </div>
 
-🥩 PROTEÍNAS:
-- Frango — 480 g
-- Carne Bovina — 480 g
-- Atum em água — 240 g
-
-🍞 CARBOIDRATOS & GRÃOS:
-- Pão integral — 8 fatias
-- Arroz integral — 1000 g
-- Feijão — 500 g
-- Sementes de chia — 10 g
-- Aveia — 40 g
-- Tapioca — 1 unidade
-- Grão de bico — 500 g
-- Lentilha — 500 g
-
-🥦 LEGUMES, VERDURAS & FRUTAS:
-- Maçã — 3 unidades
-- Pera — 2 unidades
-- Banana — 2 unidades
-- Laranja — 1 unidade
-- Morangos — 150 g
-- Mamão — 1 unidade
-- Kiwi — 2 unidades
-- Pêssego — 1 unidade
-- Uvas — 1 unidade
-- Melão — 1 unidade
-- Tomate — 6 unidades
-- Pepino — 2 unidades
-- Brócolis — 2 unidades
-- Cenoura — 4 unidades
-- Abobrinha — 1 unidade
-- Batata doce — 1 unidade
-- Quiabo — 1 unidade
-- Abóbora — 1 unidade
-- Vagem — 1 unidade
-- Beterraba — 1 unidade
-- Alface — 2 maços
-- Rúcula — 1 maço
-- Espinafre — 1 maço
-- Couve — 1 maço
-
-🥛 LATICÍNIOS & OVOS:
-- Ovos — 18 unidades
-- Queijo minas frescal — 360 g
-- Iogurte natural sem açúcar — 4 unidades
-
-🫙 TEMPEROS, ÓLEOS & OUTROS:
-A gosto mas com moderação
-- Azeite de oliva
-- Sal
-- Vinagre
-- Alho — 1 unidade
-- Cebola — 1 unidade
-- Pimenta-do-reino
-- Limão — 1 unidade
-- Orégano
-- Manjericão
-- Cheiro-verde
-
-━━━━━━━━━━━━━━━━━━━━
-
-🎉 Seu cardápio personalizado está pronto!
-
-💬 Quem cuida da alimentação cuida do futuro.
-Você já tomou a decisão mais importante — agora é só executar! 🔥
-Foco total em Alimentação Saudável! 💪
-
-🏆 Sua área de membros ELITE PREMIUM tem tudo que você precisa!
-https://plano7.inventiia.com.br/dashboardpago
-
-_TE VEJO EM 7 DIAS! 🚀_`;
+    <div className="text-center mt-6">
+      <div className="font-bold mb-4">━━━━━━━━━━━━━━━━━━━━</div>
+      <div className="mb-4">🎉 {name} Seu cardápio personalizado está pronto!</div>
+      <div className="mb-4">
+        💬 Quem cuida da alimentação cuida do futuro.<br/>
+        Você já tomou a decisão mais importante — agora é só executar! 🔥<br/>
+        Foco total em Alimentação Saudável! 💪
+      </div>
+    </div>
+  </div>
+);
 
 interface DashboardProps {
   name: string;
@@ -707,11 +736,9 @@ const Dashboard = ({
                       </div>
                     </div>
 
-                    {/* Área do Cardápio Embaçada */}
+                    {/* Área do Cardápio Embaçada Seletivamente */}
                     <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed blur-[6px] select-none opacity-50">
-                        {MOCK_MENU}
-                      </div>
+                      <BlurredMenuMock />
                     </div>
                     
                     {/* Botão de Desbloqueio (Embaixo do Blur) */}
@@ -765,11 +792,9 @@ const Dashboard = ({
                   </DialogHeader>
                   <div className="p-6">
                     
-                    {/* Área da Lista Embaçada */}
+                    {/* Área da Lista Embaçada Seletivamente */}
                     <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed blur-[6px] select-none opacity-50">
-                        {MOCK_LIST}
-                      </div>
+                      <BlurredListMock name={name} />
                     </div>
                     
                     {/* Botão de Desbloqueio (Embaixo do Blur) */}
