@@ -516,13 +516,13 @@ const PremiumDashboard = ({
           </motion.div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
           {cardapio && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                <button className="flex-1 flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm w-full">
                   <Utensils className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  Ver Cardápio Elite
+                  <span>Ver Cardápio Elite</span>
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
@@ -544,9 +544,9 @@ const PremiumDashboard = ({
           {lista && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm">
+                <button className="flex-1 flex items-center justify-center gap-3 bg-card border-2 border-emerald-500/20 p-6 rounded-3xl text-emerald-400 font-bold hover:bg-emerald-500/5 transition-all shadow-lg group backdrop-blur-sm w-full">
                   <ClipboardList className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  Ver Lista de Compras
+                  <span>Ver Lista de Compras</span>
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl p-0 border-none bg-background">
