@@ -679,28 +679,15 @@ const Dashboard = ({
               <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
-            {/* BOTOES DE PREVIEW - CENTRALIZADOS E LADO A LADO NO DESKTOP */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 w-full">
+            {/* BOTOES DE PREVIEW - ALINHADOS COMO NO PREMIUM */}
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
-                  <motion.button 
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative w-full sm:flex-1 bg-white border border-zinc-200 p-5 rounded-2xl shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex items-center gap-4"
-                  >
-                    <div className="w-14 h-14 shrink-0 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform border border-emerald-100">
-                      <Utensils size={24} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-base font-black text-zinc-900 leading-tight">Ver Cardápio</h3>
-                        <div className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[9px] font-black uppercase flex items-center gap-1 border border-amber-200">
-                          <Lock size={10} />
-                        </div>
-                      </div>
-                      <p className="text-xs text-zinc-500 font-medium leading-tight">Toque para ver a estrutura.</p>
-                    </div>
-                  </motion.button>
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-sm group backdrop-blur-sm">
+                    <Utensils className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
+                    <span>Ver Cardápio</span>
+                    <Lock size={16} className="text-amber-500 ml-1" />
+                  </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
                   <DialogHeader className="p-6 pb-0 bg-white sticky top-0 border-b border-zinc-100 z-20">
@@ -769,24 +756,11 @@ const Dashboard = ({
 
               <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
                 <DialogTrigger asChild>
-                  <motion.button 
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative w-full sm:flex-1 bg-white border border-zinc-200 p-5 rounded-2xl shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all group overflow-hidden text-left flex items-center gap-4"
-                  >
-                    <div className="w-14 h-14 shrink-0 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform border border-emerald-100">
-                      <ClipboardList size={24} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-base font-black text-zinc-900 leading-tight">Lista Compras</h3>
-                        <div className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[9px] font-black uppercase flex items-center gap-1 border border-amber-200">
-                          <Lock size={10} />
-                        </div>
-                      </div>
-                      <p className="text-xs text-zinc-500 font-medium leading-tight">Categorias calculadas.</p>
-                    </div>
-                  </motion.button>
+                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-sm group backdrop-blur-sm">
+                    <ClipboardList className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
+                    <span>Ver Lista de Compras</span>
+                    <Lock size={16} className="text-amber-500 ml-1" />
+                  </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
                   <DialogHeader className="p-6 pb-0 bg-white sticky top-0 border-b border-zinc-100 z-20">
