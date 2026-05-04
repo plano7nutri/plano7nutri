@@ -712,7 +712,7 @@ const Dashboard = ({
                     
                     {/* Header Limpo e Real do Usuário */}
                     <div className="mb-6 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
-                      <p className="font-black text-lg">Olá <strong>{name}</strong>, meu nome é <strong>Vivi</strong>! 😊</p>
+                      <p className="font-medium text-lg">Olá <strong>{name}</strong>, meu nome é <strong>Vivi</strong>! 😊</p>
                       <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
