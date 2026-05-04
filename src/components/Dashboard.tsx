@@ -679,7 +679,7 @@ const Dashboard = ({
               <p className="mt-6 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
             </div>
 
-            {/* BOTOES DE PREVIEW - ALINHADOS COMO NO PREMIUM */}
+            {/* BOTÕES DE PREVIEW - ALINHADOS NA MESMA GRADE DO PREMIUM */}
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
               <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <DialogTrigger asChild>
