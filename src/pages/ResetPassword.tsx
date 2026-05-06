@@ -7,12 +7,19 @@ import { Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      toast.error("As senhas não coincidem.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -40,7 +47,7 @@ const ResetPassword = () => {
             <Lock className="text-primary w-6 h-6" />
           </div>
           <h1 className="text-2xl font-bold text-zinc-900">Nova Senha</h1>
-          <p className="text-sm text-zinc-500 mt-1">Digite sua nova senha abaixo.</p>
+          <p className="text-sm text-zinc-500 mt-1">Crie uma nova senha segura para o seu acesso.</p>
         </div>
 
         <form onSubmit={handleReset} className="space-y-5">
@@ -49,7 +56,7 @@ const ResetPassword = () => {
             <input 
               type={showPassword ? "text" : "password"} 
               required 
-              placeholder="Mínimo 6 caracteres" 
+              placeholder="Sua nova senha" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" 
@@ -62,6 +69,19 @@ const ResetPassword = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+
+          <div className="relative">
+            <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Confirmar Nova Senha</label>
+            <input 
+              type={showPassword ? "text" : "password"} 
+              required 
+              placeholder="Repita a nova senha" 
+              value={confirmPassword} 
+              onChange={(e) => setConfirmPassword(e.target.value)} 
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" 
+            />
+          </div>
+
           <button 
             type="submit" 
             disabled={loading} 
