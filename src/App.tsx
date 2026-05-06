@@ -12,6 +12,7 @@ import DashboardPago from "./pages/DashboardPago";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import AdminRegister from "./pages/AdminRegister";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/cadastroadmin" element={<AdminRegister />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/dashboardpago" element={<DashboardPago />} />
