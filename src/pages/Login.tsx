@@ -23,16 +23,36 @@ const Login = () => {
     setTheme("light");
   }, [setTheme]);
 
+  // Captura o evento de recuperação e trava o usuário na tela de redefinição
   useEffect(() => {
     if (window.location.hash.includes('type=recovery')) {
+      sessionStorage.setItem('plano7_recovery', 'true');
+      setView('update_password');
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        sessionStorage.setItem('plano7_recovery', 'true');
+        setView('update_password');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Redireciona para o Dashboard apenas se NÃO estiver no modo de recuperação
+  useEffect(() => {
+    const isRecovering = sessionStorage.getItem('plano7_recovery') === 'true';
+    if (isRecovering) {
       setView('update_password');
     } else if (session && view !== 'update_password') {
       navigate('/dashboardpago');
     }
   }, [session, navigate, view]);
 
-  // Evita o flash da tela de login se já estiver logado ou carregando
-  if (authLoading || (session && view !== 'update_password')) {
+  const isRecovering = typeof window !== 'undefined' && sessionStorage.getItem('plano7_recovery') === 'true';
+
+  if (authLoading || (session && view !== 'update_password' && !isRecovering)) {
     return <div className="min-h-screen bg-background" />;
   }
 
@@ -86,6 +106,7 @@ const Login = () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
 
+      sessionStorage.removeItem('plano7_recovery');
       toast.success("Senha atualizada com sucesso!");
       navigate('/dashboardpago');
     } catch (error: any) {
@@ -93,6 +114,12 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelRecovery = async () => {
+    sessionStorage.removeItem('plano7_recovery');
+    await supabase.auth.signOut();
+    setView('login');
   };
 
   const handleFreeTest = () => {
@@ -141,8 +168,10 @@ const Login = () => {
               </div>
               <div className="relative">
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-[38px] text-zinc-400">{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}</button>
+                <input type={showPassword ? "text" : "password"} required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-[38px] text-zinc-400 hover:text-zinc-600 transition-colors">
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
               <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : "Entrar agora"}</button>
             </motion.form>
@@ -162,11 +191,14 @@ const Login = () => {
             <motion.form key="update" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleUpdatePassword} className="space-y-5">
               <div className="relative">
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Nova Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-[38px] text-zinc-400 hover:text-zinc-600 transition-colors">
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Confirmar Nova Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Repita a nova senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                <input type={showPassword ? "text" : "password"} required placeholder="Repita a nova senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
               </div>
               <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Lock size={20} /> Salvar Nova Senha</>}</button>
             </motion.form>
@@ -183,6 +215,17 @@ const Login = () => {
             ) : (
               <button onClick={() => setView('login')} className="text-sm text-primary font-bold hover:underline">Voltar para o Login</button>
             )}
+          </div>
+        )}
+
+        {view === 'update_password' && (
+          <div className="mt-8 text-center pt-6 border-t border-zinc-100">
+            <button 
+              onClick={handleCancelRecovery} 
+              className="text-sm font-semibold text-zinc-400 hover:text-zinc-700 transition-colors"
+            >
+              Cancelar e Voltar ao Início
+            </button>
           </div>
         )}
       </motion.div>
