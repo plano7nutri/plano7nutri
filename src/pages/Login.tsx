@@ -164,11 +164,11 @@ const Login = () => {
             <motion.form key="login" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleLogin} className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">E-mail</label>
-                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-900 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
               <div className="relative">
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
+                <input type={showPassword ? "text" : "password"} required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-900 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-[38px] text-zinc-400 hover:text-zinc-600 transition-colors">
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -181,7 +181,7 @@ const Login = () => {
             <motion.form key="forgot" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleResetPassword} className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">E-mail de Cadastro</label>
-                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" />
+                <input type="email" required placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-900 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
               <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Mail size={20} /> Enviar Link</>}</button>
             </motion.form>
@@ -191,14 +191,14 @@ const Login = () => {
             <motion.form key="update" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleUpdatePassword} className="space-y-5">
               <div className="relative">
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Nova Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
+                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-900 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-[38px] text-zinc-400 hover:text-zinc-600 transition-colors">
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               <div className="relative">
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Confirmar Nova Senha</label>
-                <input type={showPassword ? "text" : "password"} required placeholder="Repita a nova senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" />
+                <input type={showPassword ? "text" : "password"} required placeholder="Repita a nova senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-900 outline-none focus:ring-2 focus:ring-primary/20" />
               </div>
               <button type="submit" disabled={loading} className="w-full bg-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-glow">{loading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Lock size={20} /> Salvar Nova Senha</>}</button>
             </motion.form>
