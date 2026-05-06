@@ -1,16 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { Lock, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Lock, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Sessão expirada ou inválida. Por favor, solicite um novo link de recuperação.");
+        navigate('/login');
+      } else {
+        setChecking(false);
+      }
+    };
+    checkSession();
+  }, [navigate]);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +48,14 @@ const ResetPassword = () => {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="animate-spin w-8 h-8 text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-background">
