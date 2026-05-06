@@ -52,12 +52,12 @@ const ResetPassword = () => {
               placeholder="Mínimo 6 caracteres" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
-              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20" 
+              className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 outline-none focus:ring-2 focus:ring-primary/20 pr-12" 
             />
             <button 
               type="button" 
               onClick={() => setShowPassword(!showPassword)} 
-              className="absolute right-3 top-[38px] text-zinc-400"
+              className="absolute right-4 top-[38px] text-zinc-400 hover:text-zinc-600 transition-colors"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
@@ -65,7 +65,7 @@ const ResetPassword = () => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-glow"
+            className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-glow hover:bg-primary/90 transition-all"
           >
             {loading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : "Salvar Nova Senha"}
           </button>
