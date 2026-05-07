@@ -17,9 +17,14 @@ const FacebookPixelTracker = () => {
       // Dispara PageView em todas as páginas
       window.fbq('track', 'PageView');
 
-      // Dispara Lead apenas na página de dashboard (após o cadastro grátis)
+      // Dispara Lead apenas na página de dashboard e apenas uma vez por sessão
       if (location.pathname === '/dashboard') {
-        window.fbq('track', 'Lead');
+        const leadSent = sessionStorage.getItem('fb_lead_sent');
+        
+        if (!leadSent) {
+          window.fbq('track', 'Lead');
+          sessionStorage.setItem('fb_lead_sent', 'true');
+        }
       }
     }
   }, [location]);
