@@ -35,7 +35,14 @@ const Metabolismo = () => {
   const handleStart = () => {
     const element = document.getElementById("economia-real");
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // Cálculo absoluto que ignora o contexto de overflow do pai
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - 20; // 20px de margem no topo
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
 
