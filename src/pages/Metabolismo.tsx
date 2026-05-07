@@ -35,13 +35,19 @@ const Metabolismo = () => {
   const handleStart = () => {
     const element = document.getElementById("economia-real");
     if (element) {
-      // scrollIntoView é a API nativa mais segura e funciona independente de animações
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Cálculo manual da posição com offset de 80px para não ficar colado no topo
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
 
   return (
-    // REMOVIDO o overflow-x-hidden que sequestrava o scroll no mobile
     <div className="flex flex-col min-h-screen-dynamic bg-background text-foreground">
       <main className="flex-1 w-full">
         <Landing 
