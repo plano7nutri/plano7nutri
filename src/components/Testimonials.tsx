@@ -53,7 +53,6 @@ const initialTestimonials = [
   },
 ];
 
-// Gerando avaliações extras para atingir > 100
 const generateExtraTestimonials = () => {
   const extras = [];
   const names = ["Andre", "Beatriz", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gabriel", "Helena", "Igor", "Jessica", "Lucas", "Maria", "Nathalia", "Otavio", "Patricia", "Rafael", "Sandra", "Tiago", "Vanessa", "William"];
@@ -90,9 +89,16 @@ const extraTestimonials = generateExtraTestimonials();
 interface TestimonialsProps {
   onStart?: () => void;
   onLogin?: () => void;
+  startBtnText?: string;
+  loginBtnText?: string;
 }
 
-const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
+const Testimonials = ({ 
+  onStart, 
+  onLogin, 
+  startBtnText = "Calcular Meu Metabolismo Grátis", 
+  loginBtnText = "Acessar Meu Plano Grátis" 
+}: TestimonialsProps) => {
   const [showAll, setShowAll] = useState(false);
 
   return (
@@ -107,7 +113,7 @@ const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
             whileTap={{ scale: 0.98 }}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
           >
-            Calcular Meu Metabolismo Grátis
+            {startBtnText}
             <ArrowRight className="w-5 h-5" />
           </motion.button>
           
@@ -118,7 +124,7 @@ const Testimonials = ({ onStart, onLogin }: TestimonialsProps) => {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300"
           >
             <UserCheck className="w-5 h-5" />
-            Acessar Meu Plano Grátis
+            {loginBtnText}
           </motion.button>
         </div>
 

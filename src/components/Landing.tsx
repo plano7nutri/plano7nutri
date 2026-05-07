@@ -29,9 +29,18 @@ interface LandingProps {
   onLogin: () => void;
   hideFree?: boolean;
   reverseSections?: boolean;
+  startBtnText?: string;
+  loginBtnText?: string;
 }
 
-const Landing = ({ onStart, onLogin, hideFree = false, reverseSections = false }: LandingProps) => {
+const Landing = ({ 
+  onStart, 
+  onLogin, 
+  hideFree = false, 
+  reverseSections = false,
+  startBtnText = "Calcular Meu Metabolismo Grátis",
+  loginBtnText = "Acessar Meu Plano Grátis"
+}: LandingProps) => {
   const navigate = useNavigate();
 
   return (
@@ -82,7 +91,7 @@ const Landing = ({ onStart, onLogin, hideFree = false, reverseSections = false }
                 whileTap={{ scale: 0.98 }}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
               >
-                Calcular Meu Metabolismo Grátis
+                {startBtnText}
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
               
@@ -93,7 +102,7 @@ const Landing = ({ onStart, onLogin, hideFree = false, reverseSections = false }
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
               >
                 <UserCheck className="w-5 h-5" />
-                Acessar Meu Plano Grátis
+                {loginBtnText}
               </motion.button>
             </div>
           </motion.div>
@@ -143,7 +152,12 @@ const Landing = ({ onStart, onLogin, hideFree = false, reverseSections = false }
       )}
 
       {/* Prova Social */}
-      <Testimonials onStart={onStart} onLogin={onLogin} />
+      <Testimonials 
+        onStart={onStart} 
+        onLogin={onLogin} 
+        startBtnText={startBtnText}
+        loginBtnText={loginBtnText}
+      />
     </div>
   );
 };

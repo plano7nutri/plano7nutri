@@ -123,9 +123,11 @@ const Metabolismo = () => {
             {view === "landing" ? (
               <Landing 
                 onStart={handleStart} 
-                onLogin={() => setView("check-free-plan")} 
+                onLogin={() => navigate("/login")} 
                 hideFree={true}
                 reverseSections={true}
+                startBtnText="Quero meu plano nutricional completo"
+                loginBtnText="Acessar Meu Plano"
               />
             ) : (
               <div className="min-h-screen-dynamic flex flex-col items-center justify-center px-6 py-12">
