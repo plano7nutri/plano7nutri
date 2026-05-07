@@ -49,6 +49,7 @@ const Metabolismo = () => {
           reverseSections={true}
           startBtnText="Quero Meu Plano Nutricional"
           loginBtnText="Acessar Meu Plano"
+          badgeText="Calcule seu Metabolismo Real"
           hideTestimonials={true}
           extraContent={
             <div className="container mx-auto px-6 pb-16 pt-8">

@@ -32,6 +32,7 @@ interface LandingProps {
   reverseSections?: boolean;
   startBtnText?: string;
   loginBtnText?: string;
+  badgeText?: string;
   hideTestimonials?: boolean;
   extraContent?: React.ReactNode;
 }
@@ -43,6 +44,7 @@ const Landing = ({
   reverseSections = false,
   startBtnText = "Calcular Meu Metabolismo Grátis",
   loginBtnText = "Acessar Meu Plano Grátis",
+  badgeText = "Cálculo Grátis",
   hideTestimonials = false,
   extraContent
 }: LandingProps) => {
@@ -75,7 +77,7 @@ const Landing = ({
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold mb-8 tracking-wide">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              Cálculo Grátis
+              {badgeText}
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] tracking-tight mb-6">
