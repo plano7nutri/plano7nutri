@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle, UserCheck } from "lucide-center";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle, UserCheck } from "lucide-react";
 
 type View = "landing" | "check-free-plan";
 
