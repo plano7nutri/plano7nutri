@@ -32,6 +32,7 @@ interface LandingProps {
   startBtnText?: string;
   loginBtnText?: string;
   hideTestimonials?: boolean;
+  extraContent?: React.ReactNode;
 }
 
 const Landing = ({ 
@@ -41,7 +42,8 @@ const Landing = ({
   reverseSections = false,
   startBtnText = "Calcular Meu Metabolismo Grátis",
   loginBtnText = "Acessar Meu Plano Grátis",
-  hideTestimonials = false
+  hideTestimonials = false,
+  extraContent
 }: LandingProps) => {
   const navigate = useNavigate();
 
@@ -139,12 +141,14 @@ const Landing = ({
       {reverseSections ? (
         <>
           <WhatsAppMockup />
+          {extraContent}
           <Features hideFree={hideFree} />
         </>
       ) : (
         <>
           <Features hideFree={hideFree} />
           <WhatsAppMockup />
+          {extraContent}
         </>
       )}
 
