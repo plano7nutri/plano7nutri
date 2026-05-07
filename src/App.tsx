@@ -15,6 +15,7 @@ import TermsOfUse from "./pages/TermsOfUse";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import AdminRegister from "./pages/AdminRegister";
+import Metabolismo from "./pages/Metabolismo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <FacebookPixelTracker />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/metabolismo" element={<Metabolismo />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/login" element={<Login />} />
               <Route path="/reset-password" element={<ResetPassword />} />
