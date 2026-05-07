@@ -125,6 +125,7 @@ const Metabolismo = () => {
                 onStart={handleStart} 
                 onLogin={() => setView("check-free-plan")} 
                 hideFree={true}
+                reverseSections={true}
               />
             ) : (
               <div className="min-h-screen-dynamic flex flex-col items-center justify-center px-6 py-12">

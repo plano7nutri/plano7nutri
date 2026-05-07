@@ -28,9 +28,10 @@ interface LandingProps {
   onStart: () => void;
   onLogin: () => void;
   hideFree?: boolean;
+  reverseSections?: boolean;
 }
 
-const Landing = ({ onStart, onLogin, hideFree = false }: LandingProps) => {
+const Landing = ({ onStart, onLogin, hideFree = false, reverseSections = false }: LandingProps) => {
   const navigate = useNavigate();
 
   return (
@@ -128,11 +129,18 @@ const Landing = ({ onStart, onLogin, hideFree = false }: LandingProps) => {
       {/* Prova Social em Tempo Real */}
       <LiveCounter />
 
-      {/* Seção Como Funciona / Benefícios */}
-      <Features hideFree={hideFree} />
-
-      {/* Mockup do WhatsApp */}
-      <WhatsAppMockup />
+      {/* Ordem Condicional das Seções */}
+      {reverseSections ? (
+        <>
+          <WhatsAppMockup />
+          <Features hideFree={hideFree} />
+        </>
+      ) : (
+        <>
+          <Features hideFree={hideFree} />
+          <WhatsAppMockup />
+        </>
+      )}
 
       {/* Prova Social */}
       <Testimonials onStart={onStart} onLogin={onLogin} />
