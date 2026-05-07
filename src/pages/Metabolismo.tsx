@@ -1,3 +1,4 @@
+Comparação -> Preços -> Depoimentos.">
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
@@ -6,6 +7,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/components/AuthProvider";
 import ComparisonCard from "@/components/ComparisonCard";
 import PricingSection from "@/components/PricingSection";
+import Testimonials from "@/components/Testimonials";
 
 const Metabolismo = () => {
   const navigate = useNavigate();
@@ -43,11 +45,13 @@ const Metabolismo = () => {
           reverseSections={true}
           startBtnText="Quero Meu Plano Nutricional"
           loginBtnText="Acessar Meu Plano"
+          hideTestimonials={true}
         />
         <div className="container mx-auto px-6 py-12">
           <ComparisonCard />
           <PricingSection />
         </div>
+        <Testimonials />
       </main>
       <Footer />
     </div>

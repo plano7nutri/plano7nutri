@@ -31,6 +31,7 @@ interface LandingProps {
   reverseSections?: boolean;
   startBtnText?: string;
   loginBtnText?: string;
+  hideTestimonials?: boolean;
 }
 
 const Landing = ({ 
@@ -39,13 +40,13 @@ const Landing = ({
   hideFree = false, 
   reverseSections = false,
   startBtnText = "Calcular Meu Metabolismo Grátis",
-  loginBtnText = "Acessar Meu Plano Grátis"
+  loginBtnText = "Acessar Meu Plano Grátis",
+  hideTestimonials = false
 }: LandingProps) => {
   const navigate = useNavigate();
 
   return (
     <div className="w-full min-h-screen flex flex-col">
-      {/* Nav */}
       <nav className="w-full py-5">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-xl font-bold tracking-tight text-foreground">
@@ -61,7 +62,6 @@ const Landing = ({
         </div>
       </nav>
 
-      {/* Hero */}
       <main className="flex-1 flex flex-col items-center justify-center pb-8">
         <div className="container mx-auto">
           <motion.div
@@ -107,7 +107,6 @@ const Landing = ({
             </div>
           </motion.div>
 
-          {/* Steps */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -135,10 +134,8 @@ const Landing = ({
         </div>
       </main>
 
-      {/* Prova Social em Tempo Real */}
       <LiveCounter />
 
-      {/* Ordem Condicional das Seções */}
       {reverseSections ? (
         <>
           <WhatsAppMockup />
@@ -151,13 +148,14 @@ const Landing = ({
         </>
       )}
 
-      {/* Prova Social */}
-      <Testimonials 
-        onStart={onStart} 
-        onLogin={onLogin} 
-        startBtnText={startBtnText}
-        loginBtnText={loginBtnText}
-      />
+      {!hideTestimonials && (
+        <Testimonials 
+          onStart={onStart} 
+          onLogin={onLogin} 
+          startBtnText={startBtnText}
+          loginBtnText={loginBtnText}
+        />
+      )}
     </div>
   );
 };
