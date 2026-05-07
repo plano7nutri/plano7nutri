@@ -84,24 +84,24 @@ const Landing = ({
               Descubra seu metabolismo real e receba um cardápio semanal com a lista de compras baseados em alimentos brasileiros acessíveis, sem invenções respeitando suas <strong>restrições</strong>, <strong>preferências</strong> e <strong>objetivo semanal</strong>. Tudo em segundos.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-lg mx-auto">
               <motion.button
                 onClick={onStart}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
+                className="flex-1 w-full sm:w-1/2 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-4 rounded-xl text-sm font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-normal text-center"
               >
                 {startBtnText}
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </motion.button>
               
               <motion.button
                 onClick={onLogin}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
+                className="flex-1 w-full sm:w-1/2 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-6 py-4 rounded-xl text-sm font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-normal text-center"
               >
-                <UserCheck className="w-5 h-5" />
+                <UserCheck className="w-4 h-4 shrink-0" />
                 {loginBtnText}
               </motion.button>
             </div>

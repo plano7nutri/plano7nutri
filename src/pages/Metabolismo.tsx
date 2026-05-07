@@ -126,13 +126,13 @@ const Metabolismo = () => {
                 onLogin={() => navigate("/login")} 
                 hideFree={true}
                 reverseSections={true}
-                startBtnText="Quero meu plano nutricional completo"
+                startBtnText="Quero Meu Plano Nutricional"
                 loginBtnText="Acessar Meu Plano"
               />
             ) : (
               <div className="min-h-screen-dynamic flex flex-col items-center justify-center px-6 py-12">
                 <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-card border border-zinc-200">
-                  <h2 className="text-2xl font-bold text-zinc-900 mb-2">Acessar meu plano grátis</h2>
+                  <h2 className="text-2xl font-bold text-zinc-900 mb-2">Acessar meu plano</h2>
                   <p className="text-zinc-500 mb-8 text-sm">Informe seu WhatsApp para ver seu planejamento.</p>
                   
                   <form onSubmit={(e) => { e.preventDefault(); handleLoginFree(); }} className="space-y-6">
@@ -209,7 +209,7 @@ const Metabolismo = () => {
                       disabled={isLoggingIn}
                       className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-4 rounded-xl font-bold shadow-glow transition-all disabled:opacity-50"
                     >
-                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano Grátis"}
+                      {isLoggingIn ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ver Meu Plano"}
                     </motion.button>
 
                     <div className="pt-4 border-t border-zinc-100 text-center space-y-4">
