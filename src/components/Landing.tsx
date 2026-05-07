@@ -179,7 +179,7 @@ const Landing = ({
             </div>
           </div>
           <Testimonials />
-          <div className="container mx-auto px-6 pb-12">
+          <div className="container mx-auto px-6 pb-12 -mt-8">
             <FAQSection />
           </div>
         </>
