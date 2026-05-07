@@ -41,7 +41,7 @@ const Metabolismo = () => {
           hideFree={true}
           reverseSections={true}
           startBtnText="Quero Meu Plano Nutricional"
-          loginBtnText="Acessar Meu Plano"
+          loginBtnText="Login Plano Pago"
         />
       </main>
       <Footer />
