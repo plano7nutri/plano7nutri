@@ -33,10 +33,21 @@ const Metabolismo = () => {
   }
 
   const handleStart = () => {
-    const element = document.getElementById("economia-real");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    setTimeout(() => {
+      const element = document.getElementById("economia-real");
+      if (element) {
+        // Cálculo à prova de falhas para qualquer navegador (Mobile/Desktop)
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - 80; // 80px de respiro no topo
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    }, 100);
   };
 
   return (
