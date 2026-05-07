@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./components/AuthProvider";
 import { ThemeProvider } from "next-themes";
+import FacebookPixelTracker from "./components/FacebookPixelTracker";
 import Index from "./pages/Index";
 import Cadastro from "./pages/Cadastro";
 import DashboardPage from "./pages/DashboardPage";
@@ -26,6 +27,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <FacebookPixelTracker />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/cadastro" element={<Cadastro />} />
