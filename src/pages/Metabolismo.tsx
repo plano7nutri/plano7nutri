@@ -33,24 +33,16 @@ const Metabolismo = () => {
   }
 
   const handleStart = () => {
-    // O timeout resolve a falha no Mobile (animações do FramerMotion vs Touch)
-    setTimeout(() => {
-      const element = document.getElementById("economia-real");
-      if (element) {
-        // Usa as propriedades nativas de scroll da janela para evitar conflitos de layout
-        const scrollY = window.scrollY || document.documentElement.scrollTop;
-        const y = element.getBoundingClientRect().top + scrollY - 80;
-        
-        window.scrollTo({
-          top: y,
-          behavior: "smooth"
-        });
-      }
-    }, 150);
+    const element = document.getElementById("economia-real");
+    if (element) {
+      // scrollIntoView é a API nativa mais segura e funciona independente de animações
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
-    <div className="flex flex-col min-h-screen-dynamic bg-background text-foreground overflow-x-hidden">
+    // REMOVIDO o overflow-x-hidden que sequestrava o scroll no mobile
+    <div className="flex flex-col min-h-screen-dynamic bg-background text-foreground">
       <main className="flex-1 w-full">
         <Landing 
           onStart={handleStart} 
