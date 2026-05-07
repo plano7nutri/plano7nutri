@@ -153,12 +153,37 @@ const Landing = ({
       )}
 
       {!hideTestimonials && (
-        <Testimonials 
-          onStart={onStart} 
-          onLogin={onLogin} 
-          startBtnText={startBtnText}
-          loginBtnText={loginBtnText}
-        />
+        <>
+          <div className="container mx-auto px-6 py-12">
+            <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 w-full max-w-2xl mx-auto">
+              <motion.button
+                onClick={onStart}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-4 rounded-xl text-sm font-bold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
+              >
+                {startBtnText}
+                <ArrowRight className="w-4 h-4 shrink-0" />
+              </motion.button>
+              
+              <motion.button
+                onClick={onLogin}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-6 py-4 rounded-xl text-sm font-bold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
+              >
+                <UserCheck className="w-4 h-4 shrink-0" />
+                {loginBtnText}
+              </motion.button>
+            </div>
+          </div>
+          <Testimonials 
+            onStart={onStart} 
+            onLogin={onLogin} 
+            startBtnText={startBtnText}
+            loginBtnText={loginBtnText}
+          />
+        </>
       )}
     </div>
   );
