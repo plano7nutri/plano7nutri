@@ -35,7 +35,14 @@ const Metabolismo = () => {
   const handleStart = () => {
     const element = document.getElementById("economia-real");
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      const offset = 20; // Pequeno respiro no topo
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
 
