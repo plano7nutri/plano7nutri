@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { ArrowRight, UserCheck } from "lucide-react";
@@ -35,12 +35,7 @@ const Metabolismo = () => {
   const handleStart = () => {
     const element = document.getElementById("economia-real");
     if (element) {
-      // Usa a mesma lógica exata e testada que funciona no Dashboard
-      const y = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ 
-        top: y, 
-        behavior: "smooth" 
-      });
+      element.scrollIntoView({ behavior: "smooth" });
     }
   };
 
