@@ -5,6 +5,7 @@ import Testimonials from "./Testimonials";
 import Features from "./Features";
 import LiveCounter from "./LiveCounter";
 import WhatsAppMockup from "./WhatsAppMockup";
+import FAQSection from "./FAQSection";
 
 const steps = [
   {
@@ -177,12 +178,10 @@ const Landing = ({
               </motion.button>
             </div>
           </div>
-          <Testimonials 
-            onStart={onStart} 
-            onLogin={onLogin} 
-            startBtnText={startBtnText}
-            loginBtnText={loginBtnText}
-          />
+          <Testimonials />
+          <div className="container mx-auto px-6 pb-12">
+            <FAQSection />
+          </div>
         </>
       )}
     </div>
