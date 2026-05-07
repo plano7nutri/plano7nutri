@@ -56,7 +56,7 @@ const LiveCounter = () => {
   ];
 
   return (
-    <section className="w-full py-12 bg-white border-y border-zinc-100 shadow-sm overflow-hidden">
+    <section className="w-full py-16 bg-white border-y border-zinc-100 shadow-sm overflow-hidden">
       <div className="container mx-auto">
         <div className="flex flex-col items-center mb-10 text-center">
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest mb-3 border border-primary/10">

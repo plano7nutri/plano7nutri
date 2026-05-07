@@ -90,7 +90,7 @@ const Testimonials = () => {
   const [showAll, setShowAll] = useState(false);
 
   return (
-    <section className="pt-8 pb-12 bg-zinc-50/50">
+    <section className="py-16 bg-zinc-50/50">
       <div className="container mx-auto">
         {/* Header da Seção */}
         <div className="flex flex-col items-center text-center mb-10">

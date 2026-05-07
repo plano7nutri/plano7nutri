@@ -64,7 +64,7 @@ interface FeaturesProps {
 
 const Features = ({ hideFree = false }: FeaturesProps) => {
   return (
-    <section className="pt-12 pb-12 bg-[#F8F9FA]">
+    <section className="py-16 bg-[#F8F9FA]">
       <div className="container mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.h2 

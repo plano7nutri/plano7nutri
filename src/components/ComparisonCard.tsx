@@ -20,7 +20,7 @@ const ComparisonCard = () => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="relative overflow-hidden rounded-[2.5rem] bg-zinc-900 border border-emerald-500/30 shadow-2xl mb-12"
+      className="relative overflow-hidden rounded-[2.5rem] bg-zinc-900 border border-emerald-500/30 shadow-2xl w-full max-w-5xl mx-auto"
     >
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] -mr-32 -mt-32 rounded-full" />

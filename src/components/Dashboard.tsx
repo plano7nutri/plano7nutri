@@ -775,7 +775,7 @@ const Dashboard = ({
         </div>
 
         {/* Seções de Próximos Passos, Mockup, Preços e FAQ movidas para fora do grid principal */}
-        <div className="mt-12 space-y-12">
+        <div className="mt-16 space-y-16">
           <div className="bg-amber-50 border-2 border-amber-200 p-8 rounded-[2rem] text-center shadow-md">
             <p className="text-base sm:text-lg font-medium text-zinc-800 leading-relaxed max-w-2xl mx-auto">
               Seus números estão aqui. Alguns ainda bloqueados 🔒 — e não é à toa. <br />

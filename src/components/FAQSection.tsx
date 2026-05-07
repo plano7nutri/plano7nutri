@@ -67,7 +67,7 @@ const FAQSection = ({ isDark = false }: FAQSectionProps) => {
   ];
 
   return (
-    <section className={`mt-16 mb-12 p-6 sm:p-8 rounded-3xl border transition-all duration-300 ${
+    <section className={`w-full max-w-4xl mx-auto p-6 sm:p-8 rounded-3xl border transition-all duration-300 ${
       isDark 
         ? "bg-zinc-900/40 border-emerald-500/10 backdrop-blur-sm" 
         : "bg-white border-zinc-100 shadow-sm"

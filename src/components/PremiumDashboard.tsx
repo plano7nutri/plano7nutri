@@ -571,13 +571,15 @@ const PremiumDashboard = ({
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 pt-8 border-t border-emerald-500/10"
+            className="mt-16 pt-16 border-t border-emerald-500/10"
           >
             <PricingSection isDark={true} />
           </motion.div>
         )}
 
-        <FAQSection isDark={true} />
+        <div className="mt-16">
+          <FAQSection isDark={true} />
+        </div>
 
         <AnimatePresence>
           {isEditing && (

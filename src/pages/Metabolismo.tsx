@@ -51,7 +51,7 @@ const Metabolismo = () => {
           loginBtnText="Acessar Meu Plano"
           hideTestimonials={true}
           extraContent={
-            <div className="container mx-auto px-6 py-12 -mt-6">
+            <div className="container mx-auto px-6 pb-16 pt-8">
               <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 w-full max-w-2xl mx-auto">
                 <motion.button
                   onClick={handleStart}
@@ -76,12 +76,12 @@ const Metabolismo = () => {
             </div>
           }
         />
-        <div className="container mx-auto px-6 py-12">
+        <div className="container mx-auto px-6 py-16 space-y-16">
           <ComparisonCard />
           <PricingSection />
         </div>
         <Testimonials />
-        <div className="container mx-auto px-6 pb-12">
+        <div className="container mx-auto px-6 py-16">
           <FAQSection isDark={false} />
         </div>
       </main>

@@ -65,7 +65,7 @@ const Landing = ({
         </div>
       </nav>
 
-      <main className="flex-1 flex flex-col items-center justify-center pb-8">
+      <main className="flex-1 flex flex-col items-center justify-center pb-16 pt-8">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -155,7 +155,7 @@ const Landing = ({
 
       {!hideTestimonials && (
         <>
-          <div className="container mx-auto px-6 py-12">
+          <div className="container mx-auto px-6 pb-16 pt-8">
             <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 w-full max-w-2xl mx-auto">
               <motion.button
                 onClick={onStart}
@@ -179,7 +179,7 @@ const Landing = ({
             </div>
           </div>
           <Testimonials />
-          <div className="container mx-auto px-6 pb-12 -mt-8">
+          <div className="container mx-auto px-6 py-16">
             <FAQSection />
           </div>
         </>
