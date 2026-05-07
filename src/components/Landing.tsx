@@ -68,7 +68,7 @@ const Landing = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl mx-auto text-center"
+            className="max-w-3xl mx-auto text-center"
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold mb-8 tracking-wide">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -80,16 +80,16 @@ const Landing = ({
               <span className="text-foreground">direto no WhatsApp.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto mb-10 leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
               Descubra seu metabolismo real e receba um cardápio semanal com a lista de compras baseados em alimentos brasileiros acessíveis, sem invenções respeitando suas <strong>restrições</strong>, <strong>preferências</strong> e <strong>objetivo semanal</strong>. Tudo em segundos.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 w-full max-w-2xl mx-auto">
               <motion.button
                 onClick={onStart}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 w-full sm:w-1/2 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-4 rounded-xl text-sm font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
+                className="flex-1 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-4 rounded-xl text-sm font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
               >
                 {startBtnText}
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -99,7 +99,7 @@ const Landing = ({
                 onClick={onLogin}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 w-full sm:w-1/2 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-6 py-4 rounded-xl text-sm font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
+                className="flex-1 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-6 py-4 rounded-xl text-sm font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
               >
                 <UserCheck className="w-4 h-4 shrink-0" />
                 {loginBtnText}
