@@ -3,8 +3,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown, ArrowRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const ComparisonCard = () => {
+  const location = useLocation();
+  const isMetabolismoPage = location.pathname === "/metabolismo";
+  
   const checkoutUrls = {
     semanal: "https://pay.hotmart.com/X104499776T?checkoutMode=10",
     mensal: "https://pay.hotmart.com/R104498424U?checkoutMode=10"
@@ -90,6 +94,11 @@ const ComparisonCard = () => {
         </div>
 
         <div className="mt-10 pt-10 border-t border-white/5 text-center">
+          {isMetabolismoPage && (
+            <p className="text-white font-bold text-lg mb-8 animate-pulse">
+              Seja rápido, seu corpo não espera e está pedindo ajuda, clique no botão abaixo.
+            </p>
+          )}
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
             <motion.a 
               href={checkoutUrls.semanal}
