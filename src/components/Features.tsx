@@ -58,7 +58,11 @@ const planItems = [
   }
 ];
 
-const Features = () => {
+interface FeaturesProps {
+  hideFree?: boolean;
+}
+
+const Features = ({ hideFree = false }: FeaturesProps) => {
   return (
     <section className="pt-12 pb-12 bg-[#F8F9FA]">
       <div className="container mx-auto">
@@ -83,35 +87,37 @@ const Features = () => {
         </div>
 
         {/* Grupo Grátis */}
-        <div className="mb-12">
-          <h3 className="text-sm font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
-            <span className="w-8 h-px bg-primary/30"></span>
-            Grátis
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {freeItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ y: -5 }}
-                className="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-primary/10 transition-all duration-300"
-              >
-                <div className="w-16 h-16 rounded-full bg-[#E8F5E9] flex items-center justify-center text-[2rem] mb-6">
-                  {item.emoji}
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-medium">
-                  {item.description}
-                </p>
-              </motion.div>
-            ))}
+        {!hideFree && (
+          <div className="mb-12">
+            <h3 className="text-sm font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
+              <span className="w-8 h-px bg-primary/30"></span>
+              Grátis
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {freeItems.map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  whileHover={{ y: -5 }}
+                  className="bg-white p-8 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-primary/10 transition-all duration-300"
+                >
+                  <div className="w-16 h-16 rounded-full bg-[#E8F5E9] flex items-center justify-center text-[2rem] mb-6">
+                    {item.emoji}
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+                    {item.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Grupo No seu plano pago */}
         <div>

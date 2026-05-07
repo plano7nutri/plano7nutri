@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle, UserCheck } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, PlusCircle, MessageCircle, UserCheck } from "lucide-center";
 
 type View = "landing" | "check-free-plan";
 
@@ -124,6 +124,7 @@ const Metabolismo = () => {
               <Landing 
                 onStart={handleStart} 
                 onLogin={() => setView("check-free-plan")} 
+                hideFree={true}
               />
             ) : (
               <div className="min-h-screen-dynamic flex flex-col items-center justify-center px-6 py-12">

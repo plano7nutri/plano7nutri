@@ -27,9 +27,10 @@ const steps = [
 interface LandingProps {
   onStart: () => void;
   onLogin: () => void;
+  hideFree?: boolean;
 }
 
-const Landing = ({ onStart, onLogin }: LandingProps) => {
+const Landing = ({ onStart, onLogin, hideFree = false }: LandingProps) => {
   const navigate = useNavigate();
 
   return (
@@ -128,7 +129,7 @@ const Landing = ({ onStart, onLogin }: LandingProps) => {
       <LiveCounter />
 
       {/* Seção Como Funciona / Benefícios */}
-      <Features />
+      <Features hideFree={hideFree} />
 
       {/* Mockup do WhatsApp */}
       <WhatsAppMockup />
