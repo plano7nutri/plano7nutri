@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";

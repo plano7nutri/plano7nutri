@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, ThumbsUp, ChevronDown, ChevronUp, ArrowRight, UserCheck } from "lucide-react";
+import { Star, ThumbsUp, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const initialTestimonials = [
@@ -86,48 +86,12 @@ const generateExtraTestimonials = () => {
 
 const extraTestimonials = generateExtraTestimonials();
 
-interface TestimonialsProps {
-  onStart?: () => void;
-  onLogin?: () => void;
-  startBtnText?: string;
-  loginBtnText?: string;
-}
-
-const Testimonials = ({ 
-  onStart, 
-  onLogin, 
-  startBtnText = "Calcular Meu Metabolismo Grátis", 
-  loginBtnText = "Acessar Meu Plano Grátis" 
-}: TestimonialsProps) => {
+const Testimonials = () => {
   const [showAll, setShowAll] = useState(false);
 
   return (
     <section className="pt-8 pb-12 bg-zinc-50/50">
       <div className="container mx-auto">
-        
-        {/* CTAs de Reforço */}
-        <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 mb-16 max-w-2xl mx-auto">
-          <motion.button
-            onClick={onStart}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex-1 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-sm font-bold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
-          >
-            {startBtnText}
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
-          
-          <motion.button
-            onClick={onLogin}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex-1 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-sm font-bold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
-          >
-            <UserCheck className="w-5 h-5" />
-            {loginBtnText}
-          </motion.button>
-        </div>
-
         {/* Header da Seção */}
         <div className="flex flex-col items-center text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-3 border border-emerald-100">
