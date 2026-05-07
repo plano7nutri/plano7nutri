@@ -9,6 +9,7 @@ import { useAuth } from "@/components/AuthProvider";
 import ComparisonCard from "@/components/ComparisonCard";
 import PricingSection from "@/components/PricingSection";
 import Testimonials from "@/components/Testimonials";
+import FAQSection from "@/components/FAQSection";
 
 const Metabolismo = () => {
   const navigate = useNavigate();
@@ -80,6 +81,9 @@ const Metabolismo = () => {
           <PricingSection />
         </div>
         <Testimonials />
+        <div className="container mx-auto px-6 pb-12">
+          <FAQSection isDark={false} />
+        </div>
       </main>
       <Footer />
     </div>
