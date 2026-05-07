@@ -33,17 +33,20 @@ const Metabolismo = () => {
   }
 
   const handleStart = () => {
-    const element = document.getElementById("economia-real");
-    if (element) {
-      // Cálculo absoluto que ignora o contexto de overflow do pai
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = elementPosition - 20; // 20px de margem no topo
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-    }
+    // O timeout resolve a falha no Mobile (animações do FramerMotion vs Touch)
+    setTimeout(() => {
+      const element = document.getElementById("economia-real");
+      if (element) {
+        // Usa as propriedades nativas de scroll da janela para evitar conflitos de layout
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        const y = element.getBoundingClientRect().top + scrollY - 80;
+        
+        window.scrollTo({
+          top: y,
+          behavior: "smooth"
+        });
+      }
+    }, 150);
   };
 
   return (

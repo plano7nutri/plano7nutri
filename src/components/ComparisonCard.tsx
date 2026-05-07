@@ -15,10 +15,7 @@ const ComparisonCard = () => {
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto">
-      {/* Âncora invisível para o scroll */}
-      <div id="economia-real" className="absolute -top-20 left-0 w-full h-1" />
-      
+    <div id="economia-real" className="relative w-full max-w-5xl mx-auto scroll-mt-24">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
