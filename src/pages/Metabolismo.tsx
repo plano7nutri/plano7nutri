@@ -5,6 +5,8 @@ import { useTheme } from "next-themes";
 import Landing from "@/components/Landing";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/components/AuthProvider";
+import ComparisonCard from "@/components/ComparisonCard";
+import PricingSection from "@/components/PricingSection";
 
 const Metabolismo = () => {
   const navigate = useNavigate();
@@ -43,6 +45,10 @@ const Metabolismo = () => {
           startBtnText="Quero Meu Plano Nutricional"
           loginBtnText="Acessar Meu Plano"
         />
+        <div className="container mx-auto px-6 py-12">
+          <ComparisonCard />
+          <PricingSection />
+        </div>
       </main>
       <Footer />
     </div>
