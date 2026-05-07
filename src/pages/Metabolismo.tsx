@@ -30,8 +30,10 @@ const Metabolismo = () => {
   }
 
   const handleStart = () => {
-    const message = encodeURIComponent("Quero calcular meu metabolismo, grátis. Vim do seu site!");
-    window.open(`https://wa.me/5511933735838?text=${message}`, "_blank");
+    const element = document.getElementById("economia-real");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
