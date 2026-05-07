@@ -122,11 +122,6 @@ const Login = () => {
     setView('login');
   };
 
-  const handleFreeTest = () => {
-    const message = encodeURIComponent("Quero calcular meu metabolismo, grátis. Vim do seu site!");
-    window.open(`https://wa.me/5511933735838?text=${message}`, "_blank");
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-background py-10">
       <motion.div 
@@ -209,7 +204,7 @@ const Login = () => {
           <div className="mt-8 text-center pt-6 border-t border-zinc-100">
             {view === 'login' ? (
               <>
-                <p className="text-sm text-zinc-500">Não tem conta? <button onClick={handleFreeTest} className="text-primary font-bold hover:underline">Teste grátis</button></p>
+                <p className="text-sm text-zinc-500">Não tem conta? <button onClick={() => navigate('/metabolismo')} className="text-primary font-bold hover:underline">Comece agora.</button></p>
                 <button onClick={() => setView('forgot_password')} className="text-xs text-zinc-400 hover:text-zinc-600 mt-4 block mx-auto transition-colors">Esqueceu sua senha?</button>
               </>
             ) : (
