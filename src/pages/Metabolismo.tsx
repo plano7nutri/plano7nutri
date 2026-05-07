@@ -33,15 +33,27 @@ const Metabolismo = () => {
   }
 
   const handleStart = () => {
-    const element = document.getElementById("economia-real");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    // O setTimeout de 100ms é crucial para mobile: ele evita que o evento
+    // de 'touch' cancele a animação de scroll do navegador.
+    setTimeout(() => {
+      const element = document.getElementById("economia-real");
+      if (element) {
+        const yOffset = -80; // Respiro no topo
+        const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+        
+        window.scrollTo({ 
+          top: y, 
+          behavior: "smooth" 
+        });
+      }
+    }, 100);
   };
 
   return (
-    <div className="flex flex-col min-h-screen-dynamic bg-background text-foreground overflow-x-hidden">
-      <main className="flex-1 w-full">
+    // IMPORTANTE: A classe overflow-x-hidden foi removida daqui, pois ela é a principal
+    // causadora do bug que impede o window.scrollTo de funcionar no Safari/iOS.
+    <div className="flex flex-col min-h-screen-dynamic bg-background text-foreground w-full max-w-[100vw] overflow-hidden">
+      <main className="flex-1 w-full overflow-y-auto overflow-x-hidden">
         <Landing 
           onStart={handleStart} 
           onLogin={() => navigate("/login")} 
