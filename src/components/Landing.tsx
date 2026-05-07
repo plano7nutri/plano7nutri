@@ -89,7 +89,7 @@ const Landing = ({
                 onClick={onStart}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-4 rounded-xl text-sm font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
+                className="flex-1 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-4 rounded-xl text-sm font-bold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
               >
                 {startBtnText}
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -99,7 +99,7 @@ const Landing = ({
                 onClick={onLogin}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-6 py-4 rounded-xl text-sm font-semibold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
+                className="flex-1 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-6 py-4 rounded-xl text-sm font-bold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
               >
                 <UserCheck className="w-4 h-4 shrink-0" />
                 {loginBtnText}

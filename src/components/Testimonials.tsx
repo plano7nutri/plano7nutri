@@ -106,12 +106,12 @@ const Testimonials = ({
       <div className="container mx-auto">
         
         {/* CTAs de Reforço */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div className="flex flex-col sm:flex-row items-stretch justify-center gap-4 mb-16 max-w-2xl mx-auto">
           <motion.button
             onClick={onStart}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold shadow-glow hover:shadow-card-hover transition-all duration-300"
+            className="flex-1 inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl text-sm font-bold shadow-glow hover:shadow-card-hover transition-all duration-300 whitespace-nowrap"
           >
             {startBtnText}
             <ArrowRight className="w-5 h-5" />
@@ -121,7 +121,7 @@ const Testimonials = ({
             onClick={onLogin}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary/5 transition-all duration-300"
+            className="flex-1 inline-flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary px-8 py-4 rounded-xl text-sm font-bold hover:bg-primary/5 transition-all duration-300 whitespace-nowrap"
           >
             <UserCheck className="w-5 h-5" />
             {loginBtnText}
