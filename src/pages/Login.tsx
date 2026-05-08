@@ -131,10 +131,10 @@ const Login = () => {
       >
         {view !== 'update_password' && (
           <button 
-            onClick={() => view === 'login' ? navigate('/') : setView('login')}
+            onClick={() => view === 'login' ? navigate('/metabolismo') : setView('login')}
             className="flex items-center gap-2 text-sm text-zinc-500 hover:text-primary mb-8 transition-colors font-medium"
           >
-            <ArrowLeft size={16} /> {view === 'login' ? 'Voltar para o início' : 'Voltar para o login'}
+            <ArrowLeft size={16} /> {view === 'login' ? 'Voltar' : 'Voltar para o login'}
           </button>
         )}
 
