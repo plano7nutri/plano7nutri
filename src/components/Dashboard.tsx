@@ -568,205 +568,203 @@ const Dashboard = ({
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-3xl">
-              {/* Overlay de Urgência para Dados Bloqueados (TMB, GET e Macros) */}
-              <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
-                <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
-                  <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
-                    {saveTimeLeft > 0 ? <Lock size={16} /> : <AlertCircle size={16} />}
-                    {saveTimeLeft > 0 
-                      ? `Seus resultados ficam salvos por ${formatSaveTime(saveTimeLeft)}`
-                      : "Seus resultados expiraram — desbloqueie agora"}
+            <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-4 sm:p-6 shadow-md grid grid-cols-2 gap-2 sm:gap-6 relative overflow-hidden">
+              <div className="flex flex-col items-center text-center">
+                <h4 className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
+                  <div className="p-1.5 bg-primary/10 rounded-lg">
+                    <Activity size={14} className="text-primary" />
                   </div>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
-                    {saveTimeLeft > 0 
-                      ? "Garanta seu acesso antes que os cálculos sejam resetados."
-                      : "Clique no botão abaixo para garantir seu plano personalizado."}
+                  Taxa Basal (TMB)
+                </h4>
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
+                    {tmb}
                   </p>
+                  <Lock size={16} className="text-primary shrink-0" />
+                  <span className="text-[11px] sm:text-sm font-black text-primary/50 uppercase tracking-normal">kcal</span>
                 </div>
+                <p className="text-[9px] sm:text-[10px] text-primary font-black uppercase leading-tight mt-2">
+                  Energia gasta pelo corpo para manter funções vitais.
+                </p>
               </div>
-
-              <div className="space-y-6">
-                <div className="bg-zinc-50 border-2 border-zinc-100 rounded-3xl p-4 sm:p-6 shadow-md grid grid-cols-2 gap-2 sm:gap-6 relative overflow-hidden">
-                  <div className="flex flex-col items-center text-center">
-                    <h4 className="text-[10px] sm:text-[11px] font-black text-primary uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
-                      <div className="p-1.5 bg-primary/10 rounded-lg">
-                        <Activity size={14} className="text-primary" />
-                      </div>
-                      Taxa Basal (TMB)
-                    </h4>
-                    <div className="flex items-center justify-center gap-1.5">
-                      <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
-                        {tmb}
-                      </p>
-                      <Lock size={16} className="text-primary shrink-0" />
-                      <span className="text-[11px] sm:text-sm font-black text-primary/50 uppercase tracking-normal">kcal</span>
-                    </div>
-                    <p className="text-[9px] sm:text-[10px] text-primary font-black uppercase leading-tight mt-2">
-                      Energia gasta pelo corpo para manter funções vitais.
-                    </p>
+              <div className="flex flex-col items-center text-center">
+                <h4 className="text-[10px] sm:text-[11px] font-black text-orange-600 uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
+                  <div className="p-1.5 bg-orange-500/10 rounded-lg">
+                    <Zap size={14} className="text-orange-500" />
                   </div>
-                  <div className="flex flex-col items-center text-center">
-                    <h4 className="text-[10px] sm:text-[11px] font-black text-orange-600 uppercase tracking-tighter sm:tracking-widest mb-2 flex flex-col items-center gap-1.5">
-                      <div className="p-1.5 bg-orange-500/10 rounded-lg">
-                        <Zap size={14} className="text-orange-500" />
-                      </div>
-                      Gasto Total (GET)
-                    </h4>
-                    <div className="flex items-center justify-center gap-1.5">
-                      <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
-                        {get}
-                      </p>
-                      <Lock size={16} className="text-orange-500 shrink-0" />
-                      <span className="text-[11px] sm:text-sm font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
-                    </div>
-                    <p className="text-[9px] sm:text-[10px] text-orange-600 font-black uppercase leading-tight mt-2">
-                      Gasto calórico total diário incluindo suas atividades.
-                    </p>
-                  </div>
+                  Gasto Total (GET)
+                </h4>
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight blur-[8px] select-none">
+                    {get}
+                  </p>
+                  <Lock size={16} className="text-orange-500 shrink-0" />
+                  <span className="text-[11px] sm:text-sm font-black text-orange-500/50 uppercase tracking-normal">kcal</span>
                 </div>
-
-                <div className="bg-white border-2 border-primary/5 rounded-3xl p-4 sm:p-6 shadow-lg relative overflow-hidden flex flex-col">
-                  <div className="flex items-center justify-between mb-4 sm:mb-6">
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
-                      <p className="text-[10px] text-primary/60 font-bold uppercase">Distribuição ideal para seu corpo.</p>
-                    </div>
-                    <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
-                    <div className="bg-red-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
-                      <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</div>
-                      <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
-                      <div className="flex items-center justify-center gap-1">
-                        <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
-                        <div className="flex items-center gap-0.5">
-                          <Lock size={14} className="text-red-500 shrink-0" />
-                          <span className="text-[10px] sm:text-sm font-black text-red-600/50">g</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-amber-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
-                      <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🍞</div>
-                      <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
-                      <div className="flex items-center justify-center gap-1">
-                        <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
-                        <div className="flex items-center gap-0.5">
-                          <Lock size={14} className="text-amber-600 shrink-0" />
-                          <span className="text-[10px] sm:text-sm font-black text-amber-700/50">g</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-orange-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
-                      <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥑</div>
-                      <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
-                      <div className="flex items-center justify-center gap-1">
-                        <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
-                        <div className="flex items-center gap-0.5">
-                          <Lock size={14} className="text-orange-500 shrink-0" />
-                          <span className="text-[10px] sm:text-sm font-black text-orange-700/50">g</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="mt-4 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
-                </div>
+                <p className="text-[9px] sm:text-[10px] text-orange-600 font-black uppercase leading-tight mt-2">
+                  Gasto calórico total diário incluindo suas atividades.
+                </p>
               </div>
             </div>
 
-            <div className="mt-auto pt-8 flex flex-col sm:flex-row gap-4 items-stretch justify-center w-full">
-              <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-                <DialogTrigger asChild>
-                  <button className="flex-1 flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm w-full">
-                    <Utensils className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-center">Ver Cardápio</span>
-                    <Lock size={16} className="text-amber-500 shrink-0" />
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
-                  <DialogHeader className="p-6 pb-0 bg-white sticky top-0 border-b border-zinc-100 z-20">
-                    <DialogTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900">
-                      <Utensils className="text-emerald-500" /> Meu Cardápio de 7 Dias
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="p-6">
-                    <div className="mb-6 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
-                      <p className="font-medium text-lg">Olá <strong>{name}</strong>, meu nome é <strong>Vivi</strong>! 😊</p>
-                      <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Objetivo:</span> <strong className="text-emerald-700">{goalLabel}</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Restrições:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{restrictions || "Nenhuma"}</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Preferências:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{preferences || "Nenhuma"}</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Calorias:</span> <strong className="text-emerald-700">{metaCalorias} kcal</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Água:</span> <strong className="text-emerald-700">{metaAgua} ml</strong></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">TMB:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">GET:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Proteína:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Carboidrato:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
-                        <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Gordura:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
+            <div className="flex flex-col gap-6">
+              <div className="bg-white border-2 border-primary/5 rounded-3xl p-4 sm:p-6 shadow-lg relative overflow-hidden">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
+                    <p className="text-[10px] text-primary/60 font-bold uppercase">Distribuição ideal para seu corpo.</p>
+                  </div>
+                  <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
+                </div>
+                
+                {/* Overlay de Urgência para Dados Bloqueados (Apenas nos Macros) */}
+                <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
+                  <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
+                    <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
+                      {saveTimeLeft > 0 ? <Lock size={16} /> : <AlertCircle size={16} />}
+                      {saveTimeLeft > 0 
+                        ? `Seus resultados ficam salvos por ${formatSaveTime(saveTimeLeft)}`
+                        : "Seus resultados expiraram — desbloqueie agora"}
+                    </div>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
+                      {saveTimeLeft > 0 
+                        ? "Garanta seu acesso antes que os cálculos sejam resetados."
+                        : "Clique no botão abaixo para garantir seu plano personalizado."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
+                  <div className="bg-red-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
+                    <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</div>
+                    <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
+                      <div className="flex items-center gap-0.5">
+                        <Lock size={14} className="text-red-500 shrink-0" />
+                        <span className="text-[10px] sm:text-sm font-black text-red-600/50">g</span>
                       </div>
                     </div>
-                    <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <BlurredMenuMock name={name} />
-                    </div>
-                    <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
-                       <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
-                         <Lock size={32} className="text-amber-500" />
-                       </div>
-                       <h3 className="text-2xl font-black text-zinc-900 mb-2">Cardápio Bloqueado</h3>
-                       <p className="text-zinc-600 font-medium mb-6">
-                         Sua estrutura já foi montada. Adquira um dos planos Premium para liberar as refeições, alimentos e quantidades exatas calculadas para você.
-                       </p>
-                       <button 
-                         onClick={scrollToPricing}
-                         className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
-                       >
-                         <Crown size={20} />
-                         Desbloquear Agora
-                       </button>
+                  </div>
+                  <div className="bg-amber-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
+                    <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🍞</div>
+                    <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
+                      <div className="flex items-center gap-0.5">
+                        <Lock size={14} className="text-amber-600 shrink-0" />
+                        <span className="text-[10px] sm:text-sm font-black text-amber-700/50">g</span>
+                      </div>
                     </div>
                   </div>
-                </DialogContent>
-              </Dialog>
+                  <div className="bg-orange-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
+                    <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥑</div>
+                    <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
+                      <div className="flex items-center gap-0.5">
+                        <Lock size={14} className="text-orange-500 shrink-0" />
+                        <span className="text-[10px] sm:text-sm font-black text-orange-700/50">g</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-4 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
+              </div>
 
-              <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
-                <DialogTrigger asChild>
-                  <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
-                    <ClipboardList className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
-                    <span className="text-center">Ver Lista de Compras</span>
-                    <Lock size={16} className="text-amber-500 shrink-0" />
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
-                  <DialogHeader className="p-6 pb-0 bg-white sticky top-0 border-b border-zinc-100 z-20">
-                    <DialogTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900">
-                      <ClipboardList className="text-emerald-500" /> Lista de Compras
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="p-6">
-                    <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
-                      <BlurredListMock name={name} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch justify-center w-full">
+                <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                  <DialogTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm w-full">
+                      <Utensils className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
+                      <span className="text-center">Ver Cardápio</span>
+                      <Lock size={16} className="text-amber-500 shrink-0" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
+                    <DialogHeader className="p-6 pb-0 bg-white sticky top-0 border-b border-zinc-100 z-20">
+                      <DialogTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900">
+                        <Utensils className="text-emerald-500" /> Meu Cardápio de 7 Dias
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="p-6">
+                      <div className="mb-6 space-y-3 text-zinc-800 bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
+                        <p className="font-medium text-lg">Olá <strong>{name}</strong>, meu nome é <strong>Vivi</strong>! 😊</p>
+                        <p className="font-medium text-sm text-zinc-600 mb-4 pb-4 border-b border-emerald-200/50">Vou te enviar agora seu cardápio semanal baseado em:</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Objetivo:</span> <strong className="text-emerald-700">{goalLabel}</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Restrições:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{restrictions || "Nenhuma"}</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Preferências:</span> <strong className="text-emerald-700 truncate max-w-[150px]">{preferences || "Nenhuma"}</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Calorias:</span> <strong className="text-emerald-700">{metaCalorias} kcal</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Água:</span> <strong className="text-emerald-700">{metaAgua} ml</strong></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">TMB:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">GET:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">kcal</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Proteína:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Carboidrato:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
+                          <p className="flex items-center gap-2 text-sm font-medium">✅ <span className="text-zinc-500">Gordura:</span> <Lock size={14} className="text-amber-500"/> <span className="text-zinc-400 text-xs">g</span></p>
+                        </div>
+                      </div>
+                      <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
+                        <BlurredMenuMock name={name} />
+                      </div>
+                      <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
+                         <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                           <Lock size={32} className="text-amber-500" />
+                         </div>
+                         <h3 className="text-2xl font-black text-zinc-900 mb-2">Cardápio Bloqueado</h3>
+                         <p className="text-zinc-600 font-medium mb-6">
+                           Sua estrutura já foi montada. Adquira um dos planos Premium para liberar as refeições, alimentos e quantidades exatas calculadas para você.
+                         </p>
+                         <button 
+                           onClick={scrollToPricing}
+                           className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
+                         >
+                           <Crown size={20} />
+                           Desbloquear Agora
+                         </button>
+                      </div>
                     </div>
-                    <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
-                       <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
-                         <Lock size={32} className="text-amber-500" />
-                       </div>
-                       <h3 className="text-2xl font-black text-zinc-900 mb-2">Lista Bloqueada</h3>
-                       <p className="text-zinc-600 font-medium mb-6">
-                         Economize tempo e dinheiro no mercado. Desbloqueie o plano Premium para ver as quantidades exatas em gramas que você precisa comprar.
-                       </p>
-                       <button 
-                         onClick={scrollToPricing}
-                         className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
-                       >
-                         <Crown size={20} />
-                         Desbloquear Agora
-                       </button>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={isListOpen} onOpenChange={setIsListOpen}>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm h-full w-full">
+                      <ClipboardList className="w-6 h-6 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform" />
+                      <span className="text-center">Ver Lista de Compras</span>
+                      <Lock size={16} className="text-amber-500 shrink-0" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-white border-none rounded-3xl">
+                    <DialogHeader className="p-6 pb-0 bg-white sticky top-0 border-b border-zinc-100 z-20">
+                      <DialogTitle className="text-xl font-bold flex items-center gap-2 text-zinc-900">
+                        <ClipboardList className="text-emerald-500" /> Lista de Compras
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="p-6">
+                      <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 p-6 mb-8">
+                        <BlurredListMock name={name} />
+                      </div>
+                      <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-amber-200 w-full text-center">
+                         <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                           <Lock size={32} className="text-amber-500" />
+                         </div>
+                         <h3 className="text-2xl font-black text-zinc-900 mb-2">Lista Bloqueada</h3>
+                         <p className="text-zinc-600 font-medium mb-6">
+                           Economize tempo e dinheiro no mercado. Desbloqueie o plano Premium para ver as quantidades exatas em gramas que você precisa comprar.
+                         </p>
+                         <button 
+                           onClick={scrollToPricing}
+                           className="w-full bg-primary text-white px-8 py-4 rounded-2xl font-bold shadow-glow flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-95"
+                         >
+                           <Crown size={20} />
+                           Desbloquear Agora
+                         </button>
+                      </div>
                     </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
           </div>
         </div>
