@@ -1,14 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown, ArrowRight } from "lucide-react";
+import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown, ArrowRight, Timer } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 const ComparisonCard = () => {
   const location = useLocation();
   const isMetabolismoPage = location.pathname === "/metabolismo";
   
+  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 24 * 60 * 60));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
+
   const checkoutUrls = {
     semanal: "https://pay.hotmart.com/X104499776T?checkoutMode=10",
     mensal: "https://pay.hotmart.com/R104498424U?checkoutMode=10"
@@ -92,6 +108,17 @@ const ComparisonCard = () => {
           </div>
 
           <div className="mt-10 pt-10 border-t border-white/5 text-center">
+            {/* Timer de Urgência na Comparação */}
+            <div className="mb-8 flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-[0.2em]">
+                <Timer size={16} className="animate-spin-slow" />
+                Oferta por tempo limitado
+              </div>
+              <div className="text-3xl font-black text-white tabular-nums">
+                {formatTime(timeLeft)}
+              </div>
+            </div>
+
             {isMetabolismoPage && (
               <p className="text-white font-bold text-lg mb-8 animate-pulse">
                 Seja rápido, seu corpo não espera e está pedindo ajuda, clique no botão abaixo.

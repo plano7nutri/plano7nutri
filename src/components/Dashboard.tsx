@@ -607,70 +607,72 @@ const Dashboard = ({
               </div>
             </div>
 
-            <div className="bg-white border-2 border-primary/5 rounded-3xl p-4 sm:p-6 shadow-lg relative overflow-hidden flex-1 flex flex-col">
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
-                  <p className="text-[10px] text-primary/60 font-bold uppercase">Distribuição ideal para seu corpo.</p>
-                </div>
-                <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
-              </div>
-              
-              {/* Overlay de Urgência para Dados Bloqueados */}
-              <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
-                <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
-                  <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
-                    {saveTimeLeft > 0 ? <Lock size={16} /> : <AlertCircle size={16} />}
-                    {saveTimeLeft > 0 
-                      ? `Seus resultados ficam salvos por ${formatSaveTime(saveTimeLeft)}`
-                      : "Seus resultados expiraram — desbloqueie agora"}
+            <div className="flex flex-col gap-6">
+              <div className="bg-white border-2 border-primary/5 rounded-3xl p-4 sm:p-6 shadow-lg relative overflow-hidden">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
+                    <p className="text-[10px] text-primary/60 font-bold uppercase">Distribuição ideal para seu corpo.</p>
                   </div>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
-                    {saveTimeLeft > 0 
-                      ? "Garanta seu acesso antes que os cálculos sejam resetados."
-                      : "Clique no botão abaixo para garantir seu plano personalizado."}
-                  </p>
+                  <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
                 </div>
+                
+                {/* Overlay de Urgência para Dados Bloqueados (Apenas nos Macros) */}
+                <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
+                  <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
+                    <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
+                      {saveTimeLeft > 0 ? <Lock size={16} /> : <AlertCircle size={16} />}
+                      {saveTimeLeft > 0 
+                        ? `Seus resultados ficam salvos por ${formatSaveTime(saveTimeLeft)}`
+                        : "Seus resultados expiraram — desbloqueie agora"}
+                    </div>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
+                      {saveTimeLeft > 0 
+                        ? "Garanta seu acesso antes que os cálculos sejam resetados."
+                        : "Clique no botão abaixo para garantir seu plano personalizado."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
+                  <div className="bg-red-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
+                    <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</div>
+                    <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
+                      <div className="flex items-center gap-0.5">
+                        <Lock size={14} className="text-red-500 shrink-0" />
+                        <span className="text-[10px] sm:text-sm font-black text-red-600/50">g</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-amber-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
+                    <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🍞</div>
+                    <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
+                      <div className="flex items-center gap-0.5">
+                        <Lock size={14} className="text-amber-600 shrink-0" />
+                        <span className="text-[10px] sm:text-sm font-black text-amber-700/50">g</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-orange-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
+                    <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥑</div>
+                    <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
+                      <div className="flex items-center gap-0.5">
+                        <Lock size={14} className="text-orange-500 shrink-0" />
+                        <span className="text-[10px] sm:text-sm font-black text-orange-700/50">g</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-4 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
-                <div className="bg-red-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
-                  <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</div>
-                  <span className="text-[9px] sm:text-[11px] font-black text-red-600 uppercase block mb-1 tracking-tighter sm:tracking-widest">Proteína</span>
-                  <div className="flex items-center justify-center gap-1">
-                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{proteina}</p>
-                    <div className="flex items-center gap-0.5">
-                      <Lock size={14} className="text-red-500 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-red-600/50">g</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-amber-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-amber-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
-                  <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🍞</div>
-                  <span className="text-[9px] sm:text-[11px] font-black text-amber-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Carbo</span>
-                  <div className="flex items-center justify-center gap-1">
-                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{carbo}</p>
-                    <div className="flex items-center gap-0.5">
-                      <Lock size={14} className="text-amber-600 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-amber-700/50">g</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-orange-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-orange-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
-                  <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥑</div>
-                  <span className="text-[9px] sm:text-[11px] font-black text-orange-700 uppercase block mb-1 tracking-tighter sm:tracking-widest">Gordura</span>
-                  <div className="flex items-center justify-center gap-1">
-                    <p className="text-base sm:text-2xl font-black text-zinc-900 tracking-tighter blur-[4px] sm:blur-[8px] select-none">{gordura}</p>
-                    <div className="flex items-center gap-0.5">
-                      <Lock size={14} className="text-orange-500 shrink-0" />
-                      <span className="text-[10px] sm:text-sm font-black text-orange-700/50">g</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p className="mt-4 text-[10px] text-primary/40 text-center font-black uppercase tracking-widest">Gramas recomendadas por dia.</p>
-              
-              <div className="mt-auto pt-8 flex flex-col sm:flex-row gap-4 items-stretch justify-center w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch justify-center w-full">
                 <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                   <DialogTrigger asChild>
                     <button className="flex-1 flex items-center justify-center gap-3 bg-white border-2 border-zinc-200 p-6 rounded-3xl text-zinc-800 font-bold hover:bg-zinc-50 transition-all shadow-lg group backdrop-blur-sm w-full">

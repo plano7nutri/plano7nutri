@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Star, ShieldCheck, Zap } from "lucide-react";
+import { Check, Star, ShieldCheck, Zap, Timer } from "lucide-react";
 
 interface PricingSectionProps {
   isDark?: boolean;
@@ -147,11 +147,18 @@ const PricingSection = ({ isDark = false }: PricingSectionProps) => {
               ))}
             </ul>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-xs uppercase tracking-widest animate-pulse">
-                <Zap size={14} className="fill-current" />
-                ⚡ Oferta expira em {formatTime(timeLeft)}
+            <div className="space-y-4">
+              {/* Timer de Alto Destaque */}
+              <div className="bg-orange-600 text-white p-3 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg shadow-orange-600/20 animate-pulse">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em]">
+                  <Timer size={14} />
+                  Oferta Expirando
+                </div>
+                <div className="text-2xl font-black tabular-nums tracking-tight">
+                  {formatTime(timeLeft)}
+                </div>
               </div>
+
               <a
                 href={activePlan.url}
                 target="_blank"
