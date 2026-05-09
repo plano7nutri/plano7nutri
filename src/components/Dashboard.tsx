@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Clock, Edit3, Zap, ArrowRight, Crown } from "lucide-react";
+import { Flame, Activity, Target, UtensilsCrossed, Camera, Loader2, LogOut, Lock, CheckCircle2, ClipboardList, Utensils, X, ShieldAlert, Heart, Droplets, AlertCircle, Clock, Edit3, Zap, ArrowRight, Crown, Timer } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -145,10 +145,15 @@ const BlurredListMock = ({ name }: { name: string }) => (
       - Abóbora — 1 unidade<br/>
       - Vagem — 1 unidade<br/>
       - Beterraba — 1 unidade<br/>
+      - Couve-flor — 1 unidade<br/>
+      - Aspargos — 1 maço<br/>
+      - Batata doce — 2 unidades<br/>
+      - Batata — 2 unidades<br/>
+      - Mandioca — 1 unidade<br/>
       - Alface — 2 maços<br/>
-      - Rúcula — 1 maço<br/>
+      - Couve — 1 maço<br/>
       - Espinafre — 1 maço<br/>
-      - Couve — 1 maço
+      - Rúcula — 1 maço
     </div>
 
     <div className="font-bold">🥛 LATICÍNIOS & OVOS:</div>
@@ -232,9 +237,8 @@ const Dashboard = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
   
-  // Lógica de Expiração de 24 horas
+  // Lógica de Expiração da Oferta (24 horas)
   const [timeLeft, setTimeLeft] = useState(0);
-  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     if (!createdAt) return;
@@ -245,7 +249,6 @@ const Dashboard = ({
       const diff = endTime - Date.now();
       
       if (diff <= 0) {
-        setIsExpired(true);
         setTimeLeft(0);
         return;
       }
@@ -276,10 +279,6 @@ const Dashboard = ({
   }, [avatarUrl]);
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isExpired) {
-      toast.error("Acesso expirado.");
-      return;
-    }
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -326,10 +325,6 @@ const Dashboard = ({
   };
 
   const handleProfileSave = async (newData: any) => {
-    if (isExpired) {
-      toast.error("Acesso expirado.");
-      return;
-    }
     try {
       const tmbCalc = newData.sex === "male" 
         ? 10 * newData.weight + 6.25 * newData.height - 5 * newData.age + 5 
@@ -393,42 +388,6 @@ const Dashboard = ({
     }, 300);
   };
 
-  if (isExpired) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 text-center">
-        <div className="max-w-md bg-white p-8 rounded-3xl shadow-lg border border-red-100">
-          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertCircle className="w-8 h-8 text-red-500" />
-          </div>
-          <h2 className="text-2xl font-black text-zinc-900 mb-4">Acesso Expirado</h2>
-          <p className="text-zinc-600 mb-2">
-            Seu acesso gratuito de 24 horas expirou.
-          </p>
-          <p className="text-zinc-500 text-sm mb-8">
-            Conforme nossos termos, seus dados foram removidos do sistema. Para continuar tendo acesso ao seu planejamento, adquira um de nossos planos premium.
-          </p>
-          <div className="space-y-4">
-            <a 
-              href="https://pay.hotmart.com/X104499776T?checkoutMode=10"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-glow flex items-center justify-center gap-2"
-            >
-              Quero meu plano 7 agora
-              <ArrowRight size={18} />
-            </a>
-            <button 
-              onClick={onLogout}
-              className="text-zinc-400 text-xs font-bold uppercase tracking-widest hover:text-zinc-600 transition-colors"
-            >
-              Voltar ao Início
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen px-6 py-10 bg-background text-foreground">
       <div className="w-full max-w-4xl mx-auto">
@@ -449,22 +408,22 @@ const Dashboard = ({
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 rounded-2xl bg-red-50 border-2 border-red-200 flex items-center justify-between"
+            className="mb-6 p-4 rounded-2xl bg-orange-50 border-2 border-orange-200 flex items-center justify-between shadow-sm"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-xl">
-                <Clock className="w-5 h-5 text-red-600" />
+              <div className="p-2 bg-orange-100 rounded-xl">
+                <Timer className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-xs font-bold text-red-700 uppercase tracking-widest">Acesso Grátis</p>
-                <p className="text-sm font-medium text-red-800">
-                  Seu acesso expira em: <span className="font-black text-lg">{formatTime(timeLeft)}</span>
+                <p className="text-xs font-black text-orange-700 uppercase tracking-widest">Oferta Especial</p>
+                <p className="text-sm font-medium text-orange-800">
+                  Sua oferta expira em: <span className="font-black text-lg tabular-nums">{formatTime(timeLeft)}</span>
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] font-bold text-red-600 uppercase">Limite</p>
-              <p className="text-xs text-red-700">24 Horas</p>
+            <div className="hidden sm:block text-right">
+              <p className="text-[10px] font-black text-orange-600 uppercase tracking-tighter">Aproveite Agora</p>
+              <p className="text-xs text-orange-700 font-bold">Preço Promocional</p>
             </div>
           </motion.div>
         )}
@@ -490,7 +449,7 @@ const Dashboard = ({
                 
                 <label className="absolute bottom-1 right-1 p-3 bg-primary text-white rounded-full cursor-pointer shadow-md hover:scale-110 transition-transform">
                   {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-5 h-5" />}
-                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading || isExpired} />
+                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} />
                 </label>
               </div>
 
