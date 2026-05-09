@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Star, ShieldCheck } from "lucide-react";
+import { Check, Star, ShieldCheck, Zap } from "lucide-react";
 
 interface PricingSectionProps {
   isDark?: boolean;
@@ -10,6 +10,21 @@ interface PricingSectionProps {
 
 const PricingSection = ({ isDark = false }: PricingSectionProps) => {
   const [activeIndex, setActiveIndex] = useState(1); // Padrão: Plano Mensal (índice 1)
+  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 horas em segundos
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 24 * 60 * 60));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
 
   const plans = [
     {
@@ -132,18 +147,24 @@ const PricingSection = ({ isDark = false }: PricingSectionProps) => {
               ))}
             </ul>
 
-            <a
-              href={activePlan.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-full py-4 rounded-2xl font-bold text-sm text-center transition-all ${
-                activePlan.highlight
-                  ? "bg-primary text-white hover:bg-primary/90 shadow-glow"
-                  : "bg-transparent border-2 border-primary text-primary hover:bg-primary/5"
-              }`}
-            >
-              {activePlan.buttonText}
-            </a>
+            <div className="space-y-3">
+              <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-xs uppercase tracking-widest animate-pulse">
+                <Zap size={14} className="fill-current" />
+                ⚡ Oferta expira em {formatTime(timeLeft)}
+              </div>
+              <a
+                href={activePlan.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-full block py-4 rounded-2xl font-bold text-sm text-center transition-all ${
+                  activePlan.highlight
+                    ? "bg-primary text-white hover:bg-primary/90 shadow-glow"
+                    : "bg-transparent border-2 border-primary text-primary hover:bg-primary/5"
+                }`}
+              >
+                {activePlan.buttonText}
+              </a>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>

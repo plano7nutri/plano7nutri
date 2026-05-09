@@ -239,6 +239,9 @@ const Dashboard = ({
   
   // Lógica de Expiração da Oferta (24 horas)
   const [timeLeft, setTimeLeft] = useState(0);
+  
+  // Lógica de Salvar Resultados (48 minutos)
+  const [saveTimeLeft, setSaveTimeLeft] = useState(48 * 60);
 
   useEffect(() => {
     if (!createdAt) return;
@@ -262,12 +265,25 @@ const Dashboard = ({
     return () => clearInterval(interval);
   }, [createdAt]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSaveTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
+
+  const formatSaveTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
   useEffect(() => {
@@ -599,6 +615,24 @@ const Dashboard = ({
                 </div>
                 <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
               </div>
+              
+              {/* Overlay de Urgência para Dados Bloqueados */}
+              <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
+                <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
+                  <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
+                    {saveTimeLeft > 0 ? <Lock size={16} /> : <AlertCircle size={16} />}
+                    {saveTimeLeft > 0 
+                      ? `Seus resultados ficam salvos por ${formatSaveTime(saveTimeLeft)}`
+                      : "Seus resultados expiraram — desbloqueie agora"}
+                  </div>
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
+                    {saveTimeLeft > 0 
+                      ? "Garanta seu acesso antes que os cálculos sejam resetados."
+                      : "Clique no botão abaixo para garantir seu plano personalizado."}
+                  </p>
+                </div>
+              </div>
+
               <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
                 <div className="bg-red-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">
                   <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🥩</div>
