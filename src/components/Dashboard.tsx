@@ -611,7 +611,7 @@ const Dashboard = ({
               <div className="bg-white border-2 border-primary/5 rounded-3xl p-4 sm:p-6 shadow-lg relative overflow-hidden">
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <div className="space-y-1">
-                    <h3 className="text-lg sm:text-xl font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
+                    <h3 className="text-sm font-black text-primary uppercase tracking-widest">Macronutrientes</h3>
                     <p className="text-[10px] text-primary/60 font-bold uppercase">Distribuição ideal para seu corpo.</p>
                   </div>
                   <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
