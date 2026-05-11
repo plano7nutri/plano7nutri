@@ -242,15 +242,22 @@ const Dashboard = ({
   const timeLeftMs = useOfferTimer(createdAt);
   const timeLeft = Math.floor(timeLeftMs / 1000);
   
-  // Lógica de Salvar Resultados (48 minutos) - Independente
-  const [saveTimeLeft, setSaveTimeLeft] = useState(48 * 60);
+  // Lógica de Salvar Resultados (48 minutos) - Sincronizada com createdAt
+  const [saveTimeLeft, setSaveTimeLeft] = useState<number>(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSaveTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+    const calculateSaveTimer = () => {
+      if (!createdAt) return;
+      const startTime = new Date(createdAt).getTime();
+      const endTime = startTime + (48 * 60 * 1000); // 48 minutos
+      const diff = Math.floor((endTime - Date.now()) / 1000);
+      setSaveTimeLeft(Math.max(0, diff));
+    };
+
+    calculateSaveTimer();
+    const timer = setInterval(calculateSaveTimer, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [createdAt]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
