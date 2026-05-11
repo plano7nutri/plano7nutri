@@ -212,7 +212,7 @@ interface DashboardProps {
   entregue?: boolean | null;
   cardapio?: string | null;
   lista?: string | null;
-  perfil_editated?: boolean;
+  perfil_editado?: boolean;
   createdAt?: string;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
@@ -239,7 +239,8 @@ const Dashboard = ({
   const [isListOpen, setIsListOpen] = useState(false);
   
   // Timer de Oferta Sincronizado (24h)
-  const timeLeft = useOfferTimer(createdAt);
+  const timeLeftMs = useOfferTimer(createdAt);
+  const timeLeft = Math.floor(timeLeftMs / 1000);
   
   // Lógica de Salvar Resultados (48 minutos) - Independente
   const [saveTimeLeft, setSaveTimeLeft] = useState(48 * 60);
@@ -251,12 +252,11 @@ const Dashboard = ({
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
   const formatSaveTime = (seconds: number) => {
