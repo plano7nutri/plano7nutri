@@ -473,8 +473,12 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
           )}
         </AnimatePresence>
 
-        <div className="flex items-center justify-between mt-10">
-          <button onClick={prev} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft className="w-4 h-4" /> Voltar</button>
+        <div className={`flex items-center mt-10 ${step === 0 ? "justify-end" : "justify-between"}`}>
+          {step !== 0 && (
+            <button onClick={prev} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Voltar
+            </button>
+          )}
           {!isLastStep ? (
             <button disabled={!canProceed()} onClick={next} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold disabled:opacity-40">{isChecking ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Próximo <ArrowRight className="w-4 h-4" /></>}</button>
           ) : (
