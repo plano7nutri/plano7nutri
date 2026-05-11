@@ -6,12 +6,16 @@ import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown, ArrowRight, Time
 import { useLocation } from "react-router-dom";
 import { useOfferTimer } from "@/hooks/use-offer-timer";
 
-const ComparisonCard = () => {
+interface ComparisonCardProps {
+  createdAt?: string;
+}
+
+const ComparisonCard = ({ createdAt }: ComparisonCardProps) => {
   const location = useLocation();
   const isMetabolismoPage = location.pathname === "/metabolismo";
   
   // Timer de Oferta Sincronizado (24h)
-  const timeLeftMs = useOfferTimer();
+  const timeLeftMs = useOfferTimer(createdAt);
   const timeLeft = Math.floor(timeLeftMs / 1000);
 
   const formatTime = (seconds: number) => {

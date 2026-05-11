@@ -212,7 +212,7 @@ interface DashboardProps {
   entregue?: boolean | null;
   cardapio?: string | null;
   lista?: string | null;
-  perfil_editado?: boolean;
+  perfil_editated?: boolean;
   createdAt?: string;
   onAvatarUpdate?: () => void;
   onLogout?: () => void;
@@ -768,10 +768,10 @@ const Dashboard = ({
             </div>
           </div>
 
-          <ComparisonCard />
+          <ComparisonCard createdAt={createdAt} />
 
           <div id="planos-pricing">
-            <PricingSection />
+            <PricingSection createdAt={createdAt} />
           </div>
 
           <FAQSection />

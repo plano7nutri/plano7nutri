@@ -7,13 +7,14 @@ import { useOfferTimer } from "@/hooks/use-offer-timer";
 
 interface PricingSectionProps {
   isDark?: boolean;
+  createdAt?: string;
 }
 
-const PricingSection = ({ isDark = false }: PricingSectionProps) => {
+const PricingSection = ({ isDark = false, createdAt }: PricingSectionProps) => {
   const [activeIndex, setActiveIndex] = useState(1); // Padrão: Plano Mensal (índice 1)
   
   // Timer de Oferta Sincronizado (24h)
-  const timeLeftMs = useOfferTimer();
+  const timeLeftMs = useOfferTimer(createdAt);
   const timeLeft = Math.floor(timeLeftMs / 1000);
 
   const formatTime = (seconds: number) => {
