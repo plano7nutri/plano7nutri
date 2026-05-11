@@ -617,22 +617,20 @@ const Dashboard = ({
                   <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
                 </div>
                 
-                {/* Overlay de Urgência para Dados Bloqueados (Apenas nos Macros) */}
-                <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
-                  <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
-                    <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
-                      {saveTimeLeft > 0 ? <Lock size={16} /> : <AlertCircle size={16} />}
-                      {saveTimeLeft > 0 
-                        ? `Seus resultados ficam salvos por ${formatSaveTime(saveTimeLeft)}`
-                        : "Seus resultados expiraram — desbloqueie agora"}
+                {/* Overlay de Urgência para Dados Bloqueados (Apenas nos Macros) - Some ao chegar a 0 */}
+                {saveTimeLeft > 0 && (
+                  <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
+                    <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
+                      <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
+                        <Lock size={16} />
+                        Seus resultados ficam salvos por {formatSaveTime(saveTimeLeft)}
+                      </div>
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
+                        Garanta seu acesso antes que os cálculos sejam resetados.
+                      </p>
                     </div>
-                    <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
-                      {saveTimeLeft > 0 
-                        ? "Garanta seu acesso antes que os cálculos sejam resetados."
-                        : "Clique no botão abaixo para garantir seu plano personalizado."}
-                    </p>
                   </div>
-                </div>
+                )}
 
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 items-stretch">
                   <div className="bg-red-50 rounded-2xl p-2 sm:p-4 text-center border-2 border-red-100 transition-all hover:scale-105 flex flex-col items-center justify-center h-full">

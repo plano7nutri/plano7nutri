@@ -13,7 +13,7 @@ const ComparisonCard = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 24 * 60 * 60));
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -108,16 +108,18 @@ const ComparisonCard = () => {
           </div>
 
           <div className="mt-10 pt-10 border-t border-white/5 text-center">
-            {/* Timer de Urgência na Comparação */}
-            <div className="mb-8 flex flex-col items-center gap-2">
-              <div className="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-[0.2em]">
-                <Timer size={16} className="animate-spin-slow" />
-                Oferta por tempo limitado
+            {/* Timer de Urgência na Comparação - Some ao chegar a 0 */}
+            {timeLeft > 0 && (
+              <div className="mb-8 flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-[0.2em]">
+                  <Timer size={16} className="animate-spin-slow" />
+                  Oferta por tempo limitado
+                </div>
+                <div className="text-3xl font-black text-white tabular-nums">
+                  {formatTime(timeLeft)}
+                </div>
               </div>
-              <div className="text-3xl font-black text-white tabular-nums">
-                {formatTime(timeLeft)}
-              </div>
-            </div>
+            )}
 
             {isMetabolismoPage && (
               <p className="text-white font-bold text-lg mb-8 animate-pulse">

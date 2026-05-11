@@ -14,7 +14,7 @@ const PricingSection = ({ isDark = false }: PricingSectionProps) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 24 * 60 * 60));
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -148,16 +148,18 @@ const PricingSection = ({ isDark = false }: PricingSectionProps) => {
             </ul>
 
             <div className="space-y-4">
-              {/* Timer de Alto Destaque */}
-              <div className="bg-orange-600 text-white p-3 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg shadow-orange-600/20 animate-pulse">
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em]">
-                  <Timer size={14} />
-                  Oferta Expirando
+              {/* Timer de Alto Destaque - Some ao chegar a 0 */}
+              {timeLeft > 0 && (
+                <div className="bg-orange-600 text-white p-3 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg shadow-orange-600/20 animate-pulse">
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em]">
+                    <Timer size={14} />
+                    Oferta Expirando
+                  </div>
+                  <div className="text-2xl font-black tabular-nums tracking-tight">
+                    {formatTime(timeLeft)}
+                  </div>
                 </div>
-                <div className="text-2xl font-black tabular-nums tracking-tight">
-                  {formatTime(timeLeft)}
-                </div>
-              </div>
+              )}
 
               <a
                 href={activePlan.url}
