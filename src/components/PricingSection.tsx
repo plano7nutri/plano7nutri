@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Star, ShieldCheck, Zap, Timer } from "lucide-react";
+import { useOfferTimer } from "@/hooks/use-offer-timer";
 
 interface PricingSectionProps {
   isDark?: boolean;
@@ -10,14 +11,10 @@ interface PricingSectionProps {
 
 const PricingSection = ({ isDark = false }: PricingSectionProps) => {
   const [activeIndex, setActiveIndex] = useState(1); // Padrão: Plano Mensal (índice 1)
-  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 horas em segundos
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  
+  // Timer de Oferta Sincronizado (24h)
+  const timeLeftMs = useOfferTimer();
+  const timeLeft = Math.floor(timeLeftMs / 1000);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);

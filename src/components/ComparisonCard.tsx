@@ -4,19 +4,15 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Stethoscope, Zap, CheckCircle2, XCircle, TrendingDown, ArrowRight, Timer } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useOfferTimer } from "@/hooks/use-offer-timer";
 
 const ComparisonCard = () => {
   const location = useLocation();
   const isMetabolismoPage = location.pathname === "/metabolismo";
   
-  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  // Timer de Oferta Sincronizado (24h)
+  const timeLeftMs = useOfferTimer();
+  const timeLeft = Math.floor(timeLeftMs / 1000);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);

@@ -22,6 +22,7 @@ import DashboardLiveCounter from "./DashboardLiveCounter";
 import FreeEditForm from "./FreeEditForm";
 import DashboardWhatsAppMockup from "./DashboardWhatsAppMockup";
 import ComparisonCard from "./ComparisonCard";
+import { useOfferTimer } from "@/hooks/use-offer-timer";
 
 const BlurredMenuMock = ({ name }: { name: string }) => (
   <div className="whitespace-pre-wrap text-zinc-800 text-sm leading-relaxed">
@@ -237,33 +238,11 @@ const Dashboard = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
   
-  // Lógica de Expiração da Oferta (24 horas)
-  const [timeLeft, setTimeLeft] = useState(0);
+  // Timer de Oferta Sincronizado (24h)
+  const timeLeft = useOfferTimer(createdAt);
   
-  // Lógica de Salvar Resultados (48 minutos)
+  // Lógica de Salvar Resultados (48 minutos) - Independente
   const [saveTimeLeft, setSaveTimeLeft] = useState(48 * 60);
-
-  useEffect(() => {
-    if (!createdAt) return;
-    
-    const calculateTimeLeft = () => {
-      const startTime = new Date(createdAt).getTime();
-      const endTime = startTime + (24 * 60 * 60 * 1000); // 24 horas em ms
-      const diff = endTime - Date.now();
-      
-      if (diff <= 0) {
-        setTimeLeft(0);
-        return;
-      }
-      
-      setTimeLeft(diff);
-    };
-
-    calculateTimeLeft();
-    const interval = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(interval);
-  }, [createdAt]);
 
   useEffect(() => {
     const timer = setInterval(() => {
