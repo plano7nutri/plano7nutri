@@ -265,9 +265,15 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
             <motion.div key="step0" custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Vamos começar!</h2>
               <p className="text-muted-foreground mb-1">Informe seus dados para receber seu plano.</p>
-              <p className="text-destructive text-sm font-semibold mb-8 uppercase">
-                As informações não poderão ser editadas, preencha com cuidado.
-              </p>
+              
+              <div className="mb-8">
+                <p className="text-destructive text-sm font-semibold uppercase">
+                  As informações não poderão ser editadas, preencha com cuidado.
+                </p>
+                <p className="text-red-600 text-[11px] font-black uppercase tracking-tight mt-1">
+                  Coloque o 9 após o DDD apenas se o seu número realmente tiver o 9.
+                </p>
+              </div>
 
               <div className="space-y-6">
                 <div>
@@ -309,13 +315,6 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                         (confirmWhatsapp !== "" && data.whatsapp !== confirmWhatsapp) || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
                       }`}
                     />
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 flex gap-3 items-start">
-                    <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <p className="text-[11px] font-bold text-primary leading-tight uppercase tracking-tight">
-                      Coloque o 9 após o DDD apenas se o seu número realmente tiver o 9.
-                    </p>
                   </div>
                   
                   {whatsappError && (
