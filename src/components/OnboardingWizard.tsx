@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle, UserCheck, Plus, Minus, CheckCircle2, MessageCircle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatWhatsApp } from "@/lib/utils";
 
@@ -19,6 +19,15 @@ export interface OnboardingData {
   goal: string;
   restrictions: string;
   preferences: string;
+}
+
+interface OnboardingWizardProps {
+  onComplete: (data: OnboardingData) => void;
+  onBack: () => void;
+  onGoToLogin?: () => void;
+  hideLoginLink?: boolean;
+  skipInternalValidation?: boolean;
+  initialEmail?: string;
 }
 
 const activityLevels = [
@@ -300,6 +309,13 @@ const OnboardingWizard = ({ onComplete, onBack, onGoToLogin, hideLoginLink = fal
                         (confirmWhatsapp !== "" && data.whatsapp !== confirmWhatsapp) || whatsappError ? "border-destructive focus:ring-destructive" : "focus:ring-ring"
                       }`}
                     />
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 flex gap-3 items-start">
+                    <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <p className="text-[11px] font-bold text-primary leading-tight uppercase tracking-tight">
+                      Coloque o 9 após o DDD apenas se o seu número realmente tiver o 9.
+                    </p>
                   </div>
                   
                   {whatsappError && (
