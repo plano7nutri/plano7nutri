@@ -238,38 +238,15 @@ const Dashboard = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
   
-  // Timer de Oferta Sincronizado (24h)
+  // Todos os timers agora usam a mesma lógica de 24h baseada no createdAt
   const timeLeftMs = useOfferTimer(createdAt);
-  const timeLeft = Math.floor(timeLeftMs / 1000);
-  
-  // Lógica de Salvar Resultados (48 minutos) - Sincronizada com createdAt
-  const [saveTimeLeft, setSaveTimeLeft] = useState<number>(0);
-
-  useEffect(() => {
-    const calculateSaveTimer = () => {
-      if (!createdAt) return;
-      const startTime = new Date(createdAt).getTime();
-      const endTime = startTime + (48 * 60 * 1000); // 48 minutos
-      const diff = Math.floor((endTime - Date.now()) / 1000);
-      setSaveTimeLeft(Math.max(0, diff));
-    };
-
-    calculateSaveTimer();
-    const timer = setInterval(calculateSaveTimer, 1000);
-    return () => clearInterval(timer);
-  }, [createdAt]);
+  const timeLeftSeconds = Math.floor(timeLeftMs / 1000);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-  };
-
-  const formatSaveTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
   useEffect(() => {
@@ -406,7 +383,7 @@ const Dashboard = ({
           )}
         </div>
 
-        {timeLeft > 0 && (
+        {timeLeftSeconds > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -419,7 +396,7 @@ const Dashboard = ({
               <div>
                 <p className="text-xs font-black text-orange-700 uppercase tracking-widest">Oferta Especial</p>
                 <p className="text-sm font-medium text-orange-800">
-                  Sua oferta expira em: <span className="font-black text-lg tabular-nums">{formatTime(timeLeft)}</span>
+                  Sua oferta expira em: <span className="font-black text-lg tabular-nums">{formatTime(timeLeftSeconds)}</span>
                 </p>
               </div>
             </div>
@@ -603,13 +580,13 @@ const Dashboard = ({
                   <div className="h-1 flex-1 bg-primary/5 ml-4 rounded-full hidden sm:block" />
                 </div>
                 
-                {/* Overlay de Urgência para Dados Bloqueados (Apenas nos Macros) - Some ao chegar a 0 */}
-                {saveTimeLeft > 0 && (
+                {/* Overlay de Urgência para Dados Bloqueados - Sincronizado com 24h */}
+                {timeLeftSeconds > 0 && (
                   <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center">
                     <div className="bg-white/90 border-2 border-orange-200 p-4 rounded-2xl shadow-xl max-w-[280px]">
                       <div className="flex items-center justify-center gap-2 text-orange-600 font-black text-sm uppercase mb-2">
                         <Lock size={16} />
-                        Seus resultados ficam salvos por {formatSaveTime(saveTimeLeft)}
+                        Seus resultados ficam salvos por {formatTime(timeLeftSeconds)}
                       </div>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight">
                         Garanta seu acesso antes que os cálculos sejam resetados.
