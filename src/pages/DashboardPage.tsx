@@ -3,11 +3,12 @@ import { useLayoutEffect, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
-import { Loader2 } from "lucide-react";
+import { Loader2, Zap, Clock, ArrowRight, Crown } from "lucide-react";
 import ComparisonCard from "@/components/ComparisonCard";
 import DashboardWhatsAppMockup from "@/components/DashboardWhatsAppMockup";
 import FAQSection from "@/components/FAQSection";
 import Testimonials from "@/components/Testimonials";
+import PricingSection from "@/components/PricingSection";
 
 const DashboardPage = () => {
   const location = useLocation();
@@ -86,19 +87,70 @@ const DashboardPage = () => {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <main className="flex-1 p-8">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">
-              Acesso Grátis Expirado
-            </h2>
-            <p className="text-zinc-600 mb-6">
-              Seu acesso gratuito ao Plano 7 expirou após 48 horas. 
-              Para continuar recebendo seus planos personalizados, 
-              considere atualizar para um dos nossos planos premium.
-            </p>
-            <ComparisonCard createdAt={dashData.created_at} />
+          <div className="max-w-3xl mx-auto">
+            {/* Banner de Expiração com Destaque Premium */}
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/20 via-green-800/10 to-emerald-900/20 border-2 border-emerald-500/30 shadow-2xl mb-12">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full -mr-20 -mt-20" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/10 blur-[60px] rounded-full -ml-15 -mb-15" />
+              
+              <div className="relative z-10 p-8 md:p-12 text-center">
+                {/* Ícone e Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-widest mb-6 border border-amber-500/20">
+                  <Clock size={12} />
+                  Acesso Grátis Expirado
+                </div>
+
+                {/* Título Principal */}
+                <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+                  Seu Plano Grátis Expirou
+                </h2>
+                
+                {/* Subtítulo */}
+                <p className="text-lg text-zinc-200/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+                  Você já tem seus dados salvos. Para <strong className="text-emerald-400">continuar recebendo cardápios semanais</strong>, 
+                  escolha seu plano premium abaixo e tenha acesso imediato ao seu próximo plano personalizado.
+                </p>
+
+                {/* Benefícios Rápidos */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                  <div className="bg-white/10 rounded-xl p-4 border border-white/10">
+                    <Crown className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-white">Plano Semanal</p>
+                    <p className="text-xs text-zinc-300">R$ 9,90</p>
+                  </div>
+                  <div className="bg-white/10 rounded-xl p-4 border border-white/10">
+                    <div className="w-6 h-6 bg-emerald-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <ArrowRight className="w-4 h-4 text-white" />
+                    </div>
+                    <p className="text-sm font-bold text-white">Plano Mensal</p>
+                    <p className="text-xs text-zinc-300">R$ 19,90/mês</p>
+                  </div>
+                  <div className="bg-white/10 rounded-xl p-4 border border-white/10">
+                    <Zap className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-bold text-white">Renove Semanal</p>
+                    <p className="text-xs text-zinc-300">Semestre integrado</p>
+                  </div>
+                </div>
+
+                {/* Botão Principal */}
+                <button 
+                  onClick={() => document.getElementById('planos-pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center justify-center gap-3 bg-emerald-500 text-emerald-950 px-10 py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-emerald-400 transition-all transform hover:scale-105"
+                >
+                  <Crown size={24} />
+                  Escolher Meu Plano
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Seção de Preços */}
+            <div id="planos-pricing">
+              <PricingSection createdAt={dashData.created_at} />
+            </div>
           </div>
           
-          {/* Adicionando as seções solicitadas abaixo do card de comparação */}
+          {/* Mockup do WhatsApp */}
           <div className="mt-16">
             <div className="text-center max-w-2xl mx-auto mb-10">
               <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
