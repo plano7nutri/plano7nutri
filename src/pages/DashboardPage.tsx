@@ -111,10 +111,6 @@ const DashboardPage = () => {
           </div>
           
           <div className="mt-16">
-            <ComparisonCard createdAt={dashData.created_at} />
-          </div>
-          
-          <div className="mt-16">
             <Testimonials />
           </div>
           
