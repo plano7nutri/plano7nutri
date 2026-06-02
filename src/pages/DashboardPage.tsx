@@ -5,6 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import Dashboard from "@/components/Dashboard";
 import { Loader2 } from "lucide-react";
 import ComparisonCard from "@/components/ComparisonCard";
+import DashboardWhatsAppMockup from "@/components/DashboardWhatsAppMockup";
+import FAQSection from "@/components/FAQSection";
+import Testimonials from "@/components/Testimonials";
 
 const DashboardPage = () => {
   const location = useLocation();
@@ -93,6 +96,30 @@ const DashboardPage = () => {
               considere atualizar para um dos nossos planos premium.
             </p>
             <ComparisonCard createdAt={dashData.created_at} />
+          </div>
+          
+          {/* Adicionando as seções solicitadas abaixo do card de comparação */}
+          <div className="mt-16">
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
+                É assim que chega no seu WhatsApp
+              </h2>
+            </div>
+            <div className="rounded-[2.5rem] overflow-hidden border-2 border-zinc-100 shadow-sm bg-white">
+              <DashboardWhatsAppMockup />
+            </div>
+          </div>
+          
+          <div className="mt-16">
+            <ComparisonCard createdAt={dashData.created_at} />
+          </div>
+          
+          <div className="mt-16">
+            <Testimonials />
+          </div>
+          
+          <div className="mt-16">
+            <FAQSection />
           </div>
         </main>
       </div>
