@@ -89,13 +89,13 @@ const DashboardPage = () => {
         <main className="flex-1 p-8">
           <div className="max-w-3xl mx-auto">
             {/* Banner de Expiração com Destaque Premium */}
-            <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-900/20 via-green-800/10 to-emerald-900/20 border-2 border-emerald-500/30 shadow-2xl mb-12">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full -mr-20 -mt-20" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/10 blur-[60px] rounded-full -ml-15 -mb-15" />
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 border-2 border-emerald-500 shadow-2xl mb-12">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -mr-20 -mt-20" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 blur-[60px] rounded-full -ml-15 -mb-15" />
               
-              <div className="relative z-10 p-8 md:p-12 text-center">
+              <div className="relative z-10 p-8 md:p-12">
                 {/* Ícone e Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-widest mb-6 border border-amber-500/20">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-widest mb-6 border border-white/30">
                   <Clock size={12} />
                   Acesso Grátis Expirado
                 </div>
@@ -106,36 +106,36 @@ const DashboardPage = () => {
                 </h2>
                 
                 {/* Subtítulo */}
-                <p className="text-lg text-zinc-200/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-                  Você já tem seus dados salvos. Para <strong className="text-emerald-400">continuar recebendo cardápios semanais</strong>, 
+                <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+                  Você já tem seus dados salvos. Para <strong className="text-white underline decoration-amber-300/50">continuar recebendo cardápios semanais</strong>, 
                   escolha seu plano premium abaixo e tenha acesso imediato ao seu próximo plano personalizado.
                 </p>
 
                 {/* Benefícios Rápidos */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                  <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-                    <Crown className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+                  <div className="bg-white/15 rounded-xl p-4 border border-white/20">
+                    <Crown className="w-6 h-6 text-amber-300 mx-auto mb-2" />
                     <p className="text-sm font-bold text-white">Plano Semanal</p>
-                    <p className="text-xs text-zinc-300">R$ 9,90</p>
+                    <p className="text-xs text-white/80">R$ 9,90</p>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-                    <div className="w-6 h-6 bg-emerald-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                  <div className="bg-white/15 rounded-xl p-4 border border-white/20">
+                    <div className="w-6 h-6 bg-emerald-400 rounded-full mx-auto mb-2 flex items-center justify-center">
                       <ArrowRight className="w-4 h-4 text-white" />
                     </div>
                     <p className="text-sm font-bold text-white">Plano Mensal</p>
-                    <p className="text-xs text-zinc-300">R$ 19,90/mês</p>
+                    <p className="text-xs text-white/80">R$ 19,90/mês</p>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-                    <Zap className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <div className="bg-white/15 rounded-xl p-4 border border-white/20">
+                    <Zap className="w-6 h-6 text-white mx-auto mb-2" />
                     <p className="text-sm font-bold text-white">Renove Semanal</p>
-                    <p className="text-xs text-zinc-300">Semestre integrado</p>
+                    <p className="text-xs text-white/80">Semestre integrado</p>
                   </div>
                 </div>
 
                 {/* Botão Principal */}
                 <button 
                   onClick={() => document.getElementById('planos-pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="inline-flex items-center justify-center gap-3 bg-emerald-500 text-emerald-950 px-10 py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-emerald-400 transition-all transform hover:scale-105"
+                  className="inline-flex items-center justify-center gap-3 bg-white text-emerald-800 px-10 py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-white/95 transition-all transform hover:scale-105"
                 >
                   <Crown size={24} />
                   Escolher Meu Plano
